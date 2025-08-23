@@ -5,13 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>A2Z Dorkary – Shops + Home + Auth</title>
 
-  <!-- FAVICON + FALLBACKS -->
-  <!-- Preferred: keep these files in /assets/logo/ -->
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/logo/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/logo/favicon-16.png">
-  <link rel="icon" type="image/x-icon" href="assets/logo/favicon.ico">
-  <link rel="apple-touch-icon" href="assets/logo/favicon-180.png">
-  <!-- Extra safety: if assets missing, browser will still try default favicon.ico at root -->
+  <!-- FAVICONS (TAB ICON) -->
+  <link rel="icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/brand/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/apple-touch-icon.png">
+  <link rel="manifest" href="/assets/brand/site.webmanifest">
+  <meta name="theme-color" content="#0b1c27">
+  <!-- cache-bust (optional): add ?v=2 to force refresh after deploy -->
+
+  <!-- LOGO used inside page -->
+  <link rel="preload" as="image" href="/assets/brand/a2z-logo.png">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -146,7 +150,6 @@
     .auth-footer a{color:#0b66ff;text-decoration:none}
     .forgot-wrap{margin-top:8px}
     .forgot-link{color:#e53935;font-size:12px;text-decoration:none}
-    .forgot-link:hover{text-decoration:underline}
 
     /* ===== Drawer ===== */
     .overlay{position:fixed;inset:0;background:rgba(0,0,0,.25);display:none;z-index:120}
@@ -201,13 +204,8 @@
   <!-- ===== HEADER ===== -->
   <div class="header">
     <a class="logo-link" href="#" id="homeLink" title="A2Z Dorkary">
-      <!-- Logo with robust fallbacks -->
-      <img
-        class="brand-img"
-        src="assets/logo/a2zdorkary-logo.png"
-        alt="A2Z Dorkary logo"
-        onerror="this.onerror=null; this.src='a2zdorkary%20logo.png';"
-      />
+      <!-- IMPORTANT: use absolute path; add ?v=2 on redeploy to break cache -->
+      <img class="brand-img" src="/assets/brand/a2z-logo.png?v=2" alt="A2Z Dorkary logo" decoding="async" fetchpriority="high">
     </a>
 
     <!-- Select Your Shop -->
@@ -437,7 +435,13 @@
     const qsa=(s,r=document)=>[...r.querySelectorAll(s)];
 
     /* Pages */
-    const pages={ selectFirst:qs('#selectShopPage'), home:qs('#homePage'), login:qs('#loginPage'), register:qs('#registerPage'), ongoing:qs('#ongoingPage') };
+    const pages={
+      selectFirst:qs('#selectShopPage'),
+      home:qs('#homePage'),
+      login:qs('#loginPage'),
+      register:qs('#registerPage'),
+      ongoing:qs('#ongoingPage')
+    };
     const quickBar=qs('#quickBar');
     const currentShopLabel=qs('#currentShopLabel');
 
@@ -486,6 +490,12 @@
         setCurrentShop(null,false);
         showPage('selectFirst');
       }
+    }
+
+    // Always go to real main Home (Computer Accessories Shop)
+    function goToMainHome(){
+      setCurrentShop(READY_SHOP, true);
+      showPage('home');
     }
 
     // Drawer
@@ -553,7 +563,7 @@
       }
     });
 
-    // Logo/Home behavior -> reset to initial select page
+    // Logo/Home behavior -> reset to initial select
     function resetToDefaultHome(e){
       if(e) e.preventDefault();
       try{
@@ -575,8 +585,8 @@
     qs('#goLoginFromRegister').addEventListener('click',e=>{e.preventDefault();showPage('login')});
     qsa('.crumbHome').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();routeToHomeLike()}));
 
-    // IMPORTANT: Back to Home -> always initial Select Your Shop home
-    qs('#backHomeBtn').addEventListener('click', (e)=>{ e.preventDefault(); resetToDefaultHome(); });
+    // Back to Home -> always main Home page
+    qs('#backHomeBtn').addEventListener('click', (e)=>{ e.preventDefault(); goToMainHome(); });
 
     // ===== Restore state on hard refresh =====
     (function restoreFromStorage(){
