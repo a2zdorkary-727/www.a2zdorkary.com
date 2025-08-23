@@ -6,25 +6,19 @@
   <title>A2Z Dorkary – Shops + Home + Auth</title>
 
   <!-- FAVICONS (TAB ICON) -->
-  <link rel="icon" href="/favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/brand/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/assets/brand/favicon-16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/apple-touch-icon.png">
-  <link rel="manifest" href="/assets/brand/site.webmanifest">
+  <link rel="icon" href="/a2zdorkary-logo.png?v=3">
+  <link rel="icon" type="image/png" sizes="32x32" href="/a2zdorkary-logo.png?v=3">
+  <link rel="icon" type="image/png" sizes="16x16" href="/a2zdorkary-logo.png?v=3">
+  <link rel="apple-touch-icon" sizes="180x180" href="/a2zdorkary-logo.png?v=3">
   <meta name="theme-color" content="#0b1c27">
-  <!-- cache-bust (optional): add ?v=2 to force refresh after deploy -->
 
   <!-- LOGO used inside page -->
-  <link rel="preload" as="image" href="/assets/brand/a2z-logo.png">
+  <link rel="preload" as="image" href="/a2zdorkary-logo.png?v=3">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    :root{
-      --primary:#0b66ff; --primary-dark:#084dc9;
-      --navy-deep:#0b1c27; --line:#e6e6e6;
-      --muted:#667085; --card:#fff;
-    }
+    :root{ --primary:#0b66ff; --primary-dark:#084dc9; --navy-deep:#0b1c27; --line:#e6e6e6; --muted:#667085; --card:#fff; }
     *{box-sizing:border-box}
     html,body{margin:0;overflow-x:hidden}
     body{font-family:Arial,Helvetica,sans-serif;background:#f5f6f8;color:#111}
@@ -43,12 +37,11 @@
     }
     .shop-btn .fa-chevron-down{font-size:12px;color:#2c3e50}
 
-    /* shutter line removed (closed state = no border/shadow/space) */
+    /* shutter line removed (closed state) */
     .shop-menu{
       position:absolute;left:0;top:100%;min-width:260px;background:#fff;border-radius:12px;overflow:hidden;
-      max-height:0;transition:max-height 2s ease;z-index:99;border:none;box-shadow:none;margin-top:0
+      max-height:0;transition:max-height 0.25s ease;z-index:99;border:none;box-shadow:none;margin-top:0
     }
-    /* open state gets border/shadow */
     .shop-menu.open{max-height:500px;border:1px solid var(--line);box-shadow:0 10px 20px rgba(0,0,0,.08);margin-top:8px}
     .shop-menu ul{margin:0;padding:6px 0;list-style:none}
     .shop-menu li{padding:11px 14px;cursor:pointer;border-bottom:1px solid #f3f5f8;font-size:14px;color:#0f172a;background:#fff}
@@ -204,8 +197,8 @@
   <!-- ===== HEADER ===== -->
   <div class="header">
     <a class="logo-link" href="#" id="homeLink" title="A2Z Dorkary">
-      <!-- IMPORTANT: use absolute path; add ?v=2 on redeploy to break cache -->
-      <img class="brand-img" src="/assets/brand/a2z-logo.png?v=2" alt="A2Z Dorkary logo" decoding="async" fetchpriority="high">
+      <!-- root-based path -->
+      <img class="brand-img" src="/a2zdorkary-logo.png?v=3" alt="A2Z Dorkary logo" style="height:50px;">
     </a>
 
     <!-- Select Your Shop -->
@@ -314,7 +307,7 @@
     </section>
   </main>
 
-  <!-- ===== PAGE: Ask to select a shop (initial blank home) ===== -->
+  <!-- ===== PAGE: Ask to select a shop ===== -->
   <main id="selectShopPage" class="page show">
     <section class="nf-wrap">
       <div class="nf-card">
@@ -520,7 +513,7 @@
         'https://www.shutterstock.com/image-vector/ecommerce-website-banner-template-presents-260nw-2252124451.jpg',
         'https://static.vecteezy.com/system/resources/previews/002/006/774/non_2x/paper-art-shopping-online-on-smartphone-and-new-buy-sale-promotion-backgroud-for-banner-market-ecommerce-free-vector.jpg'
       ];
-      const track=qs('#hbTrack'); 
+      const track=qs('#hbTrack');
       imgs.forEach(src=>{
         const a=document.createElement('a'); a.className='hb-slide'; a.href='#'; a.innerHTML=`<img src="${src}" alt="">`; track.appendChild(a);
       });
