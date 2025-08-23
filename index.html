@@ -6,7 +6,6 @@
   <title>A2Z Dorkary – Shops + Home + Auth</title>
 
   <!-- FAVICONS (TAB ICON) -->
-  <!-- absolute root paths + cache-busting -->
   <link rel="icon" href="/favicon.ico?v=4" sizes="any">
   <link rel="shortcut icon" href="/favicon.ico?v=4" type="image/x-icon">
   <link rel="apple-touch-icon" href="/a2zdorkary-logo.png?v=4">
@@ -37,7 +36,6 @@
     }
     .shop-btn .fa-chevron-down{font-size:12px;color:#2c3e50}
 
-    /* shutter line removed (closed state) */
     .shop-menu{
       position:absolute;left:0;top:100%;min-width:260px;background:#fff;border-radius:12px;overflow:hidden;
       max-height:0;transition:max-height 0.25s ease;z-index:99;border:none;box-shadow:none;margin-top:0
@@ -90,7 +88,7 @@
     .breadcrumbs a{color:#0b66ff;text-decoration:none}
     .breadcrumbs .sep{color:#c7cbd4}
 
-    /* ===== Banners ===== */
+    /* ===== Banners (shared styles) ===== */
     .hb-wrap{padding:16px}
     .hb-grid{display:grid;gap:14px;grid-template-columns:2fr 1fr;grid-template-rows:auto auto;align-items:stretch}
     .hb-slider{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:#fff;height:300px;grid-row:1/3;grid-column:1/2}
@@ -111,7 +109,7 @@
       .searchbar{width:calc(100% - 2cm);}
     }
 
-    /* ===== Featured Category ===== */
+    /* ===== Featured Category (shared) ===== */
     .fc-wrap{padding:8px 16px 28px}
     .fc-head{text-align:center;margin:4px 0 16px}
     .fc-title{font-weight:800;font-size:20px;color:#0a1220;margin-bottom:6px}
@@ -210,10 +208,11 @@
       <div class="shop-menu" id="shopMenu" role="menu" aria-label="Shop list">
         <ul>
           <li data-value="Computer Accessories Shop">Computer Accessories Shop</li>
-          <li data-value="Electrical & Electronics Shop">Electrical & Electronics Shop</li>
+          <li data-value="Electronics Shop">Electronics Shop</li>
+          <li data-value="Electrical Shop">Electrical Shop</li>
           <li data-value="Clothing Shop">Clothing Shop</li>
           <li data-value="Jewellery Shop">Jewellery Shop</li>
-          <li data-value="Grocery Shop">Grocery Shop</li>
+          <li data-value="G Grocery Shop">Grocery Shop</li>
           <li data-value="Others">Others</li>
         </ul>
       </div>
@@ -242,26 +241,7 @@
   <!-- ===== Quick Menu Bar ===== -->
   <div class="top-row hidden" id="quickBar">
     <a href="#" id="navHome" class="home-icon" title="Home"><i class="fa fa-house"></i></a>
-    <nav class="quick-menu" aria-label="Quick categories">
-      <a href="#">Desktop</a><span class="sep">|</span>
-      <a href="#">Laptop</a><span class="sep">|</span>
-      <a href="#">Component</a><span class="sep">|</span>
-      <a href="#">Monitor</a><span class="sep">|</span>
-      <a href="#">Power</a><span class="sep">|</span>
-      <a href="#">Phone</a><span class="sep">|</span>
-      <a href="#">Tablet</a><span class="sep">|</span>
-      <a href="#">Office Equipment</a><span class="sep">|</span>
-      <a href="#">Camera</a><span class="sep">|</span>
-      <a href="#">Security</a><span class="sep">|</span>
-      <a href="#">Networking</a><span class="sep">|</span>
-      <a href="#">Software</a><span class="sep">|</span>
-      <a href="#">Server &amp; Storage</a><span class="sep">|</span>
-      <a href="#">Accessories</a><span class="sep">|</span>
-      <a href="#">Gadget</a><span class="sep">|</span>
-      <a href="#">Gaming</a><span class="sep">|</span>
-      <a href="#">TV</a><span class="sep">|</span>
-      <a href="#">Appliance</a>
-    </nav>
+    <nav class="quick-menu" id="quickMenu" aria-label="Quick categories"></nav>
   </div>
 
   <!-- ===== PAGE: Home (for Computer Accessories Shop only) ===== -->
@@ -303,6 +283,139 @@
         <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><path d="M4 8h16v8H4zM8 12a4 4 0 1 0 8 0 4 4 0 1 0-8 0zM18 7l2-2"/></svg></span><span class="fc-ttl">Portable WiFi Camera</span></a>
         <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><path d="M9 3h6l2 4H7l2-4zM8 7h10v12a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V7z"/></svg></span><span class="fc-ttl">Trimmer</span></a>
         <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><path d="M9 5h6l1 3H8l1-3zM7 8h10v8H7zM8 19h8"/></svg></span><span class="fc-ttl">Smart Watch</span></a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== PAGE: Electronics (ONLY when Electronics Shop selected) ===== -->
+  <main id="electronicsPage" class="page">
+    <section class="hb-wrap">
+      <div class="hb-grid">
+        <div class="hb-slider" id="ebSlider">
+          <div class="hb-track" id="ebTrack"></div>
+          <button class="hb-arrow hb-prev" id="ebPrev" aria-label="Previous"><i class="fa fa-chevron-left"></i></button>
+          <button class="hb-arrow hb-next" id="ebNext" aria-label="Next"><i class="fa fa-chevron-right"></i></button>
+        </div>
+        <a class="hb-side hb-top" href="#"><img id="ebRightTop" src="https://t4.ftcdn.net/jpg/06/40/64/53/360_F_640645306_ADDT2XPJVYKhd1tIkqZF2vK1MZX4aSb3.jpg" alt=""></a>
+        <a class="hb-side hb-bottom" href="#"><img id="ebRightBottom" src="https://www.startech.com.bd/image/catalog/home/job-career-2024.webp" alt=""></a>
+      </div>
+    </section>
+
+    <section class="fc-wrap">
+      <div class="fc-head">
+        <div class="fc-title">Featured Category</div>
+        <div class="fc-sub">Get Your Desired Product from Featured Category!</div>
+      </div>
+
+      <div class="fc-grid">
+        <!-- row-1 -->
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2"/><path d="M6 10h12M9 8v2M9 12v3"/></svg>
+        </span><span class="fc-ttl">Refrigerator</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M8 6h2M12 6h2"/></svg>
+        </span><span class="fc-ttl">Washing Machine</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="6" rx="2"/><path d="M6 16c1 1 2 1 3 0m3 0c1 1 2 1 3 0"/></svg>
+        </span><span class="fc-ttl">Air Conditioner</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><rect x="6" y="9" width="8" height="6"/><circle cx="17" cy="12" r="1"/></svg>
+        </span><span class="fc-ttl">Microwave Oven</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><rect x="7" y="9" width="10" height="6"/><path d="M8 7h1m2 0h1m2 0h1"/></svg>
+        </span><span class="fc-ttl">Electric Oven</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M6 15h12v4H6z"/><path d="M8 15V7h8v8M10 7V5h4v2"/></svg>
+        </span><span class="fc-ttl">Kitchen Appliances</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M8 5h8l-1 6a4 4 0 0 1-6 0L8 5z"/><path d="M10 17h4v2h-4z"/></svg>
+        </span><span class="fc-ttl">Blender & Mixer</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="5" y="8" width="14" height="9" rx="2"/><path d="M7 8V6h10v2M9 12h6"/></svg>
+        </span><span class="fc-ttl">Rice Cooker</span></a>
+
+        <!-- row-2 -->
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M8 7h6a3 3 0 0 1 3 3v7H8z"/><path d="M17 10h2a2 2 0 0 1 0 4h-2"/></svg>
+        </span><span class="fc-ttl">Electric Kettle</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="5" y="9" width="14" height="8" rx="2"/><rect x="8" y="6" width="8" height="3" rx="1"/></svg>
+        </span><span class="fc-ttl">Toaster</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M12 4a4 4 0 0 1 4 4l-2 2M12 20a4 4 0 0 1-4-4l2-2M4 12a4 4 0 0 1 4-4l2 2M20 12a4 4 0 0 1-4 4l-2-2"/></svg>
+        </span><span class="fc-ttl">Fan</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="7" y="4" width="10" height="16" rx="2"/><path d="M9 8h6M9 12h6M9 16h6"/></svg>
+        </span><span class="fc-ttl">Air Cooler</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M12 7v4m0 4v3"/></svg>
+        </span><span class="fc-ttl">Geyser</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M7 5h10v6a5 5 0 0 1-10 0z"/><path d="M10 16l2 5 2-5"/></svg>
+        </span><span class="fc-ttl">Water Purifier</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M8 20h8"/></svg>
+        </span><span class="fc-ttl">Television</span></a>
+
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M6 16a4 4 0 0 1 4-4h5a3 3 0 0 1 3 3v3"/><circle cx="17" cy="19" r="2"/><circle cx="8" cy="19" r="2"/></svg>
+        </span><span class="fc-ttl">Vacuum Cleaner</span></a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== PAGE: Electrical (NEW: opens when Electrical Shop selected) ===== -->
+  <main id="electricalPage" class="page">
+    <section class="hb-wrap">
+      <div class="hb-grid">
+        <div class="hb-slider" id="elbSlider">
+          <div class="hb-track" id="elbTrack"></div>
+          <button class="hb-arrow hb-prev" id="elbPrev" aria-label="Previous"><i class="fa fa-chevron-left"></i></button>
+          <button class="hb-arrow hb-next" id="elbNext" aria-label="Next"><i class="fa fa-chevron-right"></i></button>
+        </div>
+        <a class="hb-side hb-top" href="#"><img id="elbRightTop" src="https://thumbs.dreamstime.com/b/electricity-vector-trendy-banner-design-concept-modern-style-thin-line-art-icons-gradient-colors-background-94155076.jpg" alt=""></a>
+        <a class="hb-side hb-bottom" href="#"><img id="elbRightBottom" src="https://www.analyticssteps.com/backend/media/thumbnail/9482926/9257193_1645528940_Electrical%20EnergyArtboard%201%20(1).jpg" alt=""></a>
+      </div>
+    </section>
+
+    <section class="fc-wrap">
+      <div class="fc-head">
+        <div class="fc-title">Featured Category</div>
+        <div class="fc-sub">Get Your Desired Product from Featured Category!</div>
+      </div>
+
+      <div class="fc-grid">
+        <!-- Row 1 -->
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><path d="M4 7h16v10H4zM8 7v10M16 7v10"/></svg></span><span class="fc-ttl">Wiring & Installation</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M10 8h4v4h-4z"/></svg></span><span class="fc-ttl">Switches & Sockets</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><rect x="7" y="4" width="10" height="16" rx="2"/><path d="M9 8h6m-6 4h6"/></svg></span><span class="fc-ttl">Circuit Protection & Control</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M2 12h3M19 12h3"/></svg></span><span class="fc-ttl">Advanced Lighting</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><path d="M6 7h12v6H6z"/><path d="M9 13v4h6v-4"/></svg></span><span class="fc-ttl">Power & Energy</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="2"/><path d="M8 8h8v8H8z"/></svg></span><span class="fc-ttl">Switchgear & Protection</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><path d="M5 16h14M7 8h10l2 4H5z"/></svg></span><span class="fc-ttl">Industrial Electrical Items</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><path d="M8 7h8v10H8z"/><path d="M6 17h12"/></svg></span><span class="fc-ttl">Home Electrical Essentials</span></a>
+        <!-- Row 2 -->
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M4 12h5M15 12h5"/></svg></span><span class="fc-ttl">Measurement & Testing</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><path d="M6 8h12v6H6z"/><path d="M10 14v4h4v-4"/></svg></span><span class="fc-ttl">Power & Backup</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><rect x="6" y="7" width="12" height="10" rx="2"/><path d="M8 9h8M8 13h8"/></svg></span><span class="fc-ttl">Panel & Control Accessories</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 17H3m18 0h-2"/></svg></span><span class="fc-ttl">Industrial Plug & Socket</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="6" rx="1"/><path d="M7 10v10m10-10v10"/></svg></span><span class="fc-ttl">Conduit & Accessories</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><path d="M9 4h6l-1 5H10z"/><path d="M8 9h8v8H8z"/></svg></span><span class="fc-ttl">Changeover & Isolator</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="2"/><circle cx="15" cy="12" r="2"/><path d="M11 12h2M6 6h12"/></svg></span><span class="fc-ttl">Contactor & Relay</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico"><svg viewBox="0 0 24 24"><rect x="7" y="5" width="10" height="14" rx="2"/><path d="M9 9h6"/></svg></span><span class="fc-ttl">Panel Meter & CT</span></a>
       </div>
     </section>
   </main>
@@ -349,7 +462,7 @@
     </section>
   </main>
 
-  <!-- ===== PAGE: Ongoing per shop ===== -->
+  <!-- ===== PAGE: Ongoing (for other shops) ===== -->
   <main id="ongoingPage" class="page">
     <div class="breadcrumbs"><a href="#" class="crumbHome" title="Home"><i class="fa fa-house"></i></a> <span class="sep">/</span> <span id="ongoingCrumb">Shop</span></div>
     <section class="nf-wrap">
@@ -384,7 +497,7 @@
           <div class="f-title">SUPPORT</div>
           <div class="support-card">
             <div class="dot"><i class="fa-solid fa-phone"></i></div>
-            <div><div class="t1">9 AM – 8 PM</div><div class="t2">16793</div></div>
+            <div><div class="t1">9 AM – 8 PM</div><div class="t2">09639151489</div></div>
           </div>
         </div>
         <div>
@@ -406,7 +519,7 @@
         <div>
           <div class="f-title">STAY CONNECTED</div>
           <div class="company">A2Z Dorkary</div>
-          <div class="addr">Head Office: Puraton Thana Para, Kurigram Sadar, Kurigram – 5600</div>
+          <div class="addr">Puraton Thana Para, Kurigram Sadar, Kurigram – 5600</div>
           <div class="contact-row">Email: <a href="mailto:a2zdorkary@gmail.com">a2zdorkary@gmail.com</a></div>
           <div class="socials">
             <a class="soc" href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
@@ -431,17 +544,74 @@
     const pages={
       selectFirst:qs('#selectShopPage'),
       home:qs('#homePage'),
+      electronics:qs('#electronicsPage'),
+      electrical:qs('#electricalPage'),
       login:qs('#loginPage'),
       register:qs('#registerPage'),
       ongoing:qs('#ongoingPage')
     };
     const quickBar=qs('#quickBar');
+    const quickMenu=qs('#quickMenu');
     const currentShopLabel=qs('#currentShopLabel');
 
     /* Persistence keys */
     const LS_KEYS={ shop:'a2z_current_shop', page:'a2z_last_page' };
     const READY_SHOP='Computer Accessories Shop';
+    const ELECTRONICS_SHOP='Electronics Shop';
+    const ELECTRICAL_SHOP='Electrical Shop';
     let currentShop=null;
+
+    /* QUICK MENUS (shop-wise) */
+    const MENUS={
+      /* REPLACED as requested (Computer shop menu -> Electrical list) */
+      [READY_SHOP]: [
+        "Wiring & Installation",
+        "Switches & Sockets",
+        "Circuit Protection & Control",
+        "Advanced Lighting",
+        "Power & Energy",
+        "Switchgear & Protection",
+        "Industrial Electrical Items",
+        "Home Electrical Essentials",
+        "Measurement & Testing",
+        "Power & Backup"
+      ],
+      [ELECTRONICS_SHOP]: [
+        "Refrigerator","Washing Machine","Air Condition","Microwave Oven",
+        "Electric Oven","Kitchen Appliances","Blender & Mixer","Rice Cooker",
+        "Electric Kettle","Toaster","Fan","Air Cooler",
+        "Geyser","Water Purifier"
+      ],
+      [ELECTRICAL_SHOP]: [
+        "Wiring & Installation",
+        "Switches & Sockets",
+        "Circuit Protection & Control",
+        "Advanced Lighting",
+        "Power & Energy",
+        "Switchgear & Protection",
+        "Industrial Electrical Items",
+        "Home Electrical Essentials",
+        "Measurement & Testing",
+        "Power & Backup"
+      ]
+    };
+
+    function renderQuickMenu(forShop){
+      const items = MENUS[forShop] || [];
+      quickMenu.innerHTML='';
+      if(!items.length) return;
+      items.forEach((txt,idx)=>{
+        const a=document.createElement('a');
+        a.href='#'; a.textContent=txt;
+        a.addEventListener('click',e=>e.preventDefault());
+        quickMenu.appendChild(a);
+        if(idx!==items.length-1){
+          const sep=document.createElement('span');
+          sep.className='sep'; sep.textContent='|';
+          quickMenu.appendChild(sep);
+        }
+      });
+    }
 
     function showPage(key){
       Object.values(pages).forEach(p=>p.classList.remove('show'));
@@ -453,7 +623,15 @@
     function setCurrentShop(name, showMenuBar){
       currentShop=name;
       currentShopLabel.textContent = name ?? 'Select Your Shop';
-      if(showMenuBar) quickBar.classList.remove('hidden'); else quickBar.classList.add('hidden');
+
+      // Render menu if needed
+      if(showMenuBar){
+        renderQuickMenu(name);
+        quickBar.classList.remove('hidden');
+      }else{
+        quickBar.classList.add('hidden');
+      }
+
       try{
         if(name) localStorage.setItem(LS_KEYS.shop,name);
         else{
@@ -464,7 +642,7 @@
     }
 
     function updateOngoingTexts(){
-      if(currentShop && currentShop!==READY_SHOP){
+      if(currentShop && ![READY_SHOP,ELECTRONICS_SHOP,ELECTRICAL_SHOP].includes(currentShop)){
         qs('#ongoingTitle').textContent=currentShop;
         qs('#ongoingCrumb').textContent=currentShop;
         qs('#ongoingText').textContent=`The work on The ${currentShop} is ongoing.`;
@@ -475,6 +653,12 @@
       if(currentShop===READY_SHOP){
         setCurrentShop(currentShop,true);
         showPage('home');
+      }else if(currentShop===ELECTRONICS_SHOP){
+        setCurrentShop(currentShop,true);
+        showPage('electronics');
+      }else if(currentShop===ELECTRICAL_SHOP){
+        setCurrentShop(currentShop,true);
+        showPage('electrical');
       }else if(currentShop){
         setCurrentShop(currentShop,false);
         updateOngoingTexts();
@@ -499,14 +683,22 @@
     qs('#drawerClose').addEventListener('click',closeDrawer); overlay.addEventListener('click',closeDrawer);
     qs('#viewCartFromDrawer').addEventListener('click',()=>{ closeDrawer(); });
 
-    // Search – noop
-    qs("#searchBtn").addEventListener("click",(e)=>{ e.preventDefault(); });
-    qs("#searchBox").addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ e.preventDefault(); }});
+    /* ===== Search: responsive + Enter works ===== */
+    const searchInput=qs("#searchBox");
+    const searchBtn=qs("#searchBtn");
+    function handleSearch(e){
+      if(e) e.preventDefault();
+      // Keep user inside the app; route to current shop page.
+      routeToHomeLike();
+      // You can plug real search here later; for now prevent navigation.
+    }
+    searchBtn.addEventListener("click", handleSearch);
+    searchInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ handleSearch(e); }});
 
     // Prevent featured links jump
     qsa('.fc-item').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
 
-    // Banner slider fill
+    // ---- HOME banner slider fill (Computer Accessories) ----
     (function(){
       const imgs=[
         'https://img.pikbest.com/origin/10/01/82/867pIkbEsTAIq.png!sw800',
@@ -520,8 +712,41 @@
       qs('#hbRightTop img').src='https://www.startech.com.bd/image/catalog/home/job-career-2024.webp';
       qs('#hbRightBottom img').src='https://t4.ftcdn.net/jpg/06/40/64/53/360_F_640645306_ADDT2XPJVYKhd1tIkqZF2vK1MZX4aSb3.jpg';
 
-      const slider=qs('#hbSlider'),prev=qs('#hbPrev'),next=qs('#hbNext');
-      const total=imgs.length; let idx=0, timer=null;
+      makeSlider('#hbSlider','#hbTrack','#hbPrev','#hbNext');
+    })();
+
+    // ---- ELECTRONICS banner slider ----
+    (function(){
+      const imgs=[
+        'https://static.vecteezy.com/system/resources/previews/004/617/319/non_2x/electronics-word-concepts-banner-manufacture-maintenance-and-repair-of-household-appliances-presentation-website-isolated-lettering-typography-idea-with-linear-icons-outline-illustration-vector.jpg',
+        'https://rahulgupta16102000.github.io/electronic-shop/banner1.png',
+        'https://www.shutterstock.com/image-vector/super-sale-header-banner-design-260nw-1663164736.jpg'
+      ];
+      const track=qs('#ebTrack');
+      imgs.forEach(src=>{
+        const a=document.createElement('a'); a.className='hb-slide'; a.href='#'; a.innerHTML=`<img src="${src}" alt="">`; track.appendChild(a);
+      });
+      makeSlider('#ebSlider','#ebTrack','#ebPrev','#ebNext');
+    })();
+
+    // ---- ELECTRICAL banner slider ----
+    (function(){
+      const imgs=[
+        'https://t3.ftcdn.net/jpg/05/02/40/48/360_F_502404890_p9fpgpN1fRUtEobvUX5bmYSSTBZt2Ahu.jpg',
+        'https://static.vecteezy.com/system/resources/previews/002/236/389/non_2x/electricity-banner-vector.jpg',
+        'https://media.istockphoto.com/id/1372908005/vector/team-of-construction-workers-with-wind-turbines-and-solar-panels.jpg?s=612x612&w=0&k=20&c=k9ZP6YvPKo0t6KTSnngltckGxJPt0gq96n-j-tEMrN0='
+      ];
+      const track=qs('#elbTrack');
+      imgs.forEach(src=>{
+        const a=document.createElement('a'); a.className='hb-slide'; a.href='#'; a.innerHTML=`<img src="${src}" alt="">`; track.appendChild(a);
+      });
+      makeSlider('#elbSlider','#elbTrack','#elbPrev','#elbNext');
+    })();
+
+    // Generic slider builder
+    function makeSlider(sliderSel, trackSel, prevSel, nextSel){
+      const slider=qs(sliderSel), track=qs(trackSel), prev=qs(prevSel), next=qs(nextSel);
+      const total = track.children.length; let idx=0, timer=null;
       function go(i){ idx=(i+total)%total; track.style.transform=`translateX(-${idx*100}%)`; }
       function start(){ stop(); timer=setInterval(()=>go(idx+1),3000); }
       function stop(){ if(timer){clearInterval(timer); timer=null;} }
@@ -530,7 +755,7 @@
       slider.addEventListener('mouseenter',stop);
       slider.addEventListener('mouseleave',start);
       go(0); start();
-    })();
+    }
 
     /* ===== Shop dropdown ===== */
     const shopWrap=qs('#shopWrap'),shopBtn=qs('#shopBtn'),shopMenu=qs('#shopMenu');
@@ -549,6 +774,13 @@
       if(name===READY_SHOP){
         setCurrentShop(name,true);
         showPage('home');
+      }else if(name===ELECTRONICS_SHOP){
+        setCurrentShop(name,true);
+        showPage('electronics');
+      }else if(name===ELECTRICAL_SHOP){
+        // OPEN ELECTRICAL SHOP PAGE
+        setCurrentShop(name,true);
+        showPage('electrical');
       }else{
         setCurrentShop(name,false);
         updateOngoingTexts();
@@ -592,18 +824,20 @@
       if(savedShop){
         currentShop = savedShop;
         const isReady = savedShop===READY_SHOP;
-        setCurrentShop(savedShop, isReady);
+        const isElectronics = savedShop===ELECTRONICS_SHOP;
+        const isElectrical = savedShop===ELECTRICAL_SHOP;
+
+        setCurrentShop(savedShop, isReady || isElectronics || isElectrical);
 
         if(!savedPage || !pages[savedPage]){
           routeToHomeLike();
           return;
         }
-        if(!isReady && savedPage==='home'){
-          updateOngoingTexts();
-          showPage('ongoing');
-          return;
-        }
-        if(!isReady) updateOngoingTexts();
+        if(isElectronics && savedPage==='home'){ showPage('electronics'); return; }
+        if(isElectrical && savedPage==='home'){ showPage('electrical'); return; }
+        if(!isReady && !isElectronics && !isElectrical && savedPage==='home'){ updateOngoingTexts(); showPage('ongoing'); return; }
+
+        if(!isReady && !isElectronics && !isElectrical) updateOngoingTexts();
         showPage(savedPage);
       }else{
         setCurrentShop(null,false);
