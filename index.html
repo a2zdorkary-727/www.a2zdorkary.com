@@ -6,14 +6,14 @@
   <title>A2Z Dorkary – Shops + Home + Auth</title>
 
   <!-- FAVICONS (TAB ICON) -->
-  <link rel="icon" href="/a2zdorkary-logo.png?v=3">
-  <link rel="icon" type="image/png" sizes="32x32" href="/a2zdorkary-logo.png?v=3">
-  <link rel="icon" type="image/png" sizes="16x16" href="/a2zdorkary-logo.png?v=3">
-  <link rel="apple-touch-icon" sizes="180x180" href="/a2zdorkary-logo.png?v=3">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="a2zdorkary-logo.png?v=3">
+  <link rel="icon" type="image/png" sizes="16x16" href="a2zdorkary-logo.png?v=3">
+  <link rel="apple-touch-icon" sizes="180x180" href="a2zdorkary-logo.png?v=3">
   <meta name="theme-color" content="#0b1c27">
 
   <!-- LOGO used inside page -->
-  <link rel="preload" as="image" href="/a2zdorkary-logo.png?v=3">
+  <link rel="preload" as="image" href="a2zdorkary-logo.png?v=3">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -198,7 +198,7 @@
   <div class="header">
     <a class="logo-link" href="#" id="homeLink" title="A2Z Dorkary">
       <!-- root-based path -->
-      <img class="brand-img" src="/a2zdorkary-logo.png?v=3" alt="A2Z Dorkary logo" style="height:50px;">
+      <img class="brand-img" src="a2zdorkary-logo.png?v=3" alt="A2Z Dorkary logo" style="height:50px;">
     </a>
 
     <!-- Select Your Shop -->
@@ -447,7 +447,7 @@
       Object.values(pages).forEach(p=>p.classList.remove('show'));
       pages[key].classList.add('show');
       try{ localStorage.setItem(LS_KEYS.page,key); }catch(_){}
-      window.scrollTo({top:0,behavior:'instant'});
+      window.scrollTo({top:0,behavior:'auto'});
     }
 
     function setCurrentShop(name, showMenuBar){
