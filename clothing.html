@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>A2Z Dorkary – Clothing Shop</title>
+
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root{ --primary:#0b66ff; --primary-dark:#084dc9; --navy-deep:#0b1c27; --line:#e6e6e6; --muted:#667085; --card:#fff; }
+    *{box-sizing:border-box}
+    html,body{margin:0;overflow-x:hidden}
+    body{font-family:Arial,Helvetica,sans-serif;background:#f5f6f8;color:#111}
+
+    /* ===== Header ===== */
+    .header{display:flex;align-items:center;gap:18px;padding:12px 20px;background:var(--navy-deep);border-bottom:1px solid #0a1620;position:sticky;top:0;z-index:100}
+    .logo-link{display:flex;align-items:center;gap:10px;text-decoration:none;margin-left:45px}
+    .brand-img{height:60px;width:60px;display:block;object-fit:contain}
+
+    /* Select Your Shop */
+    .shop-wrap{position:relative;flex:0 0 auto;margin-left:1cm}
+    .shop-btn{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);color:#0f172a;padding:10px 14px;border-radius:10px;cursor:pointer;user-select:none;font-size:14px;width:8cm;min-width:4cm;max-width:6.5cm;justify-content:space-between}
+    .shop-btn .fa-chevron-down{font-size:12px;color:#2c3e50}
+    .shop-menu{position:absolute;left:0;top:100%;min-width:260px;background:#fff;border-radius:12px;overflow:hidden;max-height:0;transition:max-height .25s ease;z-index:99;border:none;box-shadow:none;margin-top:0}
+    .shop-menu.open{max-height:500px;border:1px solid var(--line);box-shadow:0 10px 20px rgba(0,0,0,.08);margin-top:8px}
+    .shop-menu ul{margin:0;padding:6px 0;list-style:none}
+    .shop-menu li{padding:11px 14px;cursor:pointer;border-bottom:1px solid #f3f5f8;font-size:14px;color:#0f172a;background:#fff}
+    .shop-menu li:last-child{border-bottom:none}
+    .shop-menu li:hover{background:#f1f6ff;color:var(--primary)}
+    .shop-menu a{color:inherit;text-decoration:none;display:block}
+
+    /* Search & toolbar */
+    .search-wrap{flex:1;display:flex;justify-content:center}
+    .searchbar{display:flex;align-items:center;width:calc(100% - 3cm);max-width:720px;border:1px solid var(--line);overflow:hidden;background:#fff;border-radius:6px}
+    .search-inner{display:flex;align-items:center;gap:10px;flex:1;padding:0 10px}
+    .search-inner .fa-magnifying-glass{color:var(--primary);font-size:18px}
+    .search-input{flex:1;border:none;outline:none;font-size:14px;padding:10px 0;color:#0f172a}
+    .search-input::placeholder{color:#8a97ac}
+    .search-btn{background:var(--primary);color:#fff;border:none;height:100%;padding:10px 22px;font-weight:800;cursor:pointer;border-left:1px solid #f0efe9}
+    .search-btn:hover{background:var(--primary-dark)}
+    .toolbar{display:flex;align-items:center;gap:22px}
+    .account{display:flex;align-items:center;gap:8px;color:#e7ecf5;text-decoration:none;white-space:nowrap}
+    .account .fa-user{font-size:20px;color:#dfe7ff}
+    .account .mini{font-size:11px;color:#a8b5cc;display:block;line-height:1}
+    .account .title{font-size:14px;font-weight:700;line-height:1.1;color:#fff}
+    .icon-btn{position:relative;text-decoration:none;color:#fff;display:flex;align-items:center;border:none;background:transparent;cursor:pointer}
+    .icon-btn i{font-size:20px}
+    .badge{position:absolute;top:-8px;right:-10px;min-width:18px;height:18px;padding:0 6px;border-radius:999px;background:linear-gradient(135deg,#2a6bff,#0b66ff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;border:2px solid #fff;box-shadow:0 2px 6px rgba(11,102,255,.35)}
+    .cart-total{font-size:13px;color:#dbe7ff;white-space:nowrap}
+    .cart-total strong{font-weight:800;color:#fff}
+
+    /* ===== Quick Menu Bar ===== */
+    .top-row{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#fff;border-bottom:1px solid #e6e6e6}
+    .home-icon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:#0b66ff10;border:1px solid #e6e6e6;flex:0 0 auto}
+    .home-icon i{font-size:13px;color:#0b66ff}
+    .quick-menu{display:flex;align-items:center;gap:4px;flex:1;flex-wrap:nowrap;min-width:0;overflow:hidden;white-space:nowrap}
+    .quick-menu a{display:inline-block;text-decoration:none;color:#1e293b;font-weight:600;font-size:clamp(9px,0.95vw,12px);padding:1px 4px;border-radius:4px;line-height:1.2}
+    .quick-menu a:hover{color:#0b66ff;background:#eef4ff}
+    .quick-menu .sep{color:#c7cbd4;flex:0 0 auto;font-size:clamp(9px,0.95vw,12px);}
+
+    /* ===== Banners ===== */
+    .hb-wrap{padding:16px}
+    .hb-grid{display:grid;gap:14px;grid-template-columns:2fr 1fr;grid-template-rows:auto auto;align-items:stretch}
+    .hb-slider{position:relative;overflow:hidden;border-radius:12px;border:1px solid var(--line);background:#fff;height:300px;grid-row:1/3;grid-column:1/2}
+    .hb-track{display:flex;height:100%;transition:transform 600ms ease}
+    .hb-slide{flex:0 0 100%;height:100%}
+    .hb-slide img{width:100%;height:100%;object-fit:cover;display:block}
+    .hb-arrow{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:999px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;background:rgba(0,0,0,.35);color:#fff;z-index:2}
+    .hb-arrow:hover{background:rgba(0,0,0,.55)}
+    .hb-prev{left:10px}.hb-next{right:10px}
+    .hb-side{display:block;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#fff}
+    .hb-side img{width:100%;height:100%;object-fit:cover;display:block}
+    .hb-top{grid-column:2/3;grid-row:1/2;height:144px}
+    .hb-bottom{grid-column:2/3;grid-row:2/3;height:144px}
+    @media(max-width:900px){.hb-grid{grid-template-columns:1fr;grid-template-rows:auto auto auto}
+      .hb-slider{grid-row:auto;grid-column:auto;height:240px}
+      .hb-top,.hb-bottom{height:120px}
+      .searchbar{width:calc(100% - 2cm);}
+    }
+
+    /* ===== Featured Category ===== */
+    .fc-wrap{padding:8px 16px 28px}
+    .fc-head{text-align:center;margin:4px 0 16px}
+    .fc-title{font-weight:800;font-size:20px;color:#0a1220;margin-bottom:6px}
+    .fc-sub{color:var(--muted);font-size:13px}
+    .fc-grid{display:grid;gap:14px;grid-template-columns:repeat(8,minmax(0,1fr))}
+    .fc-item{text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 12px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;min-height:122px;justify-content:center;transition:box-shadow .2s,transform .1s}
+    .fc-item:hover{box-shadow:0 10px 26px rgba(16,24,40,.10);transform:translateY(-1px)}
+    .fc-ico{width:56px;height:56px;border:1px solid #e9edf3;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#f8fafc}
+    .fc-ico svg{width:26px;height:26px;stroke:#344256;stroke-width:1.6;fill:none;transition:stroke .15s}
+    .fc-ttl{font-weight:700;color:#223046;font-size:13px;text-align:center;transition:color .15s}
+    .fc-item:hover .fc-ttl{color:var(--primary)}
+    .fc-item:hover .fc-ico svg{stroke:var(--primary)}
+    @media (max-width:1200px){.fc-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    @media (max-width:640px){.fc-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fc-ttl{font-size:12px}.fc-item{min-height:110px}}
+
+    /* Drawer */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.25);display:none;z-index:120}
+    .overlay.show{display:block}
+    .drawer{position:fixed;top:0;right:0;width:380px;max-width:90vw;height:100vh;background:#fff;border-left:1px solid #e5e5e5;box-shadow:0 14px 34px rgba(0,0,0,.14);transform:translateX(100%);transition:transform .35s;z-index:130;display:flex;flex-direction:column}
+    .drawer.open{transform:translateX(0)}
+    .drawer-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid #eef2f7;background:#f8fafc;font-weight:700}
+    .drawer-body{padding:10px 14px;overflow:auto}
+    .drawer-spacer{height:4cm}
+    .drawer-footer{border-top:1px solid #eef2f7;padding:14px;background:#fff}
+    .subtotal{font-weight:800;text-align:center;margin-bottom:10px}
+    .view-cart-btn{width:100%;background:#000;color:#fff;border:none;padding:12px 14px;border-radius:4px;font-weight:700;cursor:pointer}
+
+    /* Footer */
+    .footer{background:var(--navy-deep);color:#c7d1df;margin-top:24px}
+    .footer-inner{max-width:1200px;margin:0 auto;padding:34px 20px 18px}
+    .f-grid{display:grid;grid-template-columns:1.2fr 1fr 1.2fr;gap:28px}
+    .f-title{letter-spacing:.2em;color:#e9f0ff;font-weight:800;margin-bottom:16px;font-size:12px}
+    .support-card{display:flex;align-items:center;gap:12px;background:#0f2a3d;border:1px solid #0a2233;color:#e8f1ff;border-radius:999px;padding:12px 16px;max-width:360px}
+    .support-card .dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#102c40;border:1px solid #0b2030}
+    .support-card .dot i{font-size:16px;color:#6bd0ff}
+    .support-card .t1{font-size:10px;opacity:.8}
+    .support-card .t2{font-size:16px;font-weight:800;color:#ff7a57}
+    .f-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 28px}
+    .f-links a{color:#c7d1df;text-decoration:none;font-size:14px}
+    .f-links a:hover{color:#fff}
+    .company{color:#fff;font-weight:700;margin-bottom:10px}
+    .addr{color:#c7d1df;font-size:14px;line-height:1.6}
+    .contact-row{margin-top:10px}
+    .contact-row a{color:#ff6a3d;text-decoration:none}
+    .socials{margin-top:14px;display:flex;gap:10px}
+    .soc{width:36px;height:36px;border-radius:999px;background:#0f2a3d;border:1px solid #0a2233;display:flex;align-items:center;justify-content:center;color:#cfe7ff;text-decoration:none}
+    .soc:hover{color:#fff}
+    .f-bottom{border-top:1px solid #0f2a36;margin-top:22px;padding-top:12px;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:#aeb9c8}
+    .powered{opacity:.9}
+    @media (max-width:900px){.f-grid{grid-template-columns:1fr;margin-bottom:8px}.support-card{max-width:100%}.f-bottom{flex-direction:column;gap:8px}}
+  </style>
+</head>
+
+<body data-shop="Clothing Shop">
+  <!-- ===== HEADER ===== -->
+  <div class="header">
+    <a class="logo-link" href="index.html" title="A2Z Dorkary">
+      <img class="brand-img" src="/a2zdorkary-logo.png" alt="A2Z Dorkary logo" style="height:50px;">
+    </a>
+
+    <!-- Select Your Shop (SHOP DROPDOWN) -->
+    <div class="shop-wrap" id="shopWrap">
+      <button type="button" class="shop-btn" id="shopBtn" aria-haspopup="true" aria-expanded="false">
+        <span id="currentShopLabel">Clothing Shop</span>
+        <i class="fa fa-chevron-down"></i>
+      </button>
+      <div class="shop-menu" id="shopMenu" role="menu" aria-label="Shop list">
+        <ul>
+          <li><a href="computer.html">Computer Accessories Shop</a></li>
+          <li><a href="electronics.html">Electronics Shop</a></li>
+          <li><a href="electrical.html">Electrical Shop</a></li>
+          <li><a href="clothing.html">Clothing Shop</a></li>
+          <li><a href="jewellery.html">Jewellery Shop</a></li>
+          <li><a href="grocery.html">Grocery Shop</a></li>
+          <li><a href="others.html">Others</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <div class="searchbar">
+        <div class="search-inner">
+          <i class="fa fa-magnifying-glass"></i>
+          <input id="searchBox" class="search-input" type="text" placeholder="search product" />
+        </div>
+        <button id="searchBtn" class="search-btn">Search</button>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <a class="account" href="#"><i class="fa fa-user"></i><span><span class="mini">Sign In</span><span class="title">Account</span></span></a>
+      <a class="icon-btn" href="#" title="Wishlist"><i class="fa fa-heart"></i><span id="wishCount" class="badge">0</span></a>
+      <button id="cartBtn" type="button" class="icon-btn" aria-expanded="false" title="Cart">
+        <i class="fa fa-shopping-cart"></i><span id="cartCount" class="badge">0</span>
+      </button>
+      <div class="cart-total">Total<br><strong id="cartTotal">৳0.00</strong></div>
+    </div>
+  </div>
+
+  <!-- ===== Quick Menu Bar ===== -->
+  <div class="top-row" id="quickBar">
+    <a href="clothing.html" class="home-icon" title="Clothing Home"><i class="fa fa-house"></i></a>
+    <nav class="quick-menu" id="quickMenu" aria-label="Quick categories"></nav>
+  </div>
+
+  <!-- ===== PAGE: Clothing ===== -->
+  <main>
+    <section class="hb-wrap">
+      <div class="hb-grid">
+        <div class="hb-slider" id="cbSlider">
+          <div class="hb-track" id="cbTrack"></div>
+          <button class="hb-arrow hb-prev" id="cbPrev" aria-label="Previous"><i class="fa fa-chevron-left"></i></button>
+          <button class="hb-arrow hb-next" id="cbNext" aria-label="Next"><i class="fa fa-chevron-right"></i></button>
+        </div>
+        <!-- RIGHT SIDE BANNERS -->
+        <a class="hb-side hb-top" href="#"><img id="cbRightTop" alt="Clothing banner side 1"></a>
+        <a class="hb-side hb-bottom" href="#"><img id="cbRightBottom" alt="Clothing banner side 2"></a>
+      </div>
+    </section>
+
+    <section class="fc-wrap">
+      <div class="fc-head">
+        <div class="fc-title">Featured Category</div>
+        <div class="fc-sub">Get Your Desired Apparel from Featured Category!</div>
+      </div>
+
+      <div class="fc-grid">
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M7 6l5-2 5 2v12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z"/><path d="M7 6l-3 3"/></svg>
+        </span><span class="fc-ttl">Men</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M12 3l3 5-3 3-3-3 3-5z"/><path d="M7 21h10l-2-8H9z"/></svg>
+        </span><span class="fc-ttl">Women</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="2.5"/><path d="M5 21l2-7h10l2 7z"/></svg>
+        </span><span class="fc-ttl">Kids</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="6" rx="2"/><circle cx="15.5" cy="12" r="1"/></svg>
+        </span><span class="fc-ttl">Accessories</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M3 15h10l6 3H3z"/><path d="M13 15v-2"/></svg>
+        </span><span class="fc-ttl">Footwear</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M8 12h8M12 8v8"/></svg>
+        </span><span class="fc-ttl">Brands</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M12 2v20M4 8l16 8M20 8L4 16"/></svg>
+        </span><span class="fc-ttl">Winter Collection</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v3M12 20v3M3 12h3M18 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg>
+        </span><span class="fc-ttl">Summer Collection</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico>
+          <svg viewBox="0 0 24 24"><path d="M8 4h8l2 4-2 12H8L6 8z"/><path d="M10 8h4"/></svg>
+        </span><span class="fc-ttl">Traditional Wear</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M9 4h6l3 5-3 11H9L6 9z"/></svg>
+        </span><span class="fc-ttl">Western Wear</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M7 6h10l1 4-2 10H8L6 10z"/></svg>
+        </span><span class="fc-ttl">Casual Wear</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><rect x="7" y="4" width="10" height="16" rx="2"/><path d="M9 8h6M9 12h6"/></svg>
+        </span><span class="fc-ttl">Formal Wear</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><path d="M3 21l6-6 12 6"/></svg>
+        </span><span class="fc-ttl">Sportswear</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 8v8M8 12h8"/></svg>
+        </span><span class="fc-ttl">Plus Size</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
+        </span><span class="fc-ttl">New Arrivals</span></a>
+        <a class="fc-item" href="#"><span class="fc-ico">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+        </span><span class="fc-ttl">Sale & Offers</span></a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Drawer ===== -->
+  <div id="overlay" class="overlay"></div>
+  <aside id="drawer" class="drawer" aria-hidden="true">
+    <div class="drawer-header">
+      <span><i class="fa fa-shopping-cart"></i> Cart (<span id="drCount">0</span>)</span>
+      <button id="drawerClose" class="icon-btn" title="Close"><i class="fa fa-times"></i></button>
+    </div>
+    <div id="drBody" class="drawer-body"></div>
+    <div class="drawer-spacer"></div>
+    <div class="drawer-footer">
+      <div class="subtotal">Sub Total: <span id="drSubtotal">Tk 0</span></div>
+      <button class="view-cart-btn" id="viewCartFromDrawer">View Cart</button>
+    </div>
+  </aside>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="f-grid">
+        <div>
+          <div class="f-title">SUPPORT</div>
+          <div class="support-card">
+            <div class="dot"><i class="fa-solid fa-phone"></i></div>
+            <div><div class="t1">9 AM – 8 PM</div><div class="t2">09639151489</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="f-title">ABOUT US</div>
+          <div class="f-links">
+            <a href="#">Affiliate Program</a><a href="#">EMI Terms</a><a href="#">Online Delivery</a>
+            <a href="#">Privacy Policy</a><a href="#">Refund and Return Policy</a><a href="#">Star Point Policy</a>
+            <a href="#">Contact Us</a><a href="#">About Us</a><a href="#">Terms and Conditions</a><a href="#">Career</a><a href="#">Brands</a>
+          </div>
+        </div>
+        <div>
+          <div class="f-title">STAY CONNECTED</div>
+          <div class="company">A2Z Dorkary</div>
+          <div class="addr">Puraton Thana Para, Kurigram Sadar, Kurigram – 5600</div>
+          <div class="contact-row">Email: <a href="mailto:a2zdorkary@gmail.com">a2zdorkary@gmail.com</a></div>
+          <div class="socials">
+            <a class="soc" href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a class="soc" href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+            <a class="soc" href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a class="soc" href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="f-bottom">
+        <div>© 2025 A2Z Dorkary Ltd. | All rights reserved</div>
+        <div class="powered">Powered By: <strong>A2Z Dorkary</strong></div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const qs=(s,r=document)=>r.querySelector(s);
+
+    /* ===== CURRENT SHOP LABEL ===== */
+    (function(){
+      const current = document.body.getAttribute('data-shop') || 'Shop';
+      const labelEl = qs('#currentShopLabel');
+      if(labelEl) labelEl.textContent = current;
+      const map = {
+        'Computer Accessories Shop':'computer.html',
+        'Electronics Shop':'electronics.html',
+        'Electrical Shop':'electrical.html',
+        'Clothing Shop':'clothing.html',
+        'Jewellery Shop':'jewellery.html',
+        'Grocery Shop':'grocery.html',
+        'Others':'others.html'
+      };
+      const home = qs('.home-icon');
+      if(home && map[current]) home.setAttribute('href', map[current]);
+    })();
+
+    // Simple loader (URL ভিত্তিক)
+    function loadImg(el, src){
+      const test=new Image();
+      test.onload=()=>{el.src=src};
+      test.onerror=()=>{el.alt = (el.alt||"image")+" (not found)"};
+      test.src=src;
+    }
+
+    // ---- CLOTHING banner slider: 3 external URLs ----
+    (function(){
+      const urls = [
+        "https://cdn.vectorstock.com/i/500p/66/81/fashion-store-banner-shopping-concept-vector-15036681.jpg",
+        "https://cdn.vectorstock.com/i/1000v/35/05/fashion-clothes-shopping-banner-vector-15003505.jpg",
+        "https://www.shutterstock.com/image-photo/happy-byer-shopping-bags-standing-600nw-1927526819.jpg"
+      ];
+      const track=qs('#cbTrack');
+      urls.forEach((u)=>{
+        const a=document.createElement('a');
+        a.className='hb-slide'; a.href='#';
+        const img=document.createElement('img');
+        img.alt='Clothing banner';
+        a.appendChild(img);
+        track.appendChild(a);
+        loadImg(img, u);
+      });
+      makeSlider('#cbSlider','#cbTrack','#cbPrev','#cbNext');
+    })();
+
+    // ---- RIGHT SIDE BANNERS: 2 external URLs ----
+    loadImg(qs('#cbRightTop'), "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTcbO0T0bIf_9RGskXPngVbIuiQdDsTyLYbRg&s");
+    loadImg(qs('#cbRightBottom'), "https://www.shutterstock.com/image-photo/pretty-blonde-woman-smiling-camera-260nw-1927533401.jpg");
+
+    // Generic slider builder
+    function makeSlider(sliderSel, trackSel, prevSel, nextSel){
+      const slider=qs(sliderSel), track=qs(trackSel), prev=qs(prevSel), next=qs(nextSel);
+      const total = track.children.length; let idx=0, timer=null;
+      function go(i){ idx=(i+total)%total; track.style.transform=`translateX(-${idx*100}%)`; }
+      function start(){ stop(); timer=setInterval(()=>go(idx+1),3200); }
+      function stop(){ if(timer){clearInterval(timer); timer=null;} }
+      prev.addEventListener('click',()=>{go(idx-1); start();});
+      next.addEventListener('click',()=>{go(idx+1); start();});
+      slider.addEventListener('mouseenter',stop);
+      slider.addEventListener('mouseleave',start);
+      go(0); start();
+    }
+
+    // Quick Menu items for CLOTHING
+    (function renderQuickMenu(){
+      const items=[
+        "Men","Women","Kids","Accessories",
+        "Footwear","Brands","Winter Collection","Summer Collection",
+        "Traditional Wear","Western Wear","Casual Wear","Formal Wear",
+        "Sportswear","Plus Size","New Arrivals","Sale & Offers"
+      ];
+      const quickMenu=document.getElementById('quickMenu');
+      quickMenu.innerHTML='';
+      items.forEach((txt,idx)=>{
+        const a=document.createElement('a');
+        a.href='#'; a.textContent=txt;
+        a.addEventListener('click',e=>e.preventDefault());
+        quickMenu.appendChild(a);
+        if(idx!==items.length-1){
+          const sep=document.createElement('span');
+          sep.className='sep'; sep.textContent='|';
+          quickMenu.appendChild(sep);
+        }
+      });
+    })();
+
+    // Prevent featured links from jumping
+    document.querySelectorAll('.fc-item').forEach(a=>a.addEventListener('click',e=>e.preventDefault()));
+
+    // Drawer
+    const overlay=qs('#overlay'),drawer=qs('#drawer'),cartBtn=qs('#cartBtn');
+    function openDrawer(){overlay.classList.add('show');drawer.classList.add('open');document.body.style.overflow='hidden'}
+    function closeDrawer(){overlay.classList.remove('show');drawer.classList.remove('open');document.body.style.overflow=''}
+    cartBtn.addEventListener('click',e=>{e.preventDefault();drawer.classList.contains('open')?closeDrawer():openDrawer();});
+    qs('#drawerClose').addEventListener('click',closeDrawer); overlay.addEventListener('click',closeDrawer);
+    qs('#viewCartFromDrawer').addEventListener('click',()=>{ closeDrawer(); });
+
+    // Search – placeholder
+    qs("#searchBtn").addEventListener("click",(e)=>{ e.preventDefault(); });
+    qs("#searchBox").addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ e.preventDefault(); }});
+
+    // Dropdown open/close
+    const shopWrap=qs('#shopWrap'),shopBtn=qs('#shopBtn'),shopMenu=qs('#shopMenu');
+    function openMenu(){shopBtn.setAttribute('aria-expanded','true');shopMenu.classList.add('open')}
+    function closeMenu(){shopBtn.setAttribute('aria-expanded','false');shopMenu.classList.remove('open')}
+    shopBtn.addEventListener('click',e=>{e.stopPropagation();shopMenu.classList.toggle('open');shopBtn.setAttribute('aria-expanded',shopMenu.classList.contains('open'))});
+    shopWrap.addEventListener('mouseenter',openMenu);
+    shopWrap.addEventListener('mouseleave',closeMenu);
+    document.addEventListener('click',e=>{if(!shopWrap.contains(e.target)) closeMenu()});
+  </script>
+</body>
+</html>
