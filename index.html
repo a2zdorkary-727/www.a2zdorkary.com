@@ -5809,7 +5809,22 @@
     </div>
 </footer>
 <div class="overlay"></div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const toggler = document.getElementById("nav-toggler");
+    const mainNav = document.getElementById("main-nav");
+
+    if(toggler && mainNav) {
+        toggler.addEventListener("click", function() {
+            mainNav.classList.toggle("active");
+        });
+    }
+});
+</script>
+    
 </body></html>
+
 
 
 
