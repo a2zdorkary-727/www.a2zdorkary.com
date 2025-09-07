@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Search Results | A2Z Dorkary</title>
+  <link rel="stylesheet" href="category.min.16.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { margin-bottom: 20px; }
+    #searchResults ul { list-style: none; padding: 0; }
+    #searchResults li { margin: 10px 0; }
+    #searchResults a { text-decoration: none; color: #0073e6; }
+    #searchResults a:hover { text-decoration: underline; }
+    .search-box { margin-bottom: 20px; }
+    .search-box input { padding: 8px; width: 250px; }
+    .search-box button { padding: 8px 12px; }
+  </style>
+</head>
+<body>
+
+  <h1>Search Results</h1>
+
+  <!-- Search box আবার এখানে -->
+  <div class="search-box">
+    <form action="search.html" method="get" onsubmit="return goSearch()">
+      <input type="text" id="searchBox" name="q" placeholder="Search products..." autocomplete="off">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <div id="searchResults">
+    <p>Type something in the search box above...</p>
+  </div>
+
+  <!-- Products list separate file -->
+  <script src="products.js"></script>
+
+  <script>
+    // Search box থেকে value চেক করা
+    function goSearch() {
+      let query = document.getElementById("searchBox").value.trim();
+      if (query === "") {
+        alert("Please type something to search");
+        return false; 
+      }
+      return true;
+    }
+
+    // URL থেকে query value আনা
+    function getQueryParam(param) {
+      let urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Search কাজ করবে এখানে
+    function doSearch() {
+      let query = getQueryParam("q");
+      let resultsDiv = document.getElementById("searchResults");
+
+      if (!query) {
+        resultsDiv.innerHTML = "<p>Please type something to search.</p>";
+        return;
+      }
+
+      document.getElementById("searchBox").value = query;
+
+      // products.js থেকে search
+      let results = products.filter(p => p.name.toLowerCase().includes(query.toLowerCase()));
+
+      if (results.length === 0) {
+        resultsDiv.innerHTML = "<p>No products found.</p>";
+      } else {
+        let list = "<ul>";
+        results.forEach(p => {
+          list += `<li><a href="${p.url}">${p.name}</a></li>`;
+        });
+        list += "</ul>";
+        resultsDiv.innerHTML = list;
+      }
+    }
+
+    window.onload = doSearch;
+  </script>
+
+</body>
+</html>
