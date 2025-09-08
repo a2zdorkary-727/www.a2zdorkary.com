@@ -1,0 +1,17 @@
+.icon-sprite {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: url('../icon-sprite-v6.png') no-repeat 0 0;
+}
+
+.icon-sprite.whatsapp  { background-position: -168px 0; }
+.icon-sprite.youtube   { background-position: -336px 0; }
+.icon-sprite.insta     { background-position: -96px 0; }
+.icon-sprite.fb-dark   { background-position: 0 -24px; }
+.icon-sprite.messenger-dark { background-position: -192px -24px; }
+.icon-sprite.linkedin-dark  { background-position: -24px -24px; }
+.icon-sprite.pinterest-dark { background-position: -48px -24px; }
+.icon-sprite.whatsapp-dark  { background-position: -166px -24px; }
+.icon-sprite.playstore       { background-position: -120px 0; }
+.icon-sprite.applestore      { background-position: -144px 0; }
