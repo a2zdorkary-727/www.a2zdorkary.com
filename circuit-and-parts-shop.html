@@ -55,13 +55,11 @@
                 </div>
             </div>
             
-          <div class="ht-item search" id="search">
-         <form action="https://a2zdorkary.com/search" method="get">
-    <input type="text" name="search" placeholder="Search" autocomplete="off" />
-    <button type="submit" class="material-icons">search</button>
+          <form action="https://a2zdorkary.com/search" method="get">
+  <input type="text" name="search" placeholder="Search" autocomplete="off" />
+  <button type="submit">Search</button>
 </form>
 
-                </div>
             
             <div class="ht-item q-actions">
                 <a href="https://www.a2zdorkary.com/information/offer" class="ac h-offer-icon">
@@ -4690,8 +4688,52 @@
   });
 </script>
 
+
+<div class="ht-item search" id="search">
+  <input type="text" id="searchBox" placeholder="Search..." autocomplete="off" />
+  <ul id="results" style="position:absolute; background:#fff; list-style:none; margin:0; padding:0; width:100%; z-index:9999; max-height:200px; overflow-y:auto; border:1px solid #ccc; display:none;"></ul>
+</div>
+
+<script>
+const pages = [
+  {name: "Computer Shop", url: "https://a2zdorkary.com/computer-shop.html"},
+  {name: "Laptop Shop", url: "https://a2zdorkary.com/laptop-shop.html"},
+  {name: "Arduino Uno", url: "https://a2zdorkary.com/arduino-uno.html"},
+  {name: "Arduino Mega", url: "https://a2zdorkary.com/arduino-mega.html"},
+  {name: "Keyboard", url: "https://a2zdorkary.com/keyboard.html"},
+  {name: "Mouse", url: "https://a2zdorkary.com/mouse.html"}
+];
+
+const searchBox = document.getElementById("searchBox");
+const results = document.getElementById("results");
+
+searchBox.addEventListener("input", function() {
+  let query = this.value.toLowerCase();
+  results.innerHTML = "";
+  if(query === "") { results.style.display = "none"; return; }
+  const matches = pages.filter(p => p.name.toLowerCase().includes(query));
+  if(matches.length === 0){ results.style.display = "none"; return; }
+  matches.forEach(match => {
+    let li = document.createElement("li");
+    li.style.padding = "8px 12px"; li.style.cursor = "pointer";
+    let a = document.createElement("a"); a.href = match.url;
+    a.textContent = match.name; a.style.textDecoration = "none"; a.style.color = "#000";
+    li.appendChild(a); results.appendChild(li);
+  });
+  results.style.display = "block";
+});
+
+document.addEventListener("click", function(e){
+  if(!document.getElementById("search").contains(e.target)){
+    results.style.display = "none";
+  }
+});
+</script>
+
+
     
 </body></html>
+
 
 
 
