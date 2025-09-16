@@ -4649,7 +4649,49 @@
     </div>
 </footer>
 <div class="overlay"></div>
+
+
+<script>
+  const pages = [
+    {name: "Computer Shop", url: "https://a2zdorkary.com/computer-shop.html"},
+    {name: "Laptop Shop", url: "https://a2zdorkary.com/laptop-shop.html"},
+    {name: "Arduino Uno", url: "https://a2zdorkary.com/arduino-uno.html"},
+    {name: "Arduino Mega", url: "https://a2zdorkary.com/arduino-mega.html"},
+    {name: "Keyboard", url: "https://a2zdorkary.com/keyboard.html"},
+    {name: "Mouse", url: "https://a2zdorkary.com/mouse.html"}
+  ];
+
+  const searchBox = document.getElementById("searchBox");
+  const results = document.getElementById("results");
+
+  searchBox.addEventListener("input", function() {
+    let query = this.value.toLowerCase();
+    results.innerHTML = "";
+    if(query === "") { results.style.display = "none"; return; }
+    const matches = pages.filter(p => p.name.toLowerCase().includes(query));
+    if(matches.length === 0){ results.style.display = "none"; return; }
+    matches.forEach(match => {
+      let li = document.createElement("li");
+      li.style.padding = "8px 12px"; li.style.cursor = "pointer";
+      li.addEventListener("mouseover", () => li.style.background = "#f0f0f0");
+      li.addEventListener("mouseout", () => li.style.background = "#fff");
+      let a = document.createElement("a"); a.href = match.url;
+      a.textContent = match.name; a.style.textDecoration = "none"; a.style.color = "#000";
+      li.appendChild(a); results.appendChild(li);
+    });
+    results.style.display = "block";
+  });
+
+  document.addEventListener("click", function(e){
+    if(!document.getElementById("search").contains(e.target)){
+      results.style.display = "none";
+    }
+  });
+</script>
+
+    
 </body></html>
+
 
 
 
