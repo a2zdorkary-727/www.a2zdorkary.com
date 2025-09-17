@@ -4116,7 +4116,7 @@
                                                                                       </select>
                       </div>
                   </div>
-              </div></div>
+              </div></div></div>
           
 
 
@@ -4170,10 +4170,13 @@
             echo '</div>';
 
             // Actions
-            echo '<div class="actions">';
-            echo '<span class="st-btn btn-add-cart"><i class="material-icons">shopping_cart</i> Buy Now</span>';
-            echo '<span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span>';
-            echo '</div>';
+echo '<div class="actions">';
+echo '<span class="st-btn btn-add-cart" data-id="'.$row['id'].'">
+        <i class="material-icons">shopping_cart</i> Buy Now
+      </span>';
+echo '<span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span>';
+echo '</div>'; // actions
+
 
             echo '</div>'; // p-item-details
             echo '</div>'; // p-item-inner
@@ -4185,7 +4188,7 @@
 
     $conn->close();
     ?>
-</div></div>
+</div>
 
 
          
@@ -4198,7 +4201,7 @@
                   <p>Showing 1 to 2 of 2 (2 Pages)</p>
               </div>
           </div>
-      </div>
+          
    <!--   <div class="category-description p-15 ws-box">
           <h2>Desktop PC in Bangladesh</h2>
 <p>Welcome to Star Tech’s <span style="font-weight: bold;">Desktop PC</span> collection, where we house the largest collection of Desktop computers in Bangladesh! From high-end workstations to <a href="https://www.startech.com.bd/desktops/gaming-pc" target="">Gaming PC</a> and beyond - Star Tech PC shop is the place to be. As the leading computer, tech, and networking equipment vendor in the nation, we take pride in providing the best desktop PC price. Choose from the best PC configurations for freelancing, gaming, and editing. Bringing the PC giants around the world like Asus, HP, Lenovo, and many more, buying a PC for the best price is as easy as surfing the web. We provide an extensive collection of the best desktop PC configurations with detailed price and performance insights, enabling our customers to make informed purchases. With our highly user-friendly e-commerce website and information on the most updated desktop PC price list in BD, you get a wide selection to choose from in 2025.</p><h2>Latest Desktop PC Pricelist in BD 2025</h2>
@@ -4300,5 +4303,5 @@
         </div>
     </div>
 </footer>
-<div class="overlay"></div>    
+<div class="overlay"></div>  
 </body></html>
