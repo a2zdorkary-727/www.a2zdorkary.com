@@ -22,7 +22,6 @@ if ($conn->connect_error) {
 // Order the products by ID in descending order to show the latest products first
 $sql = "SELECT * FROM robotics_shop_product ORDER BY id DESC";
 $result = $conn->query($sql);
-
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +31,7 @@ $result = $conn->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>A2Z Dorkary - Leading Computer, Electrical, Electronics, Robotic, Gadget and Circuit Online Shop in Bangladesh</title>
     <base href="https://www.a2zdorkary.com" />
-    <meta name="description" content="A2Z is the Best Computer, Electrical, Electronics, Clothing, Grocery, Accessories, and Gadget retail &amp; Online shop in Bangladesh. Order online to get delivery anywhere in BD." />
+    <meta name="description" content="A2Z is the Best Computer, Electrical, Electronics, Clothing, Grocery, Accessories, and Gadget retail & Online shop in Bangladesh. Order online to get delivery anywhere in BD." />
     <meta name="keywords" content="Circuit and Part's Price in BD" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="icon" type="image/png" href="a2zdorkary-logo.png">
@@ -47,12 +46,11 @@ $result = $conn->query($sql);
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-2BV6E3DJTL');
     </script>
     <script>
       !function(f,b,e,v,n,t,s)
-      { if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
       if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
       n.queue=[];t=b.createElement(e);t.async=!0;
@@ -74,38 +72,121 @@ $result = $conn->query($sql);
       .main-content-wrapper {
         flex: 1 0 auto;
       }
-      /* POPUP STYLES */
-      .popup-overlay {
-        display: none;
+
+      /* START: Added Cart Popup CSS */
+      .cart-overlay {
         position: fixed;
-        z-index: 999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        display: none;
         justify-content: center;
         align-items: center;
+        z-index: 1000;
       }
-      .popup-content {
-        background-color: white;
-        padding: 20px;
+
+      .cart-popup {
+        background: #fff;
+        width: 550px;
+        max-width: 95%;
+        padding: 20px 25px;
         border-radius: 5px;
-        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         position: relative;
-        width: 300px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
-      .popup-content h3 {
-        margin-top: 0;
-      }
-      .close-btn {
+
+      .cart-popup .close-btn {
         position: absolute;
+        right: 15px;
         top: 10px;
-        right: 10px;
-        font-size: 20px;
+        font-size: 18px;
+        color: #333;
         cursor: pointer;
       }
+
+      .cart-left {
+        width: 65%;
+      }
+
+      .cart-popup .message {
+        font-size: 13px;
+        margin-bottom: 15px;
+        line-height: 1.5;
+        color: #333;
+      }
+
+      .tick {
+        display: inline-block;
+        background: #90ee90;
+        color: #fff;
+        font-size: 11px;
+        font-weight: normal;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        line-height: 18px;
+        text-align: center;
+        margin-right: 6px;
+      }
+
+      .cart-popup .message span {
+        color: #c00;
+        font-weight: bold;
+      }
+
+      .cart-summary {
+        width: 30%;
+        margin-left: 5px;
+      }
+
+      .cart-summary table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        border-radius: 6px;
+      }
+
+      .cart-summary table td {
+        border: 1px solid #ddd;
+        padding: 6px 8px;
+        color: #333;
+      }
+
+      .cart-summary table tr td:first-child {
+        width: 55%;
+      }
+
+      .cart-buttons {
+        margin-top: 15px;
+      }
+      .cart-buttons button {
+        padding: 7px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        margin-right: 8px;
+        transition: 0.2s;
+        font-family: Arial, Roboto, sans-serif;
+      }
+      .view-cart {
+        background: #2936f5;
+        color: #fff;
+      }
+      .view-cart:hover {
+        background: #1523c9;
+      }
+      .confirm-order {
+        background: #f5f5f5;
+        border: 1px solid #ccc;
+      }
+      .confirm-order:hover {
+        background: #e8e8e8;
+      }
+      /* END: Added Cart Popup CSS */
     </style>
 </head>
 <body class="common-home">
@@ -448,17 +529,14 @@ $result = $conn->query($sql);
                         </div>
                         <div class="main-content p-items-wrap product-grid">
                             <?php
-                            $conn = new mysqli("localhost", "root", "", "robotics_shop");
-                            if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
-
-                            $sql = "SELECT * FROM robotics_shop_product";
-                            $result = $conn->query($sql);
-
-                            if($result && $result->num_rows > 0){
-                                while($row = $result->fetch_assoc()){
+                            // Check if the query returned any rows
+                            if ($result && $result->num_rows > 0) {
+                                // Loop through each row of the result set
+                                while ($row = $result->fetch_assoc()) {
                                     // Corrected link generation
                                     $link = "http://localhost/robotics-shop/product.php?id=" . intval($row['id']);
-
+                                    // Sanitize data for output to prevent XSS attacks
+                                    $id = intval($row['id']);
                                     $name = htmlspecialchars($row['name']);
                                     $img = htmlspecialchars($row['main_image']);
                                     $price = (int)$row['price'];
@@ -467,44 +545,37 @@ $result = $conn->query($sql);
 
                                     echo '<div class="p-item">';
                                     echo '  <div class="p-item-inner">';
-
                                     // Discount
-                                    if($discount > 0){
-                                        echo '<div class="marks"><span class="mark">Save: '.$discount.'৳</span></div>';
+                                    if ($discount > 0) {
+                                        echo '<div class="marks"><span class="mark">Save: ' . $discount . '৳</span></div>';
                                     }
-
                                     // Image and Link
-                                    echo '<div class="p-item-img"><a href="'.$link.'"><img src="'.$img.'" alt="'.$name.'" width="228" height="228"></a></div>';
-
+                                    echo '<div class="p-item-img"><a href="' . $link . '"><img src="' . $img . '" alt="' . $name . '" width="228" height="228"></a></div>';
                                     // Product Details
                                     echo '<div class="p-item-details">';
-                                    echo '  <h4 class="p-item-name"><a href="'.$link.'">'.$name.'</a></h4>';
-
+                                    echo '  <h4 class="p-item-name"><a href="' . $link . '">' . $name . '</a></h4>';
                                     // Short key features
-                                    if(!empty($row['key_features'])){
+                                    if (!empty($row['key_features'])) {
                                         echo '<div class="short-description"><ul>';
                                         $features = preg_split("/\r\n|\n|\r/", $row['key_features']);
-                                        foreach($features as $li){
-                                            echo '<li>'.htmlspecialchars(trim($li)).'</li>';
+                                        foreach ($features as $li) {
+                                            echo '<li>' . htmlspecialchars(trim($li)) . '</li>';
                                         }
                                         echo '</ul></div>';
                                     }
-
                                     // Price
                                     echo '<div class="p-item-price">';
-                                    echo '<span class="price-new">'.$price.'৳</span>';
-                                    if($regular > $price){
-                                        echo ' <span class="price-old">'.$regular.'৳</span>';
+                                    echo '<span class="price-new">' . $price . '৳</span>';
+                                    if ($regular > $price) {
+                                        echo ' <span class="price-old">' . $regular . '৳</span>';
                                     }
                                     echo '</div>';
-
-                                    // Action buttons with a JavaScript function call
+                                    // Action buttons
                                     echo '<div class="actions">';
-                                    // The onclick attribute triggers the JavaScript function
-                                    echo '  <span class="st-btn btn-add-cart" type="button" onclick="showPopup(\''.$name.'\')"><i class="material-icons">shopping_cart</i> Buy Now</span>';
+                                    // Use data attributes to pass product info to JavaScript
+                                    echo '  <span class="st-btn btn-add-cart" onclick="openCartPopup(\'' . $name . '\', 1, ' . $price . ')"><i class="material-icons">shopping_cart</i> Buy Now</span>';
                                     echo '  <span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span>';
                                     echo '</div>'; // actions
-
                                     echo '</div>'; // p-item-details
                                     echo '</div>'; // p-item-inner
                                     echo '</div>'; // p-item
@@ -512,7 +583,7 @@ $result = $conn->query($sql);
                             } else {
                                 echo '<p>No products found</p>';
                             }
-
+                            // Close the database connection
                             $conn->close();
                             ?>
                         </div>
@@ -531,45 +602,70 @@ $result = $conn->query($sql);
             </div>
         </section>
     </div>
+    <footer>
+        <?php include 'C:\xampp\htdocs\robotics-shop\footer.php'; ?>
+    </footer>
 
-    <div id="buyNowPopup" class="popup-overlay">
-        <div class="popup-content">
-            <span class="close-btn" onclick="hidePopup()">&times;</span>
-            <div id="popup-content-text">
-                <h3>Product added to cart!</h3>
-                <p>You have successfully added the item to your cart.</p>
-                <a href="https://www.a2zdorkary.com/checkout" class="btn">View Cart & Checkout</a>
+    <div class="cart-overlay" id="cartOverlay">
+        <div class="cart-popup">
+            <div class="cart-left">
+                <span class="close-btn" onclick="closeCartPopup()">✖</span>
+                <p class="message">
+                    <span class="tick">✔</span>
+                    You have added <span id="popupProductName"></span> to your shopping cart!
+                </p>
+                <div class="cart-buttons">
+                    <button class="view-cart">View Cart</button>
+                    <button class="confirm-order">Confirm Order</button>
+                </div>
+            </div>
+            <div class="cart-summary">
+                <table>
+                    <tr>
+                        <td>Quantity</td>
+                        <td id="cartQty">0</td>
+                    </tr>
+                    <tr>
+                        <td>Total</td>
+                        <td id="cartTotal">0৳</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
     <script>
-        function showPopup(productName) {
-            const popup = document.getElementById('buyNowPopup');
-            const popupText = document.getElementById('popup-content-text');
-            
-            // Optional: Customize popup text with product name
-            popupText.innerHTML = `
-                <h3>${productName} added to cart!</h3>
-                <p>You have successfully added this item to your cart.</p>
-                <a href="https://www.a2zdorkary.com/checkout" class="btn">View Cart & Checkout</a>
-            `;
-            
-            popup.style.display = 'flex';
-            
-            // Automatically hide the popup after 10 seconds (10000 milliseconds)
-            setTimeout(() => {
-                popup.style.display = 'none';
-            }, 10000);
-        }
-        
-        function hidePopup() {
-            const popup = document.getElementById('buyNowPopup');
-            popup.style.display = 'none';
-        }
+    function openCartPopup(productName, quantity, total) {
+        document.getElementById("popupProductName").textContent = productName;
+        document.getElementById("cartQty").textContent = quantity;
+        document.getElementById("cartTotal").textContent = total + '৳';
+        document.getElementById("cartOverlay").style.display = "flex";
+
+        // Auto-close the popup after 8 seconds (8000 milliseconds)
+        setTimeout(function() {
+            closeCartPopup();
+        }, 8000);
+    }
+
+    function closeCartPopup() {
+        document.getElementById("cartOverlay").style.display = "none";
+    }
+
+    // Attach click events to all "Buy Now" buttons
+    document.querySelectorAll('.btn-add-cart').forEach(button => {
+        button.addEventListener('click', function() {
+            // Get product name and price from the parent elements
+            const pItemDetails = this.closest('.p-item-details');
+            const productName = pItemDetails.querySelector('.p-item-name a').textContent;
+            const priceText = pItemDetails.querySelector('.price-new').textContent;
+            const price = parseFloat(priceText.replace('৳', ''));
+
+            // You can dynamically get quantity from an input field if one exists,
+            // for this example, we will hardcode it to 1.
+            const quantity = 1;
+
+            openCartPopup(productName, quantity, price);
+        });
+    });
     </script>
-    
-    <footer>
-        <?php include 'C:\xampp\htdocs\robotics-shop\footer.php'; ?>
-    </footer>
-</body>
+    </body>
 </html>
