@@ -1,28 +1,4 @@
-<?php
-// Error Reporting: Enable error reporting for debugging purposes
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
-// Database connection parameters
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "robotics_shop";
-
-// Create a new database connection
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Check if the connection was successful
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// SQL query to retrieve all products from the 'robotics_shop_product' table
-// Order the products by ID in descending order to show the latest products first
-$sql = "SELECT * FROM robotics_shop_product ORDER BY id DESC";
-$result = $conn->query($sql);
-?>
 
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -528,65 +504,7 @@ $result = $conn->query($sql);
                             </div>
                         </div>
                         <div class="main-content p-items-wrap product-grid">
-                            <?php
-                            // Check if the query returned any rows
-                            if ($result && $result->num_rows > 0) {
-                                // Loop through each row of the result set
-                                while ($row = $result->fetch_assoc()) {
-                                    // Corrected link generation
-                                    $link = "http://localhost/robotics-shop/product.php?id=" . intval($row['id']);
-                                    // Sanitize data for output to prevent XSS attacks
-                                    $id = intval($row['id']);
-                                    $name = htmlspecialchars($row['name']);
-                                    $img = htmlspecialchars($row['main_image']);
-                                    $price = (int)$row['price'];
-                                    $regular = (int)$row['regular_price'];
-                                    $discount = $regular - $price;
-
-                                    echo '<div class="p-item">';
-                                    echo '  <div class="p-item-inner">';
-                                    // Discount
-                                    if ($discount > 0) {
-                                        echo '<div class="marks"><span class="mark">Save: ' . $discount . '৳</span></div>';
-                                    }
-                                    // Image and Link
-                                    echo '<div class="p-item-img"><a href="' . $link . '"><img src="' . $img . '" alt="' . $name . '" width="228" height="228"></a></div>';
-                                    // Product Details
-                                    echo '<div class="p-item-details">';
-                                    echo '  <h4 class="p-item-name"><a href="' . $link . '">' . $name . '</a></h4>';
-                                    // Short key features
-                                    if (!empty($row['key_features'])) {
-                                        echo '<div class="short-description"><ul>';
-                                        $features = preg_split("/\r\n|\n|\r/", $row['key_features']);
-                                        foreach ($features as $li) {
-                                            echo '<li>' . htmlspecialchars(trim($li)) . '</li>';
-                                        }
-                                        echo '</ul></div>';
-                                    }
-                                    // Price
-                                    echo '<div class="p-item-price">';
-                                    echo '<span class="price-new">' . $price . '৳</span>';
-                                    if ($regular > $price) {
-                                        echo ' <span class="price-old">' . $regular . '৳</span>';
-                                    }
-                                    echo '</div>';
-                                    // Action buttons
-                                    echo '<div class="actions">';
-                                    // Use data attributes to pass product info to JavaScript
-                                    echo '  <span class="st-btn btn-add-cart" onclick="openCartPopup(\'' . $name . '\', 1, ' . $price . ')"><i class="material-icons">shopping_cart</i> Buy Now</span>';
-                                    echo '  <span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span>';
-                                    echo '</div>'; // actions
-                                    echo '</div>'; // p-item-details
-                                    echo '</div>'; // p-item-inner
-                                    echo '</div>'; // p-item
-                                }
-                            } else {
-                                echo '<p>No products found</p>';
-                            }
-                            // Close the database connection
-                            $conn->close();
-                            ?>
-                        </div>
+                            <div class="p-item">  <div class="p-item-inner"><div class="marks"><span class="mark">Save: 200৳</span></div><div class="p-item-img"><a href="http://localhost/robotics-shop/product.php?id=2"><img src="https://a2zdorkary.com/contant-image/arduino-uno/arduino-uno-r3.jpg" alt="Arduino Uno R3" width="228" height="228"></a></div><div class="p-item-details">  <h4 class="p-item-name"><a href="http://localhost/robotics-shop/product.php?id=2">Arduino Uno R3</a></h4><div class="short-description"><ul><li>Microcontroller: ATmega328P</li><li>Operating Voltage: 5V</li><li>Input Voltage (recommended): 7-12V</li><li>Digital I/O Pins: 14 (6 provide PWM output)</li></ul></div><div class="p-item-price"><span class="price-new">1300৳</span> <span class="price-old">1500৳</span></div><div class="actions">  <span class="st-btn btn-add-cart" onclick="openCartPopup('Arduino Uno R3', 1, 1300)"><i class="material-icons">shopping_cart</i> Buy Now</span>  <span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span></div></div></div></div><div class="p-item">  <div class="p-item-inner"><div class="marks"><span class="mark">Save: 26500৳</span></div><div class="p-item-img"><a href="http://localhost/robotics-shop/product.php?id=1"><img src="https://a2zdorkary.com/contant-image/arduino-uno/arduino-uno-r3-original.webp" alt="Original Arduino Uno R3" width="228" height="228"></a></div><div class="p-item-details">  <h4 class="p-item-name"><a href="http://localhost/robotics-shop/product.php?id=1">Original Arduino Uno R3</a></h4><div class="short-description"><ul><li>Micro-controller : ATmega328P</li><li>Operating Voltage: 5V</li><li>Input Voltage (recommended) : 7-12V</li><li>Digital I/O Pins: 14 (of which 6 provide PWM output</li><li>Analog Input Pins: 6</li></ul></div><div class="p-item-price"><span class="price-new">5500৳</span> <span class="price-old">32000৳</span></div><div class="actions">  <span class="st-btn btn-add-cart" onclick="openCartPopup('Original Arduino Uno R3', 1, 5500)"><i class="material-icons">shopping_cart</i> Buy Now</span>  <span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span></div></div></div></div>                        </div>
                         <div class="bottom-bar">
                             <div class="row">
                                 <div class="col-md-6 col-sm-12">
@@ -603,7 +521,99 @@ $result = $conn->query($sql);
         </section>
     </div>
     <footer>
-        <?php include 'C:\xampp\htdocs\robotics-shop\footer.php'; ?>
+        <section class="content-bottom"><div class="container"></div></section>
+<footer>
+    <div class="container">
+        <div class="main-footer">
+
+            <div class="footer-block contact-us">
+                <h4>Support</h4>
+                <a href="tel:09639151489" class="helpline-btn footer-big-btn">
+                    <div class="ic"><i class="material-icons">phone</i></div>
+                    <p>9 AM - 8 PM </p>
+                    <h5>09639151489</h5>
+                </a>
+
+                <a href="http://information/contact" class="store-locator-btn footer-big-btn">
+                    <div class="ic"><i class="material-icons">place</i></div>
+                    <p>Store Locator</p>
+                    <h5>Find Our Stores</h5>
+                </a>
+            </div>
+
+            <div class="footer-block about-us">
+                <h4>About Us</h4>
+                <ul>
+                    <li><a href="http://www/affiliate-program">Affiliate Program</a></li>
+                    <li><a href="http://emi-terms">EMI Terms</a></li>
+                    <li><a href="http://about_us">About Us</a></li>
+                    <li><a href="http://online-delivery">Online Delivery</a></li>
+                    <li><a href="http://privacy">Privacy Policy</a></li>
+                    <li><a href="http://warranty-policy">Terms and Conditions</a></li>
+                    <li><a href="http://refund-policy">Refund and Return Policy</a></li>
+                    <li><a href="http://star-point-policy">Star Point Policy</a></li>
+                    <li><a href="http://career">Career</a></li>
+                    <li><a href="http://blog">Blog</a></li>
+                    <li><a href="http://information/contact">Contact Us</a></li>
+                    <li><a href="http://product/manufacturer">Brands</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-block org-info">
+                <h4>Stay Connected</h4>
+                <p><b class="store-name">A2Z Dorkary Ltd</b><br/>Head office : Puraton Thana Para, Kurigram - 5600</p>
+                <p><b>Email:</b><br/><a href="mailto:a2zdorkary@gmail.com">a2zdorkary@gmail.com</a> </p>
+            </div>
+        </div>
+
+        <div class="social-footer">
+            <div class="app-links">
+                <span class="app-link-text">Experience A2Z Dorkary App on your mobile:</span>
+                <span class="app-link-items">
+                    <a class="app-link" href="https://play.google.com" target="_blank" rel="noopener" title="A2Z Dorkary Android APP">
+                        <span class="icon-sprite playstore"></span>
+                        <span class="app-link-text">
+                            <span class="download">Download on</span>
+                            <span class="app-store">Google Play</span>
+                        </span>
+                    </a>
+                    <a class="app-link" href="https://apps.apple.com" target="_blank" rel="noopener" title="A2Z Dorkary ISO APP">
+                        <span class="icon-sprite applestore"></span>
+                        <span class="app-link-text">
+                            <span class="download">Download on</span>
+                            <span class="app-store">App Store</span>
+                        </span>
+                    </a>
+                </span>
+            </div>
+            <div class="social-links">
+                <a href="https://wa.me/8801761111875" target="_blank" rel="noopener" title="Whatsapp">
+                    <span class="icon-sprite whatsapp"></span>
+                </a>
+                <a href="https://www.facebook.com" target="_blank" rel="noopener" title="Facebook">
+                    <span class="icon-sprite fb"></span>
+                </a>
+                <a href="https://www.youtube.com/@badisco/featured" target="_blank" rel="noopener" title="Youtube">
+                    <span class="icon-sprite youtube"></span>
+                </a>
+                <a href="https://www.instagram.com" target="_blank" rel="noopener" title="Instagram">
+                    <span class="icon-sprite insta"></span>
+                </a>
+            </div>
+        </div>
+        <div class="row sub-footer">
+            <div class="col-md-6 copyright-info">
+                <p>© 2025 A2Z Dorkary | All rights reserved</p>
+            </div>
+            <div class="col-md-6 powered-by">
+                <p>Powered By: A2Z Dorkary</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<div class="overlay"></div>
+</body>
+</html>
     </footer>
 
     <div class="cart-overlay" id="cartOverlay">
