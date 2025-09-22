@@ -508,6 +508,8 @@
         </div>
     </div>
 </footer>
+
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const buyButtons = document.querySelectorAll('.btn-add-cart');
@@ -520,33 +522,41 @@ document.addEventListener('DOMContentLoaded', function() {
     const subTotalEl = document.getElementById('sub-total');
     const totalEl = document.getElementById('total');
 
-    let cart = [];
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-    // Buy Now Click: শুধু cart-এ যোগ করা + counter update
+    // Buy Now Click
     buyButtons.forEach(button => {
         button.addEventListener('click', function() {
             const pItem = this.closest('.p-item');
-            const product = {
-                id: pItem.dataset.id || Date.now(),
-                name: pItem.querySelector('.p-item-name a').textContent,
-                price: parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g,'')),
-                img: pItem.querySelector('img').src
-            };
+            const id = pItem.dataset.id;
+            const existing = cart.find(p => p.id === id);
 
-            cart.push(product);
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                const product = {
+                    id: id,
+                    name: pItem.querySelector('.p-item-name a').textContent,
+                    price: parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g,'')),
+                    img: pItem.querySelector('img').src,
+                    qty: 1
+                };
+                cart.push(product);
+            }
+
+            saveCart();
             updateCartCounter();
-            showCartNotification(product.name);
-            renderCart(); // drawer খুলবে না এখন
+            showCartNotification(pItem.querySelector('.p-item-name a').textContent);
+            renderCart();
         });
     });
 
     // Cart icon click: drawer open
     document.querySelectorAll('.mc-toggler').forEach(btn => {
         btn.addEventListener('click', function() {
-            cartDrawer.classList.toggle('open'); // toggle drawer
-            renderCart(); // drawer খোলার সময় cart items refresh হবে
+            cartDrawer.classList.toggle('open');
+            renderCart();
 
-            // Cart drawer open হলে icon hide
             if(cartDrawer.classList.contains('open')) {
                 cartIcon.style.visibility = 'hidden';
                 compareIcon.style.visibility = 'hidden';
@@ -557,43 +567,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Update Cart Counter
     function updateCartCounter() {
-        let count = cart.length;
+        let count = cart.reduce((sum, item) => sum + item.qty, 0);
         desktopCartCounter.textContent = count;
         if(mobileCartCounter) mobileCartCounter.textContent = count;
-
-        // Compare counter আলাদা রাখা হবে, এখানে আপডেট করা হচ্ছে না
     }
 
-    // Show Notification
+    function saveCart() {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
     function showCartNotification(name) {
         const notification = document.createElement('div');
         notification.className = 'cart-notification';
-        notification.innerHTML = `<i class="material-icons">check_circle</i> New item added successfully: <b>${name}</b>`;
+        notification.innerHTML = `<i class="material-icons">check_circle</i>New Item Added Successfully: <b>${name}</b>`;
         document.body.appendChild(notification);
         void notification.offsetWidth;
         notification.classList.add('show');
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 500);
-        }, 3000);
+        }, 2000);
     }
 
-    // Render Cart Items in Drawer
     function renderCart() {
         cartItemsContainer.innerHTML = '';
         let subTotal = 0;
 
         cart.forEach((item, index) => {
-            subTotal += item.price;
+            subTotal += item.price * item.qty;
             const div = document.createElement('div');
             div.className = 'cart-item';
             div.innerHTML = `
                 <img src="${item.img}" alt="${item.name}">
                 <p class="cart-item-name">${item.name}</p>
-                <span class="cart-item-price">${item.price}৳</span>
-                <span class="cart-item-remove" data-index="${index}"><i class="material-icons">delete</i></span>
+                <div class="cart-item-qty">
+                    <button class="qty-btn qty-minus" data-index="${index}">−</button>
+                    <input type="text" value="${item.qty}" readonly>
+                    <button class="qty-btn qty-plus" data-index="${index}">+</button>
+                </div>
+                <span class="cart-item-price">${item.price * item.qty}৳</span>
+                <span class="cart-item-remove" data-index="${index}">
+                    <i class="material-icons">delete</i>
+                </span>
             `;
             cartItemsContainer.appendChild(div);
         });
@@ -601,22 +617,47 @@ document.addEventListener('DOMContentLoaded', function() {
         subTotalEl.textContent = subTotal + '৳';
         totalEl.textContent = subTotal + '৳';
 
+        // Qty Minus
+        document.querySelectorAll('.qty-minus').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                cart[idx].qty -= 1;
+                if (cart[idx].qty <= 0) cart.splice(idx, 1);
+                saveCart();
+                updateCartCounter();
+                renderCart();
+            });
+        });
+
+        // Qty Plus
+        document.querySelectorAll('.qty-plus').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                cart[idx].qty += 1;
+                saveCart();
+                updateCartCounter();
+                renderCart();
+            });
+        });
+
         // Remove Item
         document.querySelectorAll('.cart-item-remove').forEach(btn => {
             btn.addEventListener('click', function() {
                 const idx = parseInt(this.dataset.index);
                 cart.splice(idx, 1);
+                saveCart();
                 updateCartCounter();
                 renderCart();
             });
         });
     }
-});
 
+    updateCartCounter();
+    renderCart();
+});
 </script>
 
 <style>
-/* Drawer Style */
 .drawer.m-cart {
     position: fixed;
     top: 0;
@@ -630,11 +671,7 @@ document.addEventListener('DOMContentLoaded', function() {
     flex-direction: column;
     z-index: 9999;
 }
-
-.drawer.m-cart.open {
-    right: 0;
-}
-
+.drawer.m-cart.open { right: 0; }
 .drawer.m-cart .title {
     padding: 15px;
     border-bottom: 1px solid #ddd;
@@ -642,13 +679,11 @@ document.addEventListener('DOMContentLoaded', function() {
     justify-content: space-between;
     align-items: center;
 }
-
 .drawer.m-cart .content {
     flex: 1;
     overflow-y: auto;
     padding: 15px;
 }
-
 .cart-item {
     display: flex;
     align-items: center;
@@ -657,100 +692,63 @@ document.addEventListener('DOMContentLoaded', function() {
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
 }
-
 .cart-item img {
     width: 60px;
     height: 60px;
     object-fit: contain;
     margin-right: 10px;
 }
-
 .cart-item-name {
     flex: 1;
     margin: 0 10px;
-    font-size: 14px;
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
 }
-
-.cart-item-price {
-    font-weight: bold;
+.cart-item-qty {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+    min-width: 80px;
+    justify-content: center;
 }
-
-.cart-item-remove {
+.cart-item-qty input {
+    width: 50px;
+    height: 24px;
+    text-align: center;
+    border: 1px solid #ccc;
+    margin: 0 3px;
+    border-radius: 3px;
+    background: #fff;
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+    pointer-events: none; /* fixed, user can't type */
+}
+.qty-btn {
+    border: none;
+    background: none;
     cursor: pointer;
-    color: #dc3545;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0 6px;
+    color: #333;
+    transition: color 0.2s;
+    line-height: 1;
 }
-
+.qty-btn:hover { color: #007bff; }
+.cart-item-price { font-weight: bold; font-family: 'Roboto', sans-serif; }
+.cart-item-remove { cursor: pointer; color: #dc3545; }
 .drawer.m-cart .footer {
     padding: 15px;
     border-top: 1px solid #ddd;
 }
-
-.promo-code {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.promo-code input {
-    flex: 1;
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px;
-}
-
-.promo-code button {
-    padding: 6px 12px;
-    background: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 0 4px 4px 0;
-    cursor: pointer;
-}
-
-.totals p {
-    margin: 5px 0;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-}
-
-#checkout {
-    width: 100%;
-    padding: 10px;
-    background: #ff5722;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-/* Cart Notification (keep existing) */
-.cart-notification {
-    position: fixed;
-    bottom: 94px;
-    right: 80px;
-    background-color: #28a745;
-    color: #fff;
-    padding: 15px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    opacity: 0;
-    transform: translateY(50px);
-    transition: all 0.5s ease-in-out;
-    z-index: 9999;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-.cart-notification.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-.cart-notification i.material-icons {
-    font-size: 20px;
-}
+.promo-code { display: flex; margin-bottom: 10px; }
+.promo-code input { flex: 1; padding: 6px; border: 1px solid #ccc; border-radius: 4px 0 0 4px; }
+.promo-code button { padding: 6px 12px; background: #007bff; color: #fff; border: none; border-radius: 0 4px 4px 0; cursor: pointer; }
+.totals p { margin: 5px 0; font-weight: bold; display: flex; justify-content: space-between; font-family: 'Roboto', sans-serif; }
+#checkout { width: 100%; padding: 10px; background: #ff5722; color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; font-weight: bold; }
+.cart-notification { position: fixed; bottom: 94px; right: 80px; background-color: #28a745; color: #fff; padding: 15px 20px; border-radius: 8px; font-size: 14px; display: flex; align-items: center; gap: 8px; opacity: 0; transform: translateY(50px); transition: all 0.5s ease-in-out; z-index: 9999; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.cart-notification.show { opacity: 1; transform: translateY(0); }
+.cart-notification i.material-icons { font-size: 20px; }
 </style>
 
  
