@@ -511,16 +511,18 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const buyButtons = document.querySelectorAll('.btn-add-cart');
-    const cartIcon = document.getElementById('cart');          // Cart icon
-    const compareIcon = document.getElementById('cmpr-btn');  // Compare icon
-    const cartDrawer = document.getElementById('m-cart');     // Drawer
+    const cartIcon = document.querySelector('#cart');
+    const compareIcon = document.querySelector('#cmpr-btn');
+    const desktopCartCounter = cartIcon.querySelector('.counter');
+    const mobileCartCounter  = document.querySelector('.mbl-right .counter');
+    const cartDrawer = document.getElementById('m-cart');
     const cartItemsContainer = document.getElementById('cart-items');
     const subTotalEl = document.getElementById('sub-total');
     const totalEl = document.getElementById('total');
 
     let cart = [];
 
-    // Buy Now Click
+    // Buy Now Click: শুধু cart-এ যোগ করা + counter update
     buyButtons.forEach(button => {
         button.addEventListener('click', function() {
             const pItem = this.closest('.p-item');
@@ -534,33 +536,34 @@ document.addEventListener('DOMContentLoaded', function() {
             cart.push(product);
             updateCartCounter();
             showCartNotification(product.name);
-            renderCart();
+            renderCart(); // drawer খুলবে না এখন
         });
     });
 
-    // Cart icon click: drawer open/close
+    // Cart icon click: drawer open
     document.querySelectorAll('.mc-toggler').forEach(btn => {
         btn.addEventListener('click', function() {
-            cartDrawer.classList.toggle('open'); 
-            
-            // Cart + Compare icon visibility
-            if(cartDrawer.classList.contains('open')){
+            cartDrawer.classList.toggle('open'); // toggle drawer
+            renderCart(); // drawer খোলার সময় cart items refresh হবে
+
+            // Cart drawer open হলে icon hide
+            if(cartDrawer.classList.contains('open')) {
                 cartIcon.style.visibility = 'hidden';
                 compareIcon.style.visibility = 'hidden';
             } else {
                 cartIcon.style.visibility = 'visible';
                 compareIcon.style.visibility = 'visible';
             }
-
-            renderCart();
         });
     });
 
     // Update Cart Counter
     function updateCartCounter() {
         let count = cart.length;
-        cartIcon.querySelector('.counter').textContent = count;
-        compareIcon.querySelector('.counter').textContent = count; // Compare count যদি same রাখা হয়
+        desktopCartCounter.textContent = count;
+        if(mobileCartCounter) mobileCartCounter.textContent = count;
+
+        // Compare counter আলাদা রাখা হবে, এখানে আপডেট করা হচ্ছে না
     }
 
     // Show Notification
@@ -577,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
-    // Render Cart
+    // Render Cart Items in Drawer
     function renderCart() {
         cartItemsContainer.innerHTML = '';
         let subTotal = 0;
