@@ -1,29 +1,4 @@
-<?php
-// Error Reporting: Enable error reporting for debugging purposes
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
-// Database connection parameters
-$host = "localhost";
-$user = "root";
-$pass = "";
-$db = "robotics_shop";
-
-// Create a new database connection
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Check if the connection was successful
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// SQL query to retrieve all products from the 'robotics_shop_product' table
-// Order the products by ID in descending order to show the latest products first
-$sql = "SELECT * FROM robotics_shop_product ORDER BY id DESC";
-$result = $conn->query($sql);
-
-?>
 
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -415,72 +390,7 @@ $result = $conn->query($sql);
                             </div>
                         </div>
                         <div class="main-content p-items-wrap product-grid">
-                            <?php
-                            // Check if the query returned any rows
-                            if($result && $result->num_rows > 0){
-                                // Loop through each row of the result set
-                                while($row = $result->fetch_assoc()){
-                                    // Corrected link generation
-                                    $link = "http://localhost/robotics-shop/product.php?id=" . intval($row['id']);
-
-                                    // Sanitize data for output to prevent XSS attacks
-                                    $name = htmlspecialchars($row['name']);
-                                    $img = htmlspecialchars($row['main_image']);
-                                    $price = (int)$row['price'];
-                                    $regular = (int)$row['regular_price'];
-                                    $discount = $regular - $price;
-
-                                    echo '<div class="p-item">';
-                                    echo '  <div class="p-item-inner">';
-
-                                    // Discount
-                                    if($discount > 0){
-                                        echo '<div class="marks"><span class="mark">Save: '.$discount.'৳</span></div>';
-                                    }
-
-                                    // Image and Link
-                                    echo '<div class="p-item-img"><a href="'.$link.'"><img src="'.$img.'" alt="'.$name.'" width="228" height="228"></a></div>';
-
-                                    // Product Details
-                                    echo '<div class="p-item-details">';
-                                    echo '  <h4 class="p-item-name"><a href="'.$link.'">'.$name.'</a></h4>';
-
-                                    // Short key features
-                                    if(!empty($row['key_features'])){
-                                        echo '<div class="short-description"><ul>';
-                                        $features = preg_split("/\r\n|\n|\r/", $row['key_features']);
-                                        foreach($features as $li){
-                                            echo '<li>'.htmlspecialchars(trim($li)).'</li>';
-                                        }
-                                        echo '</ul></div>';
-                                    }
-
-                                    // Price
-                                    echo '<div class="p-item-price">';
-                                    echo '<span class="price-new">'.$price.'৳</span>';
-                                    if($regular > $price){
-                                        echo ' <span class="price-old">'.$regular.'৳</span>';
-                                    }
-                                    echo '</div>';
-
-                                    // Action buttons
-                                    echo '<div class="actions">';
-                                    echo '  <span class="st-btn btn-add-cart" type="button"><i class="material-icons">shopping_cart</i> Buy Now</span>';
-                                    echo '  <span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span>';
-                                    echo '</div>'; // actions
-
-                                    echo '</div>'; // p-item-details
-                                    echo '</div>'; // p-item-inner
-                                    echo '</div>'; // p-item
-                                }
-                            } else {
-                                echo '<p>No products found</p>';
-                            }
-
-                            // Close the database connection
-                            $conn->close();
-                            ?>
-                        </div>
+                            <div class="p-item">  <div class="p-item-inner"><div class="marks"><span class="mark">Save: 200৳</span></div><div class="p-item-img"><a href="http://localhost/robotics-shop/product.php?id=2"><img src="https://a2zdorkary.com/contant-image/arduino-uno/arduino-uno-r3.jpg" alt="Arduino Uno R3" width="228" height="228"></a></div><div class="p-item-details">  <h4 class="p-item-name"><a href="http://localhost/robotics-shop/product.php?id=2">Arduino Uno R3</a></h4><div class="short-description"><ul><li>Microcontroller: ATmega328P</li><li>Operating Voltage: 5V</li><li>Input Voltage (recommended): 7-12V</li><li>Digital I/O Pins: 14 (6 provide PWM output)</li></ul></div><div class="p-item-price"><span class="price-new">1300৳</span> <span class="price-old">1500৳</span></div><div class="actions">  <span class="st-btn btn-add-cart" type="button"><i class="material-icons">shopping_cart</i> Buy Now</span>  <span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span></div></div></div></div><div class="p-item">  <div class="p-item-inner"><div class="marks"><span class="mark">Save: 1500৳</span></div><div class="p-item-img"><a href="http://localhost/robotics-shop/product.php?id=1"><img src="https://a2zdorkary.com/contant-image/arduino-uno/arduino-uno-r3-original.webp" alt="Original Arduino Uno R3 gggg" width="228" height="228"></a></div><div class="p-item-details">  <h4 class="p-item-name"><a href="http://localhost/robotics-shop/product.php?id=1">Original Arduino Uno R3 gggg</a></h4><div class="short-description"><ul><li>Micro-controller : ATmega328P</li><li>Operating Voltage: 5V</li><li>Input Voltage (recommended) : 7-12V</li><li>Digital I/O Pins: 14 (of which 6 provide PWM output</li><li>Analog Input Pins: 6</li></ul></div><div class="p-item-price"><span class="price-new">5500৳</span> <span class="price-old">7000৳</span></div><div class="actions">  <span class="st-btn btn-add-cart" type="button"><i class="material-icons">shopping_cart</i> Buy Now</span>  <span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span></div></div></div></div>                        </div>
                         <div class="bottom-bar">
                             <div class="row">
                                 <div class="col-md-6 col-sm-12">
@@ -606,17 +516,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Counter Update Function
     function updateCartCounter() {
         let count = parseInt(desktopCartCounter.textContent);
         count++;
         desktopCartCounter.textContent = count;
 
-        // যদি mobile cart থাকে তবে update করবে
-        if(mobileCartCounter){
-            mobileCartCounter.textContent = count;
+        // Mobile counter update করবে শুধু সংখ্যা, CSS কে touch করবে না
+        if (mobileCartCounter) {
+            mobileCartCounter.innerText = count;
         }
     }
 
+    // Notification Function
     function showCartNotification(productName) {
         // নোটিফিকেশন ডিভ
         const notification = document.createElement('div');
@@ -639,7 +551,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <style>
-
 .cart-notification {
     position: fixed;
     bottom: 94px;
@@ -658,16 +569,32 @@ document.addEventListener('DOMContentLoaded', function() {
     z-index: 9999;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-
 .cart-notification.show {
     opacity: 1;
     transform: translateY(0);
 }
-
 .cart-notification i.material-icons {
     font-size: 20px;
 }
+
+@media (max-width: 768px) {
+  .mbl-right {
+      position: relative;
+  }
+  .mbl-right .counter {
+      background: #28a745;
+      color: #fff;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 50%;
+      position: absolute;
+      top: -5px;
+      right: -5px;
+  }
+}
 </style>
+
  
 </body>
 </html>
