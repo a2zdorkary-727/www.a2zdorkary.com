@@ -190,13 +190,26 @@
             <div class="footer btn-wrap"></div>
         </div>
         <div class="drawer m-cart" id="m-cart">
-            <div class="title">
-                <p>YOUR CART</p>
-                <span class="mc-toggler"><i class="material-icons">close</i></span>
-            </div>
-            <div class="content"><div class="loader"></div></div>
-            <div class="footer"></div>
+    <div class="title">
+        <p>YOUR CART</p>
+        <span class="mc-toggler"><i class="material-icons">close</i></span>
+    </div>
+    <div class="content">
+        <!-- Loader রাখা যেতে পারে যদি প্রয়োজন হয় -->
+        <div class="loader" style="display:none;"></div>
+
+        <!-- এই div যোগ করতে হবে, যেখানে cart item দেখাবে -->
+        <div id="cart-items"></div>
+    </div>
+    <div class="footer">
+        <div class="totals">
+            <p>Sub Total: <span id="sub-total">0৳</span></p>
+            <p>Total: <span id="total">0৳</span></p>
         </div>
+        <button id="checkout">Checkout</button>
+    </div>
+</div>
+
         <section class="after-header p-tb-15">
             <div class="container c-intro">
                 <ul class="breadcrumb" itemscope itemtype="http://schema.org/BreadcrumbList">
@@ -495,62 +508,221 @@
         </div>
     </div>
 </footer>
-
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // সব Buy Now বাটন সিলেক্ট করা
     const buyButtons = document.querySelectorAll('.btn-add-cart');
-    const desktopCartCounter = document.querySelector('#cart .counter');   // desktop
-    const mobileCartCounter  = document.querySelector('.mbl-right .counter'); // mobile
+    const cartIcon = document.getElementById('cart');          // Cart icon
+    const compareIcon = document.getElementById('cmpr-btn');  // Compare icon
+    const cartDrawer = document.getElementById('m-cart');     // Drawer
+    const cartItemsContainer = document.getElementById('cart-items');
+    const subTotalEl = document.getElementById('sub-total');
+    const totalEl = document.getElementById('total');
 
+    let cart = [];
+
+    // Buy Now Click
     buyButtons.forEach(button => {
         button.addEventListener('click', function() {
-            // প্রোডাক্টের নাম
-            const productName = this.closest('.p-item').querySelector('.p-item-name a').textContent;
-            
-            // কার্ট কাউন্টার আপডেট
-            updateCartCounter();
+            const pItem = this.closest('.p-item');
+            const product = {
+                id: pItem.dataset.id || Date.now(),
+                name: pItem.querySelector('.p-item-name a').textContent,
+                price: parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g,'')),
+                img: pItem.querySelector('img').src
+            };
 
-            // অ্যানিমেশন তৈরি
-            showCartNotification(productName);
+            cart.push(product);
+            updateCartCounter();
+            showCartNotification(product.name);
+            renderCart();
         });
     });
 
-    // Counter Update Function
-    function updateCartCounter() {
-        let count = parseInt(desktopCartCounter.textContent);
-        count++;
-        desktopCartCounter.textContent = count;
+    // Cart icon click: drawer open/close
+    document.querySelectorAll('.mc-toggler').forEach(btn => {
+        btn.addEventListener('click', function() {
+            cartDrawer.classList.toggle('open'); 
+            
+            // Cart + Compare icon visibility
+            if(cartDrawer.classList.contains('open')){
+                cartIcon.style.visibility = 'hidden';
+                compareIcon.style.visibility = 'hidden';
+            } else {
+                cartIcon.style.visibility = 'visible';
+                compareIcon.style.visibility = 'visible';
+            }
 
-        // Mobile counter update করবে শুধু সংখ্যা, CSS কে touch করবে না
-        if (mobileCartCounter) {
-            mobileCartCounter.innerText = count;
-        }
+            renderCart();
+        });
+    });
+
+    // Update Cart Counter
+    function updateCartCounter() {
+        let count = cart.length;
+        cartIcon.querySelector('.counter').textContent = count;
+        compareIcon.querySelector('.counter').textContent = count; // Compare count যদি same রাখা হয়
     }
 
-    // Notification Function
-    function showCartNotification(productName) {
-        // নোটিফিকেশন ডিভ
+    // Show Notification
+    function showCartNotification(name) {
         const notification = document.createElement('div');
         notification.className = 'cart-notification';
-        notification.innerHTML = `<i class="material-icons">check_circle</i> New item added successfully: <b>${productName}</b>`;
+        notification.innerHTML = `<i class="material-icons">check_circle</i> New item added successfully: <b>${name}</b>`;
         document.body.appendChild(notification);
-
-        // অ্যানিমেশন শুরু
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 10);
-
-        // 3 সেকেন্ড পর fade out এবং remove
+        void notification.offsetWidth;
+        notification.classList.add('show');
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => notification.remove(), 500);
         }, 3000);
     }
+
+    // Render Cart
+    function renderCart() {
+        cartItemsContainer.innerHTML = '';
+        let subTotal = 0;
+
+        cart.forEach((item, index) => {
+            subTotal += item.price;
+            const div = document.createElement('div');
+            div.className = 'cart-item';
+            div.innerHTML = `
+                <img src="${item.img}" alt="${item.name}">
+                <p class="cart-item-name">${item.name}</p>
+                <span class="cart-item-price">${item.price}৳</span>
+                <span class="cart-item-remove" data-index="${index}"><i class="material-icons">delete</i></span>
+            `;
+            cartItemsContainer.appendChild(div);
+        });
+
+        subTotalEl.textContent = subTotal + '৳';
+        totalEl.textContent = subTotal + '৳';
+
+        // Remove Item
+        document.querySelectorAll('.cart-item-remove').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                cart.splice(idx, 1);
+                updateCartCounter();
+                renderCart();
+            });
+        });
+    }
 });
+
 </script>
 
 <style>
+/* Drawer Style */
+.drawer.m-cart {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100%;
+    background: #fff;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+}
+
+.drawer.m-cart.open {
+    right: 0;
+}
+
+.drawer.m-cart .title {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.drawer.m-cart .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.cart-item-name {
+    flex: 1;
+    margin: 0 10px;
+    font-size: 14px;
+}
+
+.cart-item-price {
+    font-weight: bold;
+}
+
+.cart-item-remove {
+    cursor: pointer;
+    color: #dc3545;
+}
+
+.drawer.m-cart .footer {
+    padding: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.promo-code {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.promo-code input {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+}
+
+.promo-code button {
+    padding: 6px 12px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.totals p {
+    margin: 5px 0;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+}
+
+#checkout {
+    width: 100%;
+    padding: 10px;
+    background: #ff5722;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Cart Notification (keep existing) */
 .cart-notification {
     position: fixed;
     bottom: 94px;
@@ -575,23 +747,6 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .cart-notification i.material-icons {
     font-size: 20px;
-}
-
-@media (max-width: 768px) {
-  .mbl-right {
-      position: relative;
-  }
-  .mbl-right .counter {
-      background: #28a745;
-      color: #fff;
-      font-size: 12px;
-      font-weight: bold;
-      padding: 2px 6px;
-      border-radius: 50%;
-      position: absolute;
-      top: -5px;
-      right: -5px;
-  }
 }
 </style>
 
