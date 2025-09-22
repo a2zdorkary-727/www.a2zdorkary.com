@@ -1,8 +1,29 @@
+<?php
+// Error Reporting: Enable error reporting for debugging purposes
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
+// Database connection parameters
+$host = "localhost";
+$user = "root";
+$pass = "";
+$db = "robotics_shop";
 
+// Create a new database connection
+$conn = new mysqli($host, $user, $pass, $db);
 
+// Check if the connection was successful
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
 
+// SQL query to retrieve all products from the 'robotics_shop_product' table
+// Order the products by ID in descending order to show the latest products first
+$sql = "SELECT * FROM robotics_shop_product ORDER BY id DESC";
+$result = $conn->query($sql);
 
+?>
 
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
@@ -407,7 +428,72 @@
                             </div>
                         </div>
                         <div class="main-content p-items-wrap product-grid">
-                            <div class="p-item">  <div class="p-item-inner"><div class="marks"><span class="mark">Save: 200৳</span></div><div class="p-item-img"><a href="http://localhost/robotics-shop/product.php?id=2"><img src="https://a2zdorkary.com/contant-image/arduino-uno/arduino-uno-r3.jpg" alt="Arduino Uno R3" width="228" height="228"></a></div><div class="p-item-details">  <h4 class="p-item-name"><a href="http://localhost/robotics-shop/product.php?id=2">Arduino Uno R3</a></h4><div class="short-description"><ul><li>Microcontroller: ATmega328P</li><li>Operating Voltage: 5V</li><li>Input Voltage (recommended): 7-12V</li><li>Digital I/O Pins: 14 (6 provide PWM output)</li></ul></div><div class="p-item-price"><span class="price-new">1300৳</span> <span class="price-old">1500৳</span></div><div class="actions">  <span class="st-btn btn-add-cart" type="button"><i class="material-icons">shopping_cart</i> Buy Now</span>  <span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span></div></div></div></div><div class="p-item">  <div class="p-item-inner"><div class="marks"><span class="mark">Save: 1500৳</span></div><div class="p-item-img"><a href="http://localhost/robotics-shop/product.php?id=1"><img src="https://a2zdorkary.com/contant-image/arduino-uno/arduino-uno-r3-original.webp" alt="Original Arduino Uno R3 gggg" width="228" height="228"></a></div><div class="p-item-details">  <h4 class="p-item-name"><a href="http://localhost/robotics-shop/product.php?id=1">Original Arduino Uno R3 gggg</a></h4><div class="short-description"><ul><li>Micro-controller : ATmega328P</li><li>Operating Voltage: 5V</li><li>Input Voltage (recommended) : 7-12V</li><li>Digital I/O Pins: 14 (of which 6 provide PWM output</li><li>Analog Input Pins: 6</li></ul></div><div class="p-item-price"><span class="price-new">5500৳</span> <span class="price-old">7000৳</span></div><div class="actions">  <span class="st-btn btn-add-cart" type="button"><i class="material-icons">shopping_cart</i> Buy Now</span>  <span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span></div></div></div></div>                        </div>
+                            <?php
+                            // Check if the query returned any rows
+                            if($result && $result->num_rows > 0){
+                                // Loop through each row of the result set
+                                while($row = $result->fetch_assoc()){
+                                    // Corrected link generation
+                                    $link = "http://localhost/robotics-shop/product.php?id=" . intval($row['id']);
+
+                                    // Sanitize data for output to prevent XSS attacks
+                                    $name = htmlspecialchars($row['name']);
+                                    $img = htmlspecialchars($row['main_image']);
+                                    $price = (int)$row['price'];
+                                    $regular = (int)$row['regular_price'];
+                                    $discount = $regular - $price;
+
+                                    echo '<div class="p-item">';
+                                    echo '  <div class="p-item-inner">';
+
+                                    // Discount
+                                    if($discount > 0){
+                                        echo '<div class="marks"><span class="mark">Save: '.$discount.'৳</span></div>';
+                                    }
+
+                                    // Image and Link
+                                    echo '<div class="p-item-img"><a href="'.$link.'"><img src="'.$img.'" alt="'.$name.'" width="228" height="228"></a></div>';
+
+                                    // Product Details
+                                    echo '<div class="p-item-details">';
+                                    echo '  <h4 class="p-item-name"><a href="'.$link.'">'.$name.'</a></h4>';
+
+                                    // Short key features
+                                    if(!empty($row['key_features'])){
+                                        echo '<div class="short-description"><ul>';
+                                        $features = preg_split("/\r\n|\n|\r/", $row['key_features']);
+                                        foreach($features as $li){
+                                            echo '<li>'.htmlspecialchars(trim($li)).'</li>';
+                                        }
+                                        echo '</ul></div>';
+                                    }
+
+                                    // Price
+                                    echo '<div class="p-item-price">';
+                                    echo '<span class="price-new">'.$price.'৳</span>';
+                                    if($regular > $price){
+                                        echo ' <span class="price-old">'.$regular.'৳</span>';
+                                    }
+                                    echo '</div>';
+
+                                    // Action buttons
+                                    echo '<div class="actions">';
+                                    echo '  <span class="st-btn btn-add-cart" type="button"><i class="material-icons">shopping_cart</i> Buy Now</span>';
+                                    echo '  <span class="st-btn btn-compare"><i class="material-icons">library_add</i> Add to Compare</span>';
+                                    echo '</div>'; // actions
+
+                                    echo '</div>'; // p-item-details
+                                    echo '</div>'; // p-item-inner
+                                    echo '</div>'; // p-item
+                                }
+                            } else {
+                                echo '<p>No products found</p>';
+                            }
+
+                            // Close the database connection
+                            $conn->close();
+                            ?>
+                        </div>
                         <div class="bottom-bar">
                             <div class="row">
                                 <div class="col-md-6 col-sm-12">
@@ -532,9 +618,10 @@ document.addEventListener('DOMContentLoaded', function() {
     buyButtons.forEach(button => {
         button.addEventListener('click', function() {
             const pItem = this.closest('.p-item');
-            
-            // Generate a unique id for each product
-            const id = pItem.dataset.id || pItem.querySelector('.p-item-name a').textContent.trim();
+            // Use dataset.id if available, else use name+price as unique key
+            const name = pItem.querySelector('.p-item-name a').textContent.trim();
+            const price = parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g,''));
+            const id = pItem.dataset.id || name + '-' + price;
 
             let existing = cart.find(p => p.id === id);
 
@@ -543,8 +630,8 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 const product = {
                     id: id,
-                    name: pItem.querySelector('.p-item-name a').textContent.trim(),
-                    price: parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g,'')),
+                    name: name,
+                    price: price,
                     img: pItem.querySelector('img').src,
                     qty: 1
                 };
@@ -553,7 +640,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             saveCart();
             updateCartCounter();
-            showCartNotification(pItem.querySelector('.p-item-name a').textContent.trim());
+            showCartNotification(name);
             renderCart();
         });
     });
@@ -586,10 +673,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function showCartNotification(name) {
         const notification = document.createElement('div');
         notification.className = 'cart-notification';
-        notification.innerHTML = `<i class="material-icons">check_circle</i>New Item Added: <b>${name}</b>`;
+        notification.innerHTML = `<i class="material-icons">check_circle</i>New Item Added Successfully: <b>${name}</b>`;
         document.body.appendChild(notification);
 
-        if(window.innerWidth <= 768) {
+        if(window.innerWidth <= 768){
             const cartRect = cartIcon.getBoundingClientRect();
             notification.style.right = (window.innerWidth - cartRect.right) + 'px';
             notification.style.bottom = (window.innerHeight - cartRect.top + 10) + 'px';
@@ -669,6 +756,7 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCart();
 });
 </script>
+
 
 <style>
 .drawer.m-cart {
