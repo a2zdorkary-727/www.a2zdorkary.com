@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -540,12 +541,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const buyButtons = document.querySelectorAll('.btn-add-cart');
     const cartIcon = document.querySelector('#cart');
     const compareIcon = document.querySelector('#cmpr-btn');
+    const desktopCartCounter = cartIcon.querySelector('.counter');
+    const mobileCartCounter  = document.querySelector('.mbl-right .counter');
     const cartDrawer = document.getElementById('m-cart');
     const cartItemsContainer = document.getElementById('cart-items');
     const subTotalEl = document.getElementById('sub-total');
     const totalEl = document.getElementById('total');
     const checkoutBtn = document.getElementById('checkout');
 
+    // ✅ Cart data localStorage এ রাখব (page change বা refresh এ থাকে)
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
     function saveCart() {
@@ -553,9 +557,29 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateCartCounter() {
-        const count = cart.reduce((sum, item) => sum + item.qty, 0);
-        cartIcon.querySelector('.counter').textContent = count;
-        compareIcon.querySelector('.counter').textContent = count; 
+        let count = cart.reduce((sum, item) => sum + item.qty, 0);
+        desktopCartCounter.textContent = count;
+        if(mobileCartCounter) mobileCartCounter.textContent = count;
+    }
+
+    function showCartNotification(name) {
+        const notification = document.createElement('div');
+        notification.className = 'cart-notification';
+        notification.innerHTML = `<i class="material-icons">check_circle</i> New Item Added: <b>${name}</b>`;
+        document.body.appendChild(notification);
+
+        if(window.innerWidth <= 768){
+            const cartRect = cartIcon.getBoundingClientRect();
+            notification.style.right = (window.innerWidth - cartRect.right) + 'px';
+            notification.style.bottom = (window.innerHeight - cartRect.top + 10) + 'px';
+        }
+
+        void notification.offsetWidth;
+        notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 500);
+        }, 2000);
     }
 
     function renderCart() {
@@ -575,7 +599,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="qty-btn qty-plus" data-index="${index}">+</button>
                 </div>
                 <span class="cart-item-price">${item.price * item.qty}৳</span>
-                <span class="cart-item-remove" data-index="${index}">&times;</span>
+                <span class="cart-item-remove" data-index="${index}">
+                    <i class="material-icons">delete</i>
+                </span>
             `;
             cartItemsContainer.appendChild(div);
         });
@@ -583,17 +609,19 @@ document.addEventListener('DOMContentLoaded', function() {
         subTotalEl.textContent = subTotal + '৳';
         totalEl.textContent = subTotal + '৳';
 
+        // Qty −
         document.querySelectorAll('.qty-minus').forEach(btn => {
             btn.addEventListener('click', function() {
                 const idx = parseInt(this.dataset.index);
                 cart[idx].qty -= 1;
-                if(cart[idx].qty <= 0) cart.splice(idx,1);
+                if (cart[idx].qty <= 0) cart.splice(idx, 1);
                 saveCart();
                 updateCartCounter();
                 renderCart();
             });
         });
 
+        // Qty +
         document.querySelectorAll('.qty-plus').forEach(btn => {
             btn.addEventListener('click', function() {
                 const idx = parseInt(this.dataset.index);
@@ -604,10 +632,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
+        // Remove
         document.querySelectorAll('.cart-item-remove').forEach(btn => {
             btn.addEventListener('click', function() {
                 const idx = parseInt(this.dataset.index);
-                cart.splice(idx,1);
+                cart.splice(idx, 1);
                 saveCart();
                 updateCartCounter();
                 renderCart();
@@ -615,6 +644,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Buy Now
     buyButtons.forEach(button => {
         button.addEventListener('click', function() {
             const pItem = this.closest('.p-item');
@@ -623,56 +653,45 @@ document.addEventListener('DOMContentLoaded', function() {
             const id = pItem.dataset.id || name + '-' + price;
 
             let existing = cart.find(p => p.id === id);
-            if(existing) existing.qty += 1;
-            else cart.push({id,name,price,img:pItem.querySelector('img').src,qty:1});
+
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                const product = {
+                    id: id,
+                    name: name,
+                    price: price,
+                    img: pItem.querySelector('img').src,
+                    qty: 1
+                };
+                cart.push(product);
+            }
 
             saveCart();
             updateCartCounter();
+            showCartNotification(name);
             renderCart();
         });
     });
 
-    // Drawer toggle function
-    function openCartDrawer() {
-        cartDrawer.classList.add('open');
-        cartIcon.style.visibility = 'hidden';
-        compareIcon.style.visibility = 'hidden';
-        renderCart();
-    }
-
-    function closeCartDrawer() {
-        cartDrawer.classList.remove('open');
-        cartIcon.style.visibility = 'visible';
-        compareIcon.style.visibility = 'visible';
-    }
-
-    // Cart icon click opens drawer
-    cartIcon.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if(!cartDrawer.classList.contains('open')){
-            openCartDrawer();
-        }
-    });
-
-    // Cross icon click closes drawer
-    const drawerCloseBtn = cartDrawer.querySelector('.mc-toggler i');
-    if(drawerCloseBtn){
-        drawerCloseBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            closeCartDrawer();
+    // Drawer toggle
+    document.querySelectorAll('.mc-toggler').forEach(btn => {
+        btn.addEventListener('click', function() {
+            cartDrawer.classList.toggle('open');
+            renderCart();
+            if(cartDrawer.classList.contains('open')) {
+                cartIcon.style.visibility = 'hidden';
+                compareIcon.style.visibility = 'hidden';
+            } else {
+                cartIcon.style.visibility = 'visible';
+                compareIcon.style.visibility = 'visible';
+            }
         });
-    }
-
-    // Click outside drawer closes it
-    document.addEventListener('click', function(e){
-        if(cartDrawer.classList.contains('open') && !cartDrawer.contains(e.target) && !cartIcon.contains(e.target)){
-            closeCartDrawer();
-        }
     });
 
     // Checkout
-    if(checkoutBtn){
-        checkoutBtn.addEventListener('click', function(){
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
             window.location.href = "https://a2zdorkary.com/checkout.html";
         });
     }
@@ -681,7 +700,13 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCartCounter();
     renderCart();
 });
+
+// ✅ Browser/tab close হলে localStorage clear করতে চাইলে নিচের লাইন আনকমেন্ট করো
+ //window.addEventListener("beforeunload", function() {
+  //   localStorage.removeItem('cart');
+// });
 </script>
+
 
 
 
