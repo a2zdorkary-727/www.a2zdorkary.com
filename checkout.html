@@ -1,0 +1,837 @@
+
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout</title>
+    <base href="https://www.a2zdorkary.com" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" type="image/png" href="a2zdorkary-logo.png">            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://www.a2zdorkary.com/checkout.min.17.css" type="text/css" rel="stylesheet" media="screen" />        <script type="text/javascript">var app={mgs_type: "popup", enablePopup: 1, popupDuration: 6, onReady:function(d,a,e,f,t){a=Array.isArray(a)?a:[a];t=t||2E3;for(var g=!0,b=d,c=0;c<a.length;c++){var h=a[c];if("undefined"==typeof b[h]){g=!1;break}b=b[h]}g?e():f&&setTimeout(function(){app.onReady(d,a,e,--f)},t)}};</script>
+    <script src="https://www.a2zdorkary.com/site.min.52.js"></script>
+        <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2BV6E3DJTL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-2BV6E3DJTL');
+</script>
+
+
+<script>
+  !function(f,b,e,v,n,t,s)
+  { if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '378818912571012');
+  fbq('track', 'PageView');
+</script>
+</head>
+<body class="common-home">
+<header id="header">
+    <div class="top">
+        <div class="container">
+            <div class="ht-item logo">
+                <div class="mbl-nav-top h-desk">
+                    <div id="nav-toggler">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+                <a class="brand" href="https://www.a2zdorkary.com"> <img src="a2zdorkary-logo.png" alt="A2Z Dorkary" width="144" height="164" title="A2Z Dorkary"></a>
+
+                <div class="mbl-right h-desk">
+                    <div class="ac search-toggler"><i class="material-icons">search</i></div>
+                    <div class="ac mc-toggler"><i class="material-icons">shopping_basket</i><span class="counter" data-count="0">0</span></div>
+                </div>
+            </div>
+            
+             <div class="ht-item search" id="search">
+         <form action="/product/search" method="get">
+        <input type="text" name="search" placeholder="Search" autocomplete="off" />
+        <button type="submit" class="material-icons">search</button>
+                </form>
+                </div>
+            
+            <div class="ht-item q-actions">
+                <a href="https://www.a2zdorkary.com/information/offer" class="ac h-offer-icon">
+                    <div class="ic"><i class="material-icons">card_giftcard</i></div>
+                    <div class="ac-content">
+                        <h5>Offers</h5>
+                        <p>Latest Offers</p>
+                    </div>
+                </a>
+                <a href="https://www.a2zdorkary.com/happy-hour" class="ac h-offer-icon">
+                    <div class="ic"><i class="material-icons blink">flash_on</i></div>
+                    <div class="ac-content">
+                        <h5>Happy Hour</h5>
+                        <p>Special Deals</p>
+                    </div>
+                </a>
+                <a href="https://www.a2zdorkary.com/tool/pc_builder" class="ac h-desk build-pc">
+                    <div class="ic"><i class="material-icons">important_devices</i></div>
+                    <div class="ac-content">
+                        <h5 class="text">PC Builder</h5>
+                    </div>
+                </a>
+                <div class="ac cmpr-toggler h-desk">
+                    <div class="ic"><i class="material-icons">library_add</i></div>
+                    <div class="ac-content">
+                        <h5 class="text">Compare (0)</h5>
+                    </div>
+                </div>
+                <div class="ac">
+                    <a class="ic" href="https://www.a2zdorkary.com/account/login"><i class="material-icons">person</i></a>
+                    <div class="ac-content">
+                        <a href="https://www.a2zdorkary.com/account/login"><h5>Account</h5></a>
+                        <p><a href="https://www.a2zdorkary.com/account/register">Register</a> or <a href="https://www.a2zdorkary.com/account/login">Login</a></span></p>
+                    </div>                </div>
+                <div class="ac build-pc m-hide">
+                    <a class="btn" href="https://www.a2zdorkary.com/tool/pc_builder">PC Builder</a>
+                 </div>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar" id="main-nav">
+            <div class="container">
+                <ul class="navbar-nav">
+                    <li class="nav-item has-child">
+                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops">Controllers & Boards</a>
+                        <ul class="drop-down drop-menu-1">
+                            <li class="nav-item has-child ">
+                                <a class="nav-link" href="https://www.a2zdorkary.com/robotics-shop.html">Arduino Boards</a>
+                                <ul class="drop-down drop-menu-2">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc/intel-gaming-pc">Arduino Nano</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/robotics-shop.html">Arduino Uno</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc/amd-gaming-pc">Arduino Mega </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item has-child">
+                                <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc">Raspberry Pi</a>
+                                <ul class="drop-down drop-menu-2">
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc/intel-gaming-pc">Raspberry Pi 1</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc/amd-gaming-pc">Raspberry Pi 2</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc/intel-gaming-pc">Raspberry Pi 3</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc/amd-gaming-pc">Raspberry Pi 4</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc/amd-gaming-pc">Raspberry Pi 400</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc/intel-gaming-pc">Raspberry Pi Zero</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc/amd-gaming-pc">Raspberry Pi 5</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://www.a2zdorkary.com/desktops/gaming-pc/amd-gaming-pc">Raspberry Pi Pico</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="main-content-wrapper">
+        <div class="f-btn mc-toggler" id="cart">
+            <i class="material-icons">shopping_basket</i>
+            <div class="label">Cart</div>
+            <span class="counter">0</span>
+        </div>
+        <div class="f-btn cmpr-toggler" id="cmpr-btn">
+            <i class="material-icons">library_add</i>
+            <div class="label">Compare</div>
+            <span class="counter">0</span>
+        </div>
+        <div class="drawer cmpr-panel " id="cmpr-panel">
+            <div class="title">
+                <p>Compare Product</p>
+                <span class="cmpr-toggler"><i class="material-icons">close</i></span>
+            </div>
+            <div class="content"><div class="loader"></div></div>
+            <div class="footer btn-wrap"></div>
+        </div>
+        <div class="drawer m-cart" id="m-cart">
+    <div class="title">
+        <p>YOUR CART</p>
+        <span class="mc-toggler"><i class="material-icons">close</i></span>
+    </div>
+    <div class="content">
+        <!-- Loader রাখা যেতে পারে যদি প্রয়োজন হয় -->
+        <div class="loader" style="display:none;"></div>
+
+        <!-- এই div যোগ করতে হবে, যেখানে cart item দেখাবে -->
+        <div id="cart-items"></div>
+    </div>
+    <div class="footer">
+        <div class="totals">
+            <p>Sub Total: <span id="sub-total">0৳</span></p>
+            <p>Total: <span id="total">0৳</span></p>
+        </div>
+        <button id="checkout">Checkout</button>
+    </div>
+</div>
+
+
+
+
+
+
+</section>
+<div class="container alert-container">
+    </div>
+<section class="checkout bg-bt-gray p-tb-15">
+    <div class="container">
+        <div class="alert alert-info m-b-30"><span style="font-size:14px; font-style: italic;">কারিগরি ত্রুটির কারণে পণ্যের মূল্য অসঙ্গতিপূর্ণ হলে, এ টু জেড কর্তৃপক্ষ অর্ডার বাতিলের অধিকার সংরক্ষণ করে।</span></div>
+        <h1 class="page-title">Checkout</h1>
+        <form class="checkout-content" id="checkout-form" action="https://www.a2zdorkary.com/checkout/onepagecheckout" method="post">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="page-section ws-box section-reward">
+                        <div class="info">
+                            <h2>Star Point</h2>
+                            <p class="blurb">Earn A2Z Points and use on your next order</p>
+                        </div>
+                        <div class="sticker reward">
+                            <span class="material-icons">stars</span>
+                            <span class="points">00</span>
+                            <span class="text">A2Z Points</span>
+                        </div>
+                        <a href="https://a2zdorkary.com/account/login" class="btn">Login to Avail</a>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <div class="page-section ws-box">
+                        <div class="section-head">
+                            <h2><span>1</span>Customer Information</h2>
+                        </div>
+                                                <div class="address">
+                            <div class="multiple-form-group">
+                                <div class="form-group">
+                                    <label class="control-label" for="input-firstname">First Name</label>
+                                    <input class="form-control" name="firstname" type="text" id="input-firstname" value="" placeholder="First Name*" >
+                                                                    </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="input-lastname">Last Name</label>
+                                    <input type="text" id="input-lastname" name="lastname" value="" class="form-control" placeholder="Last Name*" >
+                                                                    </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="input-address">Address</label>
+                                <input type="text" id="input-address" name="address_1" value="" class="form-control" placeholder="Address*" >
+                                                            </div>
+                            <div class="form-group">
+                               <label class="control-label" for="input-telephone">Mobile</label>
+                               <input type="tel" id="input-telephone" name="telephone" value=""  class="form-control" placeholder="Telephone*" >
+                                                          </div>
+                            <div class="form-group" for="input-email">
+                                <label class="control-label">Email</label>
+                                <input type="email" id="input-email" name="email" value="" class="form-control" placeholder="E-Mail*">
+                                                            </div>
+                            <div class="multiple-form-group">
+                                <div class="form-group" for="input-city">
+                                    <label class="control-label">Upazila/Thana</label>
+                                    <input type="text" id="input-city" name="city" value="" class="form-control"  placeholder="Upazila/Thana*" >
+                                                                    </div>
+                                <div class="form-group" for="input-zone">
+                                    <label class="control-label">District</label>
+                                    <select name="zone_id" id="input-zone" class="form-control snap-drpd">
+                                                                                <option value="4250" >Bagerhat</option>
+                                                                                <option value="4285" >Bandarban</option>
+                                                                                <option value="4271" >Barguna</option>
+                                                                                <option value="320" >Barisal</option>
+                                                                                <option value="4273" >Bhola</option>
+                                                                                <option value="4280" >Bogura</option>
+                                                                                <option value="4297" >Brahmanbaria</option>
+                                                                                <option value="4286" >Chandpur</option>
+                                                                                <option value="4277" >Chapai Nawabganj</option>
+                                                                                <option value="321" >Chattogram - City</option>
+                                                                                <option value="4284" >Chattogram - Suburb</option>
+                                                                                <option value="4259" >Chuadanga</option>
+                                                                                <option value="4288" >Cox's Bazar</option>
+                                                                                <option value="4287" >Cumilla</option>
+                                                                                <option value="322" selected>Dhaka - City</option>
+                                                                                <option value="4237" >Dhaka - Suburb</option>
+                                                                                <option value="4272" >Dinajpur</option>
+                                                                                <option value="4238" >Faridpur</option>
+                                                                                <option value="4289" >Feni</option>
+                                                                                <option value="4263" >Gaibandha</option>
+                                                                                <option value="4233" >Gazipur - City</option>
+                                                                                <option value="4239" >Gazipur - Suburb</option>
+                                                                                <option value="4241" >Gopalganj</option>
+                                                                                <option value="4242" >Habiganj</option>
+                                                                                <option value="4262" >Jamalpur</option>
+                                                                                <option value="4253" >Jashore</option>
+                                                                                <option value="4276" >Jhalokati</option>
+                                                                                <option value="4257" >Jhenaidah</option>
+                                                                                <option value="4281" >Joypurhat</option>
+                                                                                <option value="4290" >Khagrachari</option>
+                                                                                <option value="323" >Khulna - City</option>
+                                                                                <option value="4296" >Khulna - Suburb</option>
+                                                                                <option value="4243" >Kishoregonj</option>
+                                                                                <option value="4265" >Kurigram</option>
+                                                                                <option value="4258" >Kushtia</option>
+                                                                                <option value="4291" >Lakshmipur</option>
+                                                                                <option value="4266" >Lalmonirhat</option>
+                                                                                <option value="4244" >Madaripur</option>
+                                                                                <option value="4256" >Magura</option>
+                                                                                <option value="4246" >Manikganj</option>
+                                                                                <option value="4260" >Meherpur</option>
+                                                                                <option value="4240" >Moulvibazar</option>
+                                                                                <option value="4247" >Munshiganj</option>
+                                                                                <option value="4236" >Mymensingh</option>
+                                                                                <option value="4274" >Naogaon</option>
+                                                                                <option value="4255" >Narail</option>
+                                                                                <option value="4248" >Narayanganj</option>
+                                                                                <option value="4251" >Narsingdi</option>
+                                                                                <option value="4275" >Natore</option>
+                                                                                <option value="4264" >Netrokona</option>
+                                                                                <option value="4268" >Nilphamari</option>
+                                                                                <option value="4292" >Noakhali</option>
+                                                                                <option value="4278" >Pabna</option>
+                                                                                <option value="4269" >Panchagarh</option>
+                                                                                <option value="4282" >Patuakhali</option>
+                                                                                <option value="4283" >Pirojpur</option>
+                                                                                <option value="4254" >Rajbari</option>
+                                                                                <option value="4294" >Rajshahi - Suburb</option>
+                                                                                <option value="324" >Rajshahi City</option>
+                                                                                <option value="4293" >Rangamati</option>
+                                                                                <option value="4295" >Rangpur - Suburb</option>
+                                                                                <option value="4231" >Rangpur City</option>
+                                                                                <option value="4252" >Satkhira</option>
+                                                                                <option value="4261" >Shariatpur</option>
+                                                                                <option value="4267" >Sherpur</option>
+                                                                                <option value="4279" >Sirajganj</option>
+                                                                                <option value="4245" >Sunamganj</option>
+                                                                                <option value="325" >Sylhet</option>
+                                                                                <option value="4249" >Tangail</option>
+                                                                                <option value="4270" >Thakurgaon</option>
+                                                                            </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Comment</label>
+                                <textarea class="form-control"  name="comment" value="" placeholder="Comment" rows="6"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 col-sm-12">
+                    <div class="row row-payment-delivery-order">
+                        <div class="col-md-6 col-sm-12 payment-methods">
+                            <div class="page-section ws-box">
+                                <div class="section-head">
+                                    <h2><span>2</span>Payment Method</h2>
+                                </div>
+                                <p>Select a payment method</p>
+                                                                <label class="radio-inline">
+                                                                                                            <input type="radio" name="payment_method" value="cod" checked="checked" />
+                                                                        Cash on Delivery                                </label><br>
+                                                                <label class="radio-inline">
+                                                                        <input type="radio" name="payment_method" value="online" />
+                                                                        Online Payment                                </label><br>
+                                                                <label class="radio-inline">
+                                                                        <input type="radio" name="payment_method" value="pod" />
+                                                                        POS on Delivery                                </label><br>
+                                                                <div class="accepted-logo">
+                                    <h5>We Accept : </h5>
+                                    <a href="#"><img  class="logo logo-visa" src="https://a2zdorkary.com/payment-methods.png"></a>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12 delivery-methods">
+                            <div class="page-section ws-box">
+                                <div class="section-head">
+                                    <h2><span>3</span>Delivery Method</h2>
+                                </div>
+                                                                <p>Select a delivery method</p>
+                                                                                                                                <label class="radio-inline">
+                                                                                                            <input type="radio" name="shipping_method" value="flat.flat" checked="checked" />
+                                                                        Home Delivery - 80৳                                </label><br>
+                                <input type="hidden" name="flat.flat.title" value="Home Delivery">
+                                                                                                                                                                                                <label class="radio-inline">
+                                                                        <input type="radio" name="shipping_method" value="pickup.pickup" />
+                                                                        Store Pickup - 0৳                                </label><br>
+                                <input type="hidden" name="pickup.pickup.title" value="Store Pickup">
+                                                                                                                                                                                                <label class="radio-inline">
+                                                                        <input type="radio" name="shipping_method" value="express.express" />
+                                                                        Request Express - 300৳                                </label><br>
+                                <input type="hidden" name="express.express.title" value="Request Express">
+                                                                                                                                                            </div>
+                        </div>
+                        <div class="col-md-12 col-sm-12">
+                            <div class="page-section ws-box voucher-coupon">
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12" id="gift-voucher">
+                                        <div class="input-group">
+                                            <input type="text" name="voucher" placeholder="Gift Voucher" id="input-voucher" class="form-control" />
+                                            <span class="input-group-btn"><button type="button" id="button-voucher" data-loading-text="Loading..."  class="btn st-outline">Apply Voucher</button></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12" id="discount-coupon">
+                                        <div class="input-group">
+                                            <input type="text" name="coupon" placeholder="Promo / Coupon Code" id="input-coupon" class="form-control" />
+                                            <span class="input-group-btn"><button type="button" id="button-coupon" data-loading-text="Loading..."  class="btn st-outline">Apply Coupon</button></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                                                <div class="col-md-12 col-sm-12 details-section-wrap">
+    <div class="page-section ws-box">
+        <div class="section-head">
+            <h2><span>4</span>Order Overview</h2>
+        </div>
+        <table class="table-bordered bg-white checkout-data">
+            <thead>
+                <tr>
+                    <td>Product Name</td>
+                    <td>Price</td>
+                    <td class="text-right">Total</td>
+                </tr>
+            </thead>
+            <tbody id="order-overview-body">
+                <!-- JS দিয়ে cart এর product show হবে -->
+            </tbody>
+        </table>
+    
+
+                            </div>
+                        </div>
+                                            </div>
+                </div>
+            </div>
+            <div class="checkout-final-action">
+
+                                <div class="agree-text" style="margin-bottom: 10px">I have read and agree to the <a href="https://www.a2zdorkary.com/warranty-policy" target="_blank"><b>Terms and Conditions</b></a>, <a href="https://www.a2zdorkary.com/privacy" target="_blank"><b>Privacy Policy</b></a> and <a href="https://www.a2zdorkary.com/refund-policy" target="_blank"><b>Refund and Return Policy</b></a>                                        <input type="checkbox" name="agree" value="1" checked="checked" />
+                                    </div>
+                                <button id="button-confirm" class="btn submit-btn pull-right" type="submit">Confirm Order</button>
+            </div>
+        </form>
+
+    </div>
+</section>
+<section class="content-bottom">
+    <div class="container">
+            </div>
+</section>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const cartIcon = document.querySelector('#cart');
+    const compareIcon = document.querySelector('#cmpr-btn');
+    const desktopCartCounter = cartIcon.querySelector('.counter');
+    const mobileCartCounter  = document.querySelector('.mbl-right .counter');
+    const cartDrawer = document.getElementById('m-cart');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const subTotalEl = document.getElementById('sub-total');
+    const totalEl = document.getElementById('total');
+    const checkoutBtn = document.getElementById('checkout');
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function saveCart() {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function updateCartCounter() {
+        let count = cart.reduce((sum, item) => sum + item.qty, 0);
+        desktopCartCounter.textContent = count;
+        if(mobileCartCounter) mobileCartCounter.textContent = count;
+    }
+
+    function renderCart() {
+        cartItemsContainer.innerHTML = '';
+        let subTotal = 0;
+
+        cart.forEach((item, index) => {
+            subTotal += item.price * item.qty;
+            const div = document.createElement('div');
+            div.className = 'cart-item';
+            div.innerHTML = `
+                <img src="${item.img}" alt="${item.name}">
+                <p class="cart-item-name">${item.name}</p>
+                <div class="cart-item-qty">
+                    <button class="qty-btn qty-minus" data-index="${index}">−</button>
+                    <input type="text" value="${item.qty}" readonly>
+                    <button class="qty-btn qty-plus" data-index="${index}">+</button>
+                </div>
+                <span class="cart-item-price">${item.price * item.qty}৳</span>
+                <span class="cart-item-remove" data-index="${index}">
+                    <i class="material-icons">delete</i>
+                </span>
+            `;
+            cartItemsContainer.appendChild(div);
+        });
+
+        subTotalEl.textContent = subTotal + '৳';
+        totalEl.textContent = subTotal + '৳';
+    }
+
+    // Drawer toggle
+    document.querySelectorAll('.mc-toggler').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.drawer.open').forEach(d => d.classList.remove('open'));
+            cartDrawer.classList.add('open');
+            renderCart();
+            cartIcon.style.visibility = 'hidden';
+            compareIcon.style.visibility = 'hidden';
+        });
+    });
+
+    // Drawer close
+    document.addEventListener('click', function(e){
+        if(cartDrawer.classList.contains('open') && !cartDrawer.contains(e.target) && !e.target.closest('.mc-toggler')){
+            cartDrawer.classList.remove('open');
+            cartIcon.style.visibility = 'visible';
+            compareIcon.style.visibility = 'visible';
+        }
+    });
+
+    // Checkout redirect
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+            window.location.href = "https://a2zdorkary.com/robotics-shop.html";
+        });
+    }
+
+    // Init
+    updateCartCounter();
+    renderCart();
+});
+
+
+document.addEventListener("DOMContentLoaded", function(){
+    const tbody = document.getElementById("order-overview-body");
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let subTotal = 0;
+    let delivery = 80; // fixed delivery charge
+
+    tbody.innerHTML = ""; // clear old rows
+
+    cart.forEach(item => {
+        let total = item.price * item.qty;
+        subTotal += total;
+
+        let tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td class="name">
+                <a href="#">${item.name}</a>
+                <div class="fade">Qty: ${item.qty}</div>
+            </td>
+            <td class="price"><span>${item.price}৳</span> <span>x</span> <span>${item.qty}</span></td>
+            <td class="price text-right">${total}৳</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    // Sub Total row
+    let trSub = document.createElement("tr");
+    trSub.className = "total";
+    trSub.innerHTML = `
+        <td colspan="2" class="text-right"><strong>Sub-Total:</strong></td>
+        <td class="text-right"><span class="amount">${subTotal}৳</span></td>
+    `;
+    tbody.appendChild(trSub);
+
+    // Delivery row
+    let trDelivery = document.createElement("tr");
+    trDelivery.className = "total";
+    trDelivery.innerHTML = `
+        <td colspan="2" class="text-right"><strong>Home Delivery:</strong></td>
+        <td class="text-right"><span class="amount">${delivery}৳</span></td>
+    `;
+    tbody.appendChild(trDelivery);
+
+    // Total row
+    let trTotal = document.createElement("tr");
+    trTotal.className = "total";
+    trTotal.innerHTML = `
+        <td colspan="2" class="text-right"><strong>Total:</strong></td>
+        <td class="text-right"><span class="amount">${subTotal + delivery}৳</span></td>
+    `;
+    tbody.appendChild(trTotal);
+});
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    const tbody = document.getElementById("order-overview-body");
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let subTotal = 0;
+    let delivery = 80; // fixed delivery charge
+
+    tbody.innerHTML = ""; // clear old rows
+
+    cart.forEach(item => {
+        let total = item.price * item.qty;
+        subTotal += total;
+
+        let tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td class="name">
+                <a href="#">${item.name}</a>
+                <div class="fade">Qty: ${item.qty}</div>
+            </td>
+            <td class="price"><span>${item.price}৳</span> <span>x</span> <span>${item.qty}</span></td>
+            <td class="price text-right">${total}৳</td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    // Sub Total row
+    let trSub = document.createElement("tr");
+    trSub.className = "total";
+    trSub.innerHTML = `
+        <td colspan="2" class="text-right"><strong>Sub-Total:</strong></td>
+        <td class="text-right"><span class="amount">${subTotal}৳</span></td>
+    `;
+    tbody.appendChild(trSub);
+
+    // Delivery row
+    let trDelivery = document.createElement("tr");
+    trDelivery.className = "total";
+    trDelivery.innerHTML = `
+        <td colspan="2" class="text-right"><strong>Home Delivery:</strong></td>
+        <td class="text-right"><span class="amount">${delivery}৳</span></td>
+    `;
+    tbody.appendChild(trDelivery);
+
+    // Total row
+    let trTotal = document.createElement("tr");
+    trTotal.className = "total";
+    trTotal.innerHTML = `
+        <td colspan="2" class="text-right"><strong>Total:</strong></td>
+        <td class="text-right"><span class="amount">${subTotal + delivery}৳</span></td>
+    `;
+    tbody.appendChild(trTotal);
+});
+
+cartIcon.style.visibility = 'hidden';
+compareIcon.style.visibility = 'hidden';
+cartIcon.style.visibility = 'visible';
+compareIcon.style.visibility = 'visible';
+
+</script>
+
+
+
+
+
+
+
+
+<style>
+/* Cart Drawer Styles */
+.drawer.m-cart {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100%;
+    background: #fff;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+}
+.drawer.m-cart.open { right: 0; }
+
+.drawer.m-cart .title {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.drawer.m-cart .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.cart-item-name {
+    flex: 1;
+    margin: 0 10px;
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.cart-item-qty {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+    min-width: 80px;
+    justify-content: center;
+}
+
+.cart-item-qty input {
+    width: 50px;
+    height: 24px;
+    text-align: center;
+    border: 1px solid #ccc;
+    margin: 0 3px;
+    border-radius: 3px;
+    background: #fff;
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+    pointer-events: none;
+}
+
+.qty-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0 6px;
+    color: #333;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.qty-btn:hover { color: #007bff; }
+
+.cart-item-price { font-weight: bold; font-family: 'Roboto', sans-serif; }
+
+.cart-item-remove { cursor: pointer; color: #dc3545; }
+
+.drawer.m-cart .footer {
+    padding: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.promo-code {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.promo-code input {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+}
+
+.promo-code button {
+    padding: 6px 12px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.totals p {
+    margin: 5px 0;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Roboto', sans-serif;
+}
+
+#checkout {
+    width: 100%;
+    padding: 10px;
+    background: #ff5722;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Cart Notification Styles */
+.cart-notification {
+    position: fixed;
+    bottom: 94px;
+    right: 80px;
+    background-color: #28a745;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(50px); /* desktop slide */
+    transition: all 0.5s ease-in-out;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.cart-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.cart-notification i.material-icons {
+    font-size: 20px;
+}
+
+/* Mobile view: slide effect off, notification visible */
+@media screen and (max-width: 768px) {
+    .cart-notification {
+        transform: none !important; /* slide effect off */
+        transition: opacity 0.5s ease-in-out !important; /* only fade */
+        display: flex !important; /* ensure visible */
+        opacity: 1 !important; /* keep visible */
+        bottom: 94px !important; /* desktop same position */
+        right: 80px !important; /* desktop same position */
+    }
+
+    .cart-notification.show {
+        transform: none !important;
+        opacity: 1 !important; /* always visible */
+    }
+}
+</style>
+
+
+</body></html>
