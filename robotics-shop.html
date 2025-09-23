@@ -526,8 +526,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalEl = document.getElementById('total');
     const checkoutBtn = document.getElementById('checkout');
 
-    // ✅ LocalStorage এ cart save
+    // ✅ Cart data localStorage এ
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // ✅ Session flag (page reload বা navigation করলে থাকবে, কিন্তু tab close হলে clear হবে)
+    sessionStorage.setItem("sessionActive", "true");
 
     function saveCart() {
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -678,17 +681,14 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCart();
 });
 
-/* ✅ এখন শুধু tab/browser close হলে clear হবে
-   কিন্তু refresh / অন্য page এ গেলে clear হবে না */
-window.addEventListener("beforeunload", function (event) {
-    if (performance.getEntriesByType("navigation")[0].type === "reload") {
-        // Refresh হলে কিছুই করব না
-        return;
+// ✅ Tab/Browser close হলে cart clear হবে
+window.addEventListener("unload", function () {
+    if (!sessionStorage.getItem("sessionActive")) {
+        localStorage.removeItem("cart");
     }
-    // অন্যথায় (tab close বা browser close) -> clear
-    localStorage.removeItem("cart");
 });
 </script>
+
 
 
 
