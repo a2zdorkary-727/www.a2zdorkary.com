@@ -677,16 +677,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Init
+    // ✅ Init
     updateCartCounter();
     renderCart();
 });
 
-// ✅ Window/tab close হলে clear
-window.addEventListener('beforeunload', function() {
-    localStorage.removeItem('cart');
+// ✅ শুধু browser/tab close হলে clear হবে
+window.addEventListener('unload', function() {
+    if (!document.visibilityState || document.visibilityState === "hidden") {
+        localStorage.removeItem('cart');
+    }
 });
 </script>
+
 
 
 
