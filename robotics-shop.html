@@ -526,22 +526,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalEl = document.getElementById('total');
     const checkoutBtn = document.getElementById('checkout');
 
-    // ✅ Cart data localStorage এ রাখব
+    // ✅ LocalStorage এ cart save
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-    // Save cart
     function saveCart() {
         localStorage.setItem('cart', JSON.stringify(cart));
     }
 
-    // Update cart counter
     function updateCartCounter() {
         let count = cart.reduce((sum, item) => sum + item.qty, 0);
         desktopCartCounter.textContent = count;
         if(mobileCartCounter) mobileCartCounter.textContent = count;
     }
 
-    // Show notification
     function showCartNotification(name) {
         const notification = document.createElement('div');
         notification.className = 'cart-notification';
@@ -562,7 +559,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     }
 
-    // Render cart drawer
     function renderCart() {
         cartItemsContainer.innerHTML = '';
         let subTotal = 0;
@@ -590,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function() {
         subTotalEl.textContent = subTotal + '৳';
         totalEl.textContent = subTotal + '৳';
 
-        // Qty Minus
+        // Qty −
         document.querySelectorAll('.qty-minus').forEach(btn => {
             btn.addEventListener('click', function() {
                 const idx = parseInt(this.dataset.index);
@@ -602,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Qty Plus
+        // Qty +
         document.querySelectorAll('.qty-plus').forEach(btn => {
             btn.addEventListener('click', function() {
                 const idx = parseInt(this.dataset.index);
@@ -613,7 +609,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Remove Item
+        // Remove
         document.querySelectorAll('.cart-item-remove').forEach(btn => {
             btn.addEventListener('click', function() {
                 const idx = parseInt(this.dataset.index);
@@ -625,7 +621,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Buy Now Click
+    // Buy Now
     buyButtons.forEach(button => {
         button.addEventListener('click', function() {
             const pItem = this.closest('.p-item');
@@ -655,7 +651,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Cart drawer toggle
+    // Drawer toggle
     document.querySelectorAll('.mc-toggler').forEach(btn => {
         btn.addEventListener('click', function() {
             cartDrawer.classList.toggle('open');
@@ -670,23 +666,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Checkout redirect
+    // Checkout
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', function() {
             window.location.href = "https://a2zdorkary.com/robotics-shop.html";
         });
     }
 
-    // ✅ Init
+    // Init
     updateCartCounter();
     renderCart();
 });
 
-// ✅ শুধু browser/tab close হলে clear হবে
-window.addEventListener('unload', function() {
-    if (!document.visibilityState || document.visibilityState === "hidden") {
-        localStorage.removeItem('cart');
+/* ✅ এখন শুধু tab/browser close হলে clear হবে
+   কিন্তু refresh / অন্য page এ গেলে clear হবে না */
+window.addEventListener("beforeunload", function (event) {
+    if (performance.getEntriesByType("navigation")[0].type === "reload") {
+        // Refresh হলে কিছুই করব না
+        return;
     }
+    // অন্যথায় (tab close বা browser close) -> clear
+    localStorage.removeItem("cart");
 });
 </script>
 
