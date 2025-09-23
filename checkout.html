@@ -671,6 +671,93 @@ document.addEventListener('DOMContentLoaded', function() {
     updateCartCounter();
     renderCart();
 });
+
+function renderCart() {
+    const hasProducts = cart.length > 0;
+    let subTotal = 0;
+
+    // Drawer items
+    cartItemsContainer.innerHTML = '';
+    cart.forEach((item, index) => {
+        const totalPrice = item.price * item.qty; // লাইভ total
+        subTotal += totalPrice;
+
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+            <img src="${item.img}" alt="${item.name}">
+            <p class="cart-item-name">${item.name}</p>
+            <div class="cart-item-qty">
+                <button class="qty-btn qty-minus" data-index="${index}">−</button>
+                <input type="text" value="${item.qty}" readonly>
+                <button class="qty-btn qty-plus" data-index="${index}">+</button>
+            </div>
+            <span class="cart-item-price">${item.price}৳ x ${item.qty} = ${totalPrice}৳</span>
+            <span class="cart-item-remove" data-index="${index}">
+                <i class="material-icons">delete</i>
+            </span>
+        `;
+        cartItemsContainer.appendChild(div);
+    });
+
+    // Subtotal & total update
+    calculateDeliveryCharge();
+    subTotalEl.textContent = subTotal + '৳';
+    totalEl.textContent = (subTotal + deliveryCharge) + '৳';
+
+    tfootSubtotal.textContent = subTotal + '৳';
+    tfootDelivery.textContent = deliveryCharge + '৳';
+    if(tfootDeliveryLabel) tfootDeliveryLabel.textContent = `Delivery (${getDeliveryText()})`;
+    tfootTotal.textContent = (subTotal + deliveryCharge) + '৳';
+
+    // Order Overview
+    orderOverviewBody.innerHTML = '';
+    cart.forEach(item => {
+        const totalPrice = item.price * item.qty;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.price}৳ x ${item.qty}</td>
+            <td class="text-right">${totalPrice}৳</td>
+        `;
+        orderOverviewBody.appendChild(tr);
+    });
+
+    // Delivery row
+    const deliveryRow = document.createElement('tr');
+    deliveryRow.innerHTML = `
+        <td colspan="2">Delivery (${getDeliveryText()})</td>
+        <td class="text-right">${deliveryCharge}৳</td>
+    `;
+    orderOverviewBody.appendChild(deliveryRow);
+
+    // Qty & Remove bindings
+    document.querySelectorAll('.qty-minus').forEach(btn => {
+        btn.onclick = function() {
+            const idx = parseInt(this.dataset.index);
+            cart[idx].qty -= 1;
+            if(cart[idx].qty <= 0) cart.splice(idx, 1);
+            saveCart(); updateCartCounter(); renderCart();
+        };
+    });
+
+    document.querySelectorAll('.qty-plus').forEach(btn => {
+        btn.onclick = function() {
+            const idx = parseInt(this.dataset.index);
+            cart[idx].qty += 1;
+            saveCart(); updateCartCounter(); renderCart();
+        };
+    });
+
+    document.querySelectorAll('.cart-item-remove').forEach(btn => {
+        btn.onclick = function() {
+            const idx = parseInt(this.dataset.index);
+            cart.splice(idx, 1);
+            saveCart(); updateCartCounter(); renderCart();
+        };
+    });
+}
+
 </script>
 
 
@@ -867,3 +954,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
 </body>
 </html>
+
