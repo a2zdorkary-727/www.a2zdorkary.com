@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -439,17 +440,106 @@
     <div class="container">
             </div>
 </section>
-        <div class="overlay"></div>
+
+
+
+ <footer>
+    <div class="container">
+        <div class="main-footer">
+
+            <div class="footer-block contact-us">
+                <h4>Support</h4>
+                    <a href="tel:09639151489" class="helpline-btn footer-big-btn">
+                    <div class="ic"><i class="material-icons">phone</i></div>
+                    <p>9 AM - 8 PM </p>
+                    <h5>09639151489</h5>
+                </a>
+
+                <a href="http://information/contact" class="store-locator-btn footer-big-btn">
+                    <div class="ic"><i class="material-icons">place</i></div>
+                    <p>Store Locator</p>
+                    <h5>Find Our Stores</h5>
+                </a>
+            </div>
+
+            <div class="footer-block about-us">
+                <h4>About Us</h4>
+                <ul>
+                                        <li><a href="http://www/affiliate-program">Affiliate Program</a></li>
+                                        <li><a href="http://emi-terms">EMI Terms</a></li>
+                                        <li><a href="http://about_us">About Us</a></li>
+                                        <li><a href="http://online-delivery">Online Delivery</a></li>
+                                        <li><a href="http://privacy">Privacy Policy</a></li>
+                                        <li><a href="http://warranty-policy">Terms and Conditions</a></li>
+                                        <li><a href="http://refund-policy">Refund and Return Policy</a></li>
+                                        <li><a href="http://star-point-policy">Star Point Policy</a></li>
+                                        <li><a href="http://career">Career</a></li>
+                                        <li><a href="http://blog">Blog</a></li>
+                    <li><a href="http://information/contact">Contact Us</a></li>
+                    <li><a href="http://product/manufacturer">Brands</a></li>
+                </ul>
+            </div>
+            <div class="footer-block org-info">
+                <h4>Stay Connected</h4>
+                <p><b class="store-name">A2Z Dorkary Ltd</b><br/>Head office : Puraton Thana Para, Kurigram - 5600</p>
+                <p><b>Email:</b><br/><a href="mailto:a2zdorkary@gmail.com">a2zdorkary@gmail.com</a> </p>
+            </div>
+        </div>
+
+        <div class="social-footer">
+            <div class="app-links">
+                <span class="app-link-text">Experience A2Z Dorkary App on your mobile:</span>
+                <span class="app-link-items">
+                    <a class="app-link" href="https://play.google.com" target="_blank" rel="noopener" title="A2Z Dorkary Android APP">
+                        <span class="icon-sprite playstore"></span>
+                        <span class="app-link-text">
+                            <span class="download">Download on</span>
+                            <span class="app-store">Google Play</span>
+                        </span>
+                    </a>
+                    <a class="app-link" href="https://apps.apple.com" target="_blank" rel="noopener" title="A2Z Dorkary ISO APP">
+                        <span class="icon-sprite applestore"></span>
+                        <span class="app-link-text">
+                            <span class="download">Download on</span>
+                            <span class="app-store">App Store</span>
+                        </span>
+                    </a>
+                </span>
+            </div>
+            <div class="social-links">
+                <a href="https://wa.me/8801761111875" target="_blank" rel="noopener" title="Whatsapp">
+                    <span class="icon-sprite whatsapp"></span>
+                </a>
+                <a href="https://www.facebook.com" target="_blank" rel="noopener" title="Facebook">
+                    <span class="icon-sprite fb"></span>
+                </a>
+                <a href="https://www.youtube.com/@badisco/featured" target="_blank" rel="noopener" title="Youtube">
+                    <span class="icon-sprite youtube"></span>
+                </a>
+                <a href="https://www.instagram.com" target="_blank" rel="noopener" title="Instagram">
+                    <span class="icon-sprite insta"></span>
+                </a>
+            </div>
+        </div>
+        <div class="row sub-footer">
+            <div class="col-md-6 copyright-info">
+                <p>© 2025 A2Z Dorkary | All rights reserved</p>
+            </div>
+            <div class="col-md-6 powered-by">
+                <p>Powered By: A2Z Dorkary</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<div class="overlay"></div>
             <script src="cart.js"></script>
 
 
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
+    const buyButtons = document.querySelectorAll('.btn-add-cart');
     const cartIcon = document.querySelector('#cart');
     const compareIcon = document.querySelector('#cmpr-btn');
-    const desktopCartCounter = cartIcon.querySelector('.counter');
-    const mobileCartCounter  = document.querySelector('.mbl-right .counter');
     const cartDrawer = document.getElementById('m-cart');
     const cartItemsContainer = document.getElementById('cart-items');
     const subTotalEl = document.getElementById('sub-total');
@@ -463,9 +553,9 @@
     }
 
     function updateCartCounter() {
-        let count = cart.reduce((sum, item) => sum + item.qty, 0);
-        desktopCartCounter.textContent = count;
-        if(mobileCartCounter) mobileCartCounter.textContent = count;
+        const count = cart.reduce((sum, item) => sum + item.qty, 0);
+        cartIcon.querySelector('.counter').textContent = count;
+        compareIcon.querySelector('.counter').textContent = count; 
     }
 
     function renderCart() {
@@ -485,41 +575,105 @@
                     <button class="qty-btn qty-plus" data-index="${index}">+</button>
                 </div>
                 <span class="cart-item-price">${item.price * item.qty}৳</span>
-                <span class="cart-item-remove" data-index="${index}">
-                    <i class="material-icons">delete</i>
-                </span>
+                <span class="cart-item-remove" data-index="${index}">&times;</span>
             `;
             cartItemsContainer.appendChild(div);
         });
 
         subTotalEl.textContent = subTotal + '৳';
         totalEl.textContent = subTotal + '৳';
+
+        document.querySelectorAll('.qty-minus').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                cart[idx].qty -= 1;
+                if(cart[idx].qty <= 0) cart.splice(idx,1);
+                saveCart();
+                updateCartCounter();
+                renderCart();
+            });
+        });
+
+        document.querySelectorAll('.qty-plus').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                cart[idx].qty += 1;
+                saveCart();
+                updateCartCounter();
+                renderCart();
+            });
+        });
+
+        document.querySelectorAll('.cart-item-remove').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                cart.splice(idx,1);
+                saveCart();
+                updateCartCounter();
+                renderCart();
+            });
+        });
     }
 
-    // Drawer toggle
-    document.querySelectorAll('.mc-toggler').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.drawer.open').forEach(d => d.classList.remove('open'));
-            cartDrawer.classList.add('open');
+    buyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const pItem = this.closest('.p-item');
+            const name = pItem.querySelector('.p-item-name a').textContent.trim();
+            const price = parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g,''));
+            const id = pItem.dataset.id || name + '-' + price;
+
+            let existing = cart.find(p => p.id === id);
+            if(existing) existing.qty += 1;
+            else cart.push({id,name,price,img:pItem.querySelector('img').src,qty:1});
+
+            saveCart();
+            updateCartCounter();
             renderCart();
-            cartIcon.style.visibility = 'hidden';
-            compareIcon.style.visibility = 'hidden';
         });
     });
 
-    // Drawer close
-    document.addEventListener('click', function(e){
-        if(cartDrawer.classList.contains('open') && !cartDrawer.contains(e.target) && !e.target.closest('.mc-toggler')){
-            cartDrawer.classList.remove('open');
-            cartIcon.style.visibility = 'visible';
-            compareIcon.style.visibility = 'visible';
+    // Drawer toggle function
+    function openCartDrawer() {
+        cartDrawer.classList.add('open');
+        cartIcon.style.visibility = 'hidden';
+        compareIcon.style.visibility = 'hidden';
+        renderCart();
+    }
+
+    function closeCartDrawer() {
+        cartDrawer.classList.remove('open');
+        cartIcon.style.visibility = 'visible';
+        compareIcon.style.visibility = 'visible';
+    }
+
+    // Cart icon click opens drawer
+    cartIcon.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if(!cartDrawer.classList.contains('open')){
+            openCartDrawer();
         }
     });
 
-    // Checkout redirect
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', function() {
-            window.location.href = "https://a2zdorkary.com/robotics-shop.html";
+    // Cross icon click closes drawer
+    const drawerCloseBtn = cartDrawer.querySelector('.mc-toggler i');
+    if(drawerCloseBtn){
+        drawerCloseBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeCartDrawer();
+        });
+    }
+
+    // Click outside drawer closes it
+    document.addEventListener('click', function(e){
+        if(cartDrawer.classList.contains('open') && !cartDrawer.contains(e.target) && !cartIcon.contains(e.target)){
+            closeCartDrawer();
+        }
+    });
+
+    // Checkout
+    if(checkoutBtn){
+        checkoutBtn.addEventListener('click', function(){
+            window.location.href = "https://a2zdorkary.com/checkout.html";
         });
     }
 
@@ -527,122 +681,7 @@
     updateCartCounter();
     renderCart();
 });
-
-
-document.addEventListener("DOMContentLoaded", function(){
-    const tbody = document.getElementById("order-overview-body");
-
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    let subTotal = 0;
-    let delivery = 80; // fixed delivery charge
-
-    tbody.innerHTML = ""; // clear old rows
-
-    cart.forEach(item => {
-        let total = item.price * item.qty;
-        subTotal += total;
-
-        let tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td class="name">
-                <a href="#">${item.name}</a>
-                <div class="fade">Qty: ${item.qty}</div>
-            </td>
-            <td class="price"><span>${item.price}৳</span> <span>x</span> <span>${item.qty}</span></td>
-            <td class="price text-right">${total}৳</td>
-        `;
-        tbody.appendChild(tr);
-    });
-
-    // Sub Total row
-    let trSub = document.createElement("tr");
-    trSub.className = "total";
-    trSub.innerHTML = `
-        <td colspan="2" class="text-right"><strong>Sub-Total:</strong></td>
-        <td class="text-right"><span class="amount">${subTotal}৳</span></td>
-    `;
-    tbody.appendChild(trSub);
-
-    // Delivery row
-    let trDelivery = document.createElement("tr");
-    trDelivery.className = "total";
-    trDelivery.innerHTML = `
-        <td colspan="2" class="text-right"><strong>Home Delivery:</strong></td>
-        <td class="text-right"><span class="amount">${delivery}৳</span></td>
-    `;
-    tbody.appendChild(trDelivery);
-
-    // Total row
-    let trTotal = document.createElement("tr");
-    trTotal.className = "total";
-    trTotal.innerHTML = `
-        <td colspan="2" class="text-right"><strong>Total:</strong></td>
-        <td class="text-right"><span class="amount">${subTotal + delivery}৳</span></td>
-    `;
-    tbody.appendChild(trTotal);
-});
-<script>
-document.addEventListener("DOMContentLoaded", function(){
-    const tbody = document.getElementById("order-overview-body");
-
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    let subTotal = 0;
-    let delivery = 80; // fixed delivery charge
-
-    tbody.innerHTML = ""; // clear old rows
-
-    cart.forEach(item => {
-        let total = item.price * item.qty;
-        subTotal += total;
-
-        let tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td class="name">
-                <a href="#">${item.name}</a>
-                <div class="fade">Qty: ${item.qty}</div>
-            </td>
-            <td class="price"><span>${item.price}৳</span> <span>x</span> <span>${item.qty}</span></td>
-            <td class="price text-right">${total}৳</td>
-        `;
-        tbody.appendChild(tr);
-    });
-
-    // Sub Total row
-    let trSub = document.createElement("tr");
-    trSub.className = "total";
-    trSub.innerHTML = `
-        <td colspan="2" class="text-right"><strong>Sub-Total:</strong></td>
-        <td class="text-right"><span class="amount">${subTotal}৳</span></td>
-    `;
-    tbody.appendChild(trSub);
-
-    // Delivery row
-    let trDelivery = document.createElement("tr");
-    trDelivery.className = "total";
-    trDelivery.innerHTML = `
-        <td colspan="2" class="text-right"><strong>Home Delivery:</strong></td>
-        <td class="text-right"><span class="amount">${delivery}৳</span></td>
-    `;
-    tbody.appendChild(trDelivery);
-
-    // Total row
-    let trTotal = document.createElement("tr");
-    trTotal.className = "total";
-    trTotal.innerHTML = `
-        <td colspan="2" class="text-right"><strong>Total:</strong></td>
-        <td class="text-right"><span class="amount">${subTotal + delivery}৳</span></td>
-    `;
-    tbody.appendChild(trTotal);
-});
-
-cartIcon.style.visibility = 'hidden';
-compareIcon.style.visibility = 'hidden';
-cartIcon.style.visibility = 'visible';
-compareIcon.style.visibility = 'visible';
-
 </script>
-
-
 
 
 
@@ -834,7 +873,5 @@ compareIcon.style.visibility = 'visible';
     }
 }
 </style>
-
-
-
-</body></html>
+</body>
+</html>
