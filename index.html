@@ -1,6 +1,8 @@
 
 
 
+
+
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>  
@@ -148,33 +150,47 @@
 
 
 </header>
-<div class="f-btn mc-toggler" id="cart">
-    <i class="material-icons">shopping_basket</i>
-    <div class="label">Cart</div>
-    <span class="counter">0</span>
-</div>
-<div class="f-btn cmpr-toggler" id="cmpr-btn">
-    <i class="material-icons">library_add</i>
-    <div class="label">Compare</div>
-    <span class="counter">0</span>
-</div>
-<div class="drawer cmpr-panel " id="cmpr-panel">
-    <div class="title">
-        <p>Compare Product</p>
-        <span class="cmpr-toggler"><i class="material-icons">close</i></span>
-    </div>
-    <div class="content"><div class="loader"></div></div>
-    <div class="footer btn-wrap"></div>
-</div>
-
-<div class="drawer m-cart" id="m-cart">
+</header>
+    <div class="main-content-wrapper">
+        <div class="f-btn mc-toggler" id="cart">
+            <i class="material-icons">shopping_basket</i>
+            <div class="label">Cart</div>
+            <span class="counter">0</span>
+        </div>
+        <div class="f-btn cmpr-toggler" id="cmpr-btn">
+            <i class="material-icons">library_add</i>
+            <div class="label">Compare</div>
+            <span class="counter">0</span>
+        </div>
+        <div class="drawer cmpr-panel " id="cmpr-panel">
+            <div class="title">
+                <p>Compare Product</p>
+                <span class="cmpr-toggler"><i class="material-icons">close</i></span>
+            </div>
+            <div class="content"><div class="loader"></div></div>
+            <div class="footer btn-wrap"></div>
+        </div>
+        <div class="drawer m-cart" id="m-cart">
     <div class="title">
         <p>YOUR CART</p>
         <span class="mc-toggler"><i class="material-icons">close</i></span>
     </div>
-    <div class="content"><div class="loader"></div></div>
-    <div class="footer"></div>
+    <div class="content">
+        <!-- Loader রাখা যেতে পারে যদি প্রয়োজন হয় -->
+        <div class="loader" style="display:none;"></div>
+
+        <!-- এই div যোগ করতে হবে, যেখানে cart item দেখাবে -->
+        <div id="cart-items"></div>
+    </div>
+    <div class="footer">
+        <div class="totals">
+            <p>Sub Total: <span id="sub-total">0৳</span></p>
+            <p>Total: <span id="total">0৳</span></p>
+        </div>
+        <button id="checkout">Checkout</button>
+    </div>
 </div>
+
 
 <div class="bg-gray content p-tb-30">
     <div class="container">
@@ -1218,6 +1234,370 @@
 </footer>
 <div class="overlay"></div>
             <script src="cart.js"></script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const buyButtons = document.querySelectorAll('.btn-add-cart');
+    const cartIcon = document.querySelector('#cart');
+    const compareIcon = document.querySelector('#cmpr-btn');
+    const desktopCartCounter = cartIcon.querySelector('.counter');
+    const mobileCartCounter  = document.querySelector('.mbl-right .counter');
+    const cartDrawer = document.getElementById('m-cart');
+    const cartItemsContainer = document.getElementById('cart-items');
+    const subTotalEl = document.getElementById('sub-total');
+    const totalEl = document.getElementById('total');
+    const checkoutBtn = document.getElementById('checkout');
+
+    // ✅ Cart data localStorage এ রাখব (page change বা refresh এ থাকে)
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function saveCart() {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function updateCartCounter() {
+        let count = cart.reduce((sum, item) => sum + item.qty, 0);
+        desktopCartCounter.textContent = count;
+        if(mobileCartCounter) mobileCartCounter.textContent = count;
+    }
+
+    function showCartNotification(name) {
+        const notification = document.createElement('div');
+        notification.className = 'cart-notification';
+        notification.innerHTML = `<i class="material-icons">check_circle</i> New Item Added: <b>${name}</b>`;
+        document.body.appendChild(notification);
+
+        if(window.innerWidth <= 768){
+            const cartRect = cartIcon.getBoundingClientRect();
+            notification.style.right = (window.innerWidth - cartRect.right) + 'px';
+            notification.style.bottom = (window.innerHeight - cartRect.top + 10) + 'px';
+        }
+
+        void notification.offsetWidth;
+        notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 500);
+        }, 2000);
+    }
+
+    function renderCart() {
+        cartItemsContainer.innerHTML = '';
+        let subTotal = 0;
+
+        cart.forEach((item, index) => {
+            subTotal += item.price * item.qty;
+            const div = document.createElement('div');
+            div.className = 'cart-item';
+            div.innerHTML = `
+                <img src="${item.img}" alt="${item.name}">
+                <p class="cart-item-name">${item.name}</p>
+                <div class="cart-item-qty">
+                    <button class="qty-btn qty-minus" data-index="${index}">−</button>
+                    <input type="text" value="${item.qty}" readonly>
+                    <button class="qty-btn qty-plus" data-index="${index}">+</button>
+                </div>
+                <span class="cart-item-price">${item.price * item.qty}৳</span>
+                <span class="cart-item-remove" data-index="${index}">
+                    <i class="material-icons">delete</i>
+                </span>
+            `;
+            cartItemsContainer.appendChild(div);
+        });
+
+        subTotalEl.textContent = subTotal + '৳';
+        totalEl.textContent = subTotal + '৳';
+
+        // Qty −
+        document.querySelectorAll('.qty-minus').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                cart[idx].qty -= 1;
+                if (cart[idx].qty <= 0) cart.splice(idx, 1);
+                saveCart();
+                updateCartCounter();
+                renderCart();
+            });
+        });
+
+        // Qty +
+        document.querySelectorAll('.qty-plus').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                cart[idx].qty += 1;
+                saveCart();
+                updateCartCounter();
+                renderCart();
+            });
+        });
+
+        // Remove
+        document.querySelectorAll('.cart-item-remove').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.index);
+                cart.splice(idx, 1);
+                saveCart();
+                updateCartCounter();
+                renderCart();
+            });
+        });
+    }
+
+    // Buy Now
+    buyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const pItem = this.closest('.p-item');
+            const name = pItem.querySelector('.p-item-name a').textContent.trim();
+            const price = parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g,''));
+            const id = pItem.dataset.id || name + '-' + price;
+
+            let existing = cart.find(p => p.id === id);
+
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                const product = {
+                    id: id,
+                    name: name,
+                    price: price,
+                    img: pItem.querySelector('img').src,
+                    qty: 1
+                };
+                cart.push(product);
+            }
+
+            saveCart();
+            updateCartCounter();
+            showCartNotification(name);
+            renderCart();
+        });
+    });
+
+    // Drawer toggle
+    document.querySelectorAll('.mc-toggler').forEach(btn => {
+        btn.addEventListener('click', function() {
+            cartDrawer.classList.toggle('open');
+            renderCart();
+            if(cartDrawer.classList.contains('open')) {
+                cartIcon.style.visibility = 'hidden';
+                compareIcon.style.visibility = 'hidden';
+            } else {
+                cartIcon.style.visibility = 'visible';
+                compareIcon.style.visibility = 'visible';
+            }
+        });
+    });
+
+    // Checkout
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+            window.location.href = "https://a2zdorkary.com/robotics-shop.html";
+        });
+    }
+
+    // Init
+    updateCartCounter();
+    renderCart();
+});
+
+// ✅ Browser/tab close হলে localStorage clear করতে চাইলে নিচের লাইন আনকমেন্ট করো
+ //window.addEventListener("beforeunload", function() {
+ //    localStorage.removeItem('cart');
+ // });
+</script>
+
+
+
+
+
+
+
+<style>
+/* Cart Drawer Styles */
+.drawer.m-cart {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100%;
+    background: #fff;
+    box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+    transition: right 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    z-index: 9999;
+}
+.drawer.m-cart.open { right: 0; }
+
+.drawer.m-cart .title {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.drawer.m-cart .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.cart-item-name {
+    flex: 1;
+    margin: 0 10px;
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.cart-item-qty {
+    display: flex;
+    align-items: center;
+    margin-right: 8px;
+    min-width: 80px;
+    justify-content: center;
+}
+
+.cart-item-qty input {
+    width: 50px;
+    height: 24px;
+    text-align: center;
+    border: 1px solid #ccc;
+    margin: 0 3px;
+    border-radius: 3px;
+    background: #fff;
+    font-size: 13px;
+    font-family: 'Roboto', sans-serif;
+    pointer-events: none;
+}
+
+.qty-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 0 6px;
+    color: #333;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.qty-btn:hover { color: #007bff; }
+
+.cart-item-price { font-weight: bold; font-family: 'Roboto', sans-serif; }
+
+.cart-item-remove { cursor: pointer; color: #dc3545; }
+
+.drawer.m-cart .footer {
+    padding: 15px;
+    border-top: 1px solid #ddd;
+}
+
+.promo-code {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.promo-code input {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px 0 0 4px;
+}
+
+.promo-code button {
+    padding: 6px 12px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.totals p {
+    margin: 5px 0;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Roboto', sans-serif;
+}
+
+#checkout {
+    width: 100%;
+    padding: 10px;
+    background: #ff5722;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Cart Notification Styles */
+.cart-notification {
+    position: fixed;
+    bottom: 94px;
+    right: 80px;
+    background-color: #28a745;
+    color: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(50px); /* desktop slide */
+    transition: all 0.5s ease-in-out;
+    z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.cart-notification.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.cart-notification i.material-icons {
+    font-size: 20px;
+}
+
+/* Mobile view: slide effect off, notification visible */
+@media screen and (max-width: 768px) {
+    .cart-notification {
+        transform: none !important; /* slide effect off */
+        transition: opacity 0.5s ease-in-out !important; /* only fade */
+        display: flex !important; /* ensure visible */
+        opacity: 1 !important; /* keep visible */
+        bottom: 94px !important; /* desktop same position */
+        right: 80px !important; /* desktop same position */
+    }
+
+    .cart-notification.show {
+        transform: none !important;
+        opacity: 1 !important; /* always visible */
+    }
+}
+</style>
 </body></html>
 
 
