@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -409,17 +410,37 @@
             <h2><span>4</span>Order Overview</h2>
         </div>
         <table class="table-bordered bg-white checkout-data">
-            <thead>
-                <tr>
-                    <td>Product Name</td>
-                    <td>Price</td>
-                    <td class="text-right">Total</td>
-                </tr>
-            </thead>
-            <tbody id="order-overview-body">
-                <!-- JS দিয়ে cart এর product show হবে -->
-            </tbody>
-        </table>
+  <thead>
+    <tr>
+      <td>Product Name</td>
+      <td>Price</td>
+      <td class="text-right">Total</td>
+    </tr>
+  </thead>
+
+  <!-- Cart এর product গুলো এখানে দেখাবে JS -->
+  <tbody id="order-overview-body">
+  </tbody>
+
+  <!-- Total, Delivery, Subtotal এখানে -->
+ <tfoot>
+    <tr>
+        <td colspan="2">Subtotal</td>
+        <td id="tfoot-subtotal">0৳</td>
+    </tr>
+    <tr>
+        <td colspan="2" id="tfoot-delivery-label">Delivery (Home Delivery)</td>
+        <td id="tfoot-delivery">0৳</td>
+    </tr>
+    <tr>
+        <td colspan="2"><b>Total</b></td>
+        <td id="tfoot-total"><b>0৳</b></td>
+    </tr>
+</tfoot>
+
+
+</table>
+
     
 
                             </div>
@@ -444,96 +465,10 @@
 
 
 
- <footer>
-    <div class="container">
-        <div class="main-footer">
 
-            <div class="footer-block contact-us">
-                <h4>Support</h4>
-                    <a href="tel:09639151489" class="helpline-btn footer-big-btn">
-                    <div class="ic"><i class="material-icons">phone</i></div>
-                    <p>9 AM - 8 PM </p>
-                    <h5>09639151489</h5>
-                </a>
-
-                <a href="http://information/contact" class="store-locator-btn footer-big-btn">
-                    <div class="ic"><i class="material-icons">place</i></div>
-                    <p>Store Locator</p>
-                    <h5>Find Our Stores</h5>
-                </a>
-            </div>
-
-            <div class="footer-block about-us">
-                <h4>About Us</h4>
-                <ul>
-                                        <li><a href="http://www/affiliate-program">Affiliate Program</a></li>
-                                        <li><a href="http://emi-terms">EMI Terms</a></li>
-                                        <li><a href="http://about_us">About Us</a></li>
-                                        <li><a href="http://online-delivery">Online Delivery</a></li>
-                                        <li><a href="http://privacy">Privacy Policy</a></li>
-                                        <li><a href="http://warranty-policy">Terms and Conditions</a></li>
-                                        <li><a href="http://refund-policy">Refund and Return Policy</a></li>
-                                        <li><a href="http://star-point-policy">Star Point Policy</a></li>
-                                        <li><a href="http://career">Career</a></li>
-                                        <li><a href="http://blog">Blog</a></li>
-                    <li><a href="http://information/contact">Contact Us</a></li>
-                    <li><a href="http://product/manufacturer">Brands</a></li>
-                </ul>
-            </div>
-            <div class="footer-block org-info">
-                <h4>Stay Connected</h4>
-                <p><b class="store-name">A2Z Dorkary Ltd</b><br/>Head office : Puraton Thana Para, Kurigram - 5600</p>
-                <p><b>Email:</b><br/><a href="mailto:a2zdorkary@gmail.com">a2zdorkary@gmail.com</a> </p>
-            </div>
-        </div>
-
-        <div class="social-footer">
-            <div class="app-links">
-                <span class="app-link-text">Experience A2Z Dorkary App on your mobile:</span>
-                <span class="app-link-items">
-                    <a class="app-link" href="https://play.google.com" target="_blank" rel="noopener" title="A2Z Dorkary Android APP">
-                        <span class="icon-sprite playstore"></span>
-                        <span class="app-link-text">
-                            <span class="download">Download on</span>
-                            <span class="app-store">Google Play</span>
-                        </span>
-                    </a>
-                    <a class="app-link" href="https://apps.apple.com" target="_blank" rel="noopener" title="A2Z Dorkary ISO APP">
-                        <span class="icon-sprite applestore"></span>
-                        <span class="app-link-text">
-                            <span class="download">Download on</span>
-                            <span class="app-store">App Store</span>
-                        </span>
-                    </a>
-                </span>
-            </div>
-            <div class="social-links">
-                <a href="https://wa.me/8801761111875" target="_blank" rel="noopener" title="Whatsapp">
-                    <span class="icon-sprite whatsapp"></span>
-                </a>
-                <a href="https://www.facebook.com" target="_blank" rel="noopener" title="Facebook">
-                    <span class="icon-sprite fb"></span>
-                </a>
-                <a href="https://www.youtube.com/@badisco/featured" target="_blank" rel="noopener" title="Youtube">
-                    <span class="icon-sprite youtube"></span>
-                </a>
-                <a href="https://www.instagram.com" target="_blank" rel="noopener" title="Instagram">
-                    <span class="icon-sprite insta"></span>
-                </a>
-            </div>
-        </div>
-        <div class="row sub-footer">
-            <div class="col-md-6 copyright-info">
-                <p>© 2025 A2Z Dorkary | All rights reserved</p>
-            </div>
-            <div class="col-md-6 powered-by">
-                <p>Powered By: A2Z Dorkary</p>
-            </div>
-        </div>
-    </div>
-</footer>
 <div class="overlay"></div>
             <script src="cart.js"></script>
+
 
 
 <script>
@@ -548,9 +483,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const subTotalEl = document.getElementById('sub-total');
     const totalEl = document.getElementById('total');
     const checkoutBtn = document.getElementById('checkout');
+    const orderOverviewBody = document.getElementById('order-overview-body');
 
-    // ✅ Cart data localStorage এ রাখব (page change বা refresh এ থাকে)
+    const tfootSubtotal = document.getElementById('tfoot-subtotal');
+    const tfootDeliveryLabel = document.getElementById('tfoot-delivery-label');
+    const tfootDelivery = document.getElementById('tfoot-delivery');
+    const tfootTotal = document.getElementById('tfoot-total');
+    const confirmBtn = document.getElementById('button-confirm'); // Checkout page confirm button
+
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let deliveryCharge = 0;
+    let selectedDelivery = 'flat.flat'; // default Home Delivery
 
     function saveCart() {
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -567,13 +510,6 @@ document.addEventListener('DOMContentLoaded', function() {
         notification.className = 'cart-notification';
         notification.innerHTML = `<i class="material-icons">check_circle</i> New Item Added: <b>${name}</b>`;
         document.body.appendChild(notification);
-
-        if(window.innerWidth <= 768){
-            const cartRect = cartIcon.getBoundingClientRect();
-            notification.style.right = (window.innerWidth - cartRect.right) + 'px';
-            notification.style.bottom = (window.innerHeight - cartRect.top + 10) + 'px';
-        }
-
         void notification.offsetWidth;
         notification.classList.add('show');
         setTimeout(() => {
@@ -582,10 +518,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     }
 
+    function calculateDeliveryCharge() {
+        if(selectedDelivery === 'flat.flat') deliveryCharge = 80;
+        else if(selectedDelivery === 'pickup.pickup') deliveryCharge = 0;
+        else if(selectedDelivery === 'express.express') deliveryCharge = 300;
+    }
+
+    function getDeliveryText() {
+        if(selectedDelivery === 'flat.flat') return 'Home Delivery';
+        if(selectedDelivery === 'pickup.pickup') return 'Store Pickup';
+        if(selectedDelivery === 'express.express') return 'Request Express';
+        return 'Delivery';
+    }
+
     function renderCart() {
+        const hasProducts = cart.length > 0;
+
+        // Drawer items
         cartItemsContainer.innerHTML = '';
         let subTotal = 0;
-
         cart.forEach((item, index) => {
             subTotal += item.price * item.qty;
             const div = document.createElement('div');
@@ -606,45 +557,67 @@ document.addEventListener('DOMContentLoaded', function() {
             cartItemsContainer.appendChild(div);
         });
 
-        subTotalEl.textContent = subTotal + '৳';
-        totalEl.textContent = subTotal + '৳';
+        // Subtotal & total update
+        calculateDeliveryCharge();
 
-        // Qty −
+        subTotalEl.textContent = subTotal + '৳';
+        totalEl.textContent = (subTotal + deliveryCharge) + '৳';
+
+        tfootSubtotal.textContent = subTotal + '৳';
+        tfootDelivery.textContent = deliveryCharge + '৳';
+        if(tfootDeliveryLabel) {
+            tfootDeliveryLabel.textContent = `Delivery (${getDeliveryText()})`;
+        }
+        tfootTotal.textContent = (subTotal + deliveryCharge) + '৳';
+
+        if(hasProducts) {
+            confirmBtn.style.opacity = '1';
+            confirmBtn.style.pointerEvents = 'auto';
+        } else {
+            confirmBtn.style.opacity = '0.5';
+            confirmBtn.style.pointerEvents = 'none';
+        }
+
+        // Order Overview
+        orderOverviewBody.innerHTML = '';
+        cart.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.name}</td>
+                <td>${item.price}৳</td>
+                <td class="text-right">${item.price * item.qty}৳</td>
+            `;
+            orderOverviewBody.appendChild(tr);
+        });
+
+        // Qty & Remove buttons
         document.querySelectorAll('.qty-minus').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.onclick = function() {
                 const idx = parseInt(this.dataset.index);
                 cart[idx].qty -= 1;
-                if (cart[idx].qty <= 0) cart.splice(idx, 1);
-                saveCart();
-                updateCartCounter();
-                renderCart();
-            });
+                if(cart[idx].qty <= 0) cart.splice(idx, 1);
+                saveCart(); updateCartCounter(); renderCart();
+            };
         });
 
-        // Qty +
         document.querySelectorAll('.qty-plus').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.onclick = function() {
                 const idx = parseInt(this.dataset.index);
                 cart[idx].qty += 1;
-                saveCart();
-                updateCartCounter();
-                renderCart();
-            });
+                saveCart(); updateCartCounter(); renderCart();
+            };
         });
 
-        // Remove
         document.querySelectorAll('.cart-item-remove').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.onclick = function() {
                 const idx = parseInt(this.dataset.index);
                 cart.splice(idx, 1);
-                saveCart();
-                updateCartCounter();
-                renderCart();
-            });
+                saveCart(); updateCartCounter(); renderCart();
+            };
         });
     }
 
-    // Buy Now
+    // Buy Now buttons
     buyButtons.forEach(button => {
         button.addEventListener('click', function() {
             const pItem = this.closest('.p-item');
@@ -653,19 +626,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const id = pItem.dataset.id || name + '-' + price;
 
             let existing = cart.find(p => p.id === id);
-
-            if (existing) {
-                existing.qty += 1;
-            } else {
-                const product = {
-                    id: id,
-                    name: name,
-                    price: price,
-                    img: pItem.querySelector('img').src,
-                    qty: 1
-                };
-                cart.push(product);
-            }
+            if(existing) existing.qty += 1;
+            else cart.push({id, name, price, img: pItem.querySelector('img').src, qty:1});
 
             saveCart();
             updateCartCounter();
@@ -679,33 +641,38 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function() {
             cartDrawer.classList.toggle('open');
             renderCart();
-            if(cartDrawer.classList.contains('open')) {
-                cartIcon.style.visibility = 'hidden';
-                compareIcon.style.visibility = 'hidden';
-            } else {
-                cartIcon.style.visibility = 'visible';
-                compareIcon.style.visibility = 'visible';
-            }
+            cartDrawer.classList.contains('open') ?
+                (cartIcon.style.visibility = compareIcon.style.visibility = 'hidden') :
+                (cartIcon.style.visibility = compareIcon.style.visibility = 'visible');
         });
     });
 
-    // Checkout
-    if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', function() {
-            window.location.href = "https://a2zdorkary.com/checkout.html";
+    if(checkoutBtn) checkoutBtn.onclick = () => window.location.href = "https://a2zdorkary.com/checkout.html";
+
+    // Delivery Method Update
+    const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
+    shippingRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            selectedDelivery = this.value;
+            renderCart(); // Update totals and order overview
+        });
+    });
+
+    // Confirm Order
+    if(confirmBtn) {
+        confirmBtn.addEventListener('click', function(e) {
+            if(cart.length === 0) {
+                e.preventDefault();
+                alert('Your cart is empty! Please add products first.');
+            }
         });
     }
 
-    // Init
     updateCartCounter();
     renderCart();
 });
-
-// ✅ Browser/tab close হলে localStorage clear করতে চাইলে নিচের লাইন আনকমেন্ট করো
- //window.addEventListener("beforeunload", function() {
-  //   localStorage.removeItem('cart');
-// });
 </script>
+
 
 
 
