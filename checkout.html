@@ -857,7 +857,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <input type="text" value="${item.qty}" readonly>
                         <button class="qty-btn qty-plus" data-index="${index}">+</button>
                     </div>
-                    <span class="cart-item-price">${item.price}৳ x ${item.qty} = ${totalPrice}৳</span>
+                    <span class="cart-item-price">${totalPrice}৳</span>
                     <span class="cart-item-remove" data-index="${index}">
                         <i class="material-icons">delete</i>
                     </span>
@@ -934,7 +934,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        document.querySelectorAll('.qty-minus').forEach(btn => {
+        // Event listeners for cart drawer buttons
+        const qtyMinusBtns = document.querySelectorAll('.cart-item-qty .qty-minus');
+        const qtyPlusBtns = document.querySelectorAll('.cart-item-qty .qty-plus');
+        const removeItemBtns = document.querySelectorAll('.cart-item-remove');
+
+        qtyMinusBtns.forEach(btn => {
             btn.onclick = function() {
                 const idx = parseInt(this.dataset.index);
                 cart[idx].qty -= 1;
@@ -943,7 +948,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
         });
 
-        document.querySelectorAll('.qty-plus').forEach(btn => {
+        qtyPlusBtns.forEach(btn => {
             btn.onclick = function() {
                 const idx = parseInt(this.dataset.index);
                 cart[idx].qty += 1;
@@ -951,7 +956,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
         });
 
-        document.querySelectorAll('.cart-item-remove').forEach(btn => {
+        removeItemBtns.forEach(btn => {
             btn.onclick = function() {
                 const idx = parseInt(this.dataset.index);
                 cart.splice(idx, 1);
@@ -994,7 +999,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Delivery Method Update (Ensure this targets your actual radio buttons in HTML)
     const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
     if (shippingRadios.length > 0) {
-        // Set initial selectedDelivery based on checked radio, if any
         const initialChecked = document.querySelector('input[name="shipping_method"]:checked');
         if (initialChecked) {
             selectedDelivery = initialChecked.value;
@@ -1003,7 +1007,7 @@ document.addEventListener('DOMContentLoaded', function() {
         shippingRadios.forEach(radio => {
             radio.addEventListener('change', function() {
                 selectedDelivery = this.value;
-                renderCart(); // Re-render the cart overview to update delivery text/price
+                renderCart();
             });
         });
     }
@@ -1025,3 +1029,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 </body>
 </html>
+
+</body>
+</html>
+
