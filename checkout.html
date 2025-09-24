@@ -710,7 +710,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const tfootDelivery = document.getElementById('tfoot-delivery');
     const tfootTotal = document.getElementById('tfoot-total');
     const confirmBtn = document.getElementById('button-confirm');
-
     const termsCheckbox = document.getElementById('terms');
 
     // Required customer information fields selectors
@@ -770,6 +769,39 @@ document.addEventListener('DOMContentLoaded', function() {
         return 'Delivery';
     }
 
+    function areCustomerFieldsFilled() {
+        for (let selector of customerFields) {
+            const field = document.querySelector(selector);
+            if (!field || !field.value.trim()) return false;
+        }
+        return true;
+    }
+
+    function validateConfirmButton() {
+        const enable = areCustomerFieldsFilled() && cart.length > 0 && (termsCheckbox ? termsCheckbox.checked : true);
+        if(confirmBtn){
+            confirmBtn.disabled = !enable;
+            confirmBtn.style.opacity = enable ? '1' : '0.5';
+            confirmBtn.style.pointerEvents = enable ? 'auto' : 'none';
+        }
+    }
+
+    function showValidationMessages() {
+        if(cart.length === 0){
+            alert("Your cart is empty! Please add products first.");
+            return false;
+        }
+        if(!areCustomerFieldsFilled()){
+            alert("Please fill in all required customer information fields.");
+            return false;
+        }
+        if(termsCheckbox && !termsCheckbox.checked){
+            alert("You must agree to the Terms & Conditions before confirming the order.");
+            return false;
+        }
+        return true;
+    }
+
     function renderCart() {
         const hasProducts = cart.length > 0;
         let subTotal = 0;
@@ -805,11 +837,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        if (hasProducts) {
-            calculateDeliveryCharge();
-        } else {
-            deliveryCharge = 0;
-        }
+        deliveryCharge = hasProducts ? calculateDeliveryCharge() : 0;
 
         if (subTotalEl) subTotalEl.textContent = subTotal + '৳';
         if (totalEl) totalEl.textContent = (subTotal + deliveryCharge) + '৳';
@@ -828,33 +856,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     orderOverviewBody.appendChild(tr);
                 });
             }
+            // Subtotal, delivery, total
+            const rows = [
+                {label: 'Sub-Total:', value: subTotal},
+                {label: hasProducts ? getDeliveryText() : 'Delivery:', value: deliveryCharge},
+                {label: 'Total:', value: subTotal + deliveryCharge}
+            ];
 
-            const subTotalRow = document.createElement('tr');
-            subTotalRow.className = 'summary-row';
-            subTotalRow.innerHTML = `
-                <td></td>
-                <td class="summary-label-cell">Sub-Total:</td>
-                <td class="text-right total-price-cell">${subTotal}৳</td>
-            `;
-            orderOverviewBody.appendChild(subTotalRow);
-
-            const deliveryRow = document.createElement('tr');
-            deliveryRow.className = 'summary-row';
-            deliveryRow.innerHTML = `
-                <td></td>
-                <td class="summary-label-cell">${hasProducts ? getDeliveryText() : 'Delivery'}:</td>
-                <td class="text-right total-price-cell">${deliveryCharge}৳</td>
-            `;
-            orderOverviewBody.appendChild(deliveryRow);
-
-            const totalRow = document.createElement('tr');
-            totalRow.className = 'summary-row total-row';
-            totalRow.innerHTML = `
-                <td></td>
-                <td class="summary-label-cell">Total:</td>
-                <td class="text-right total-price-cell">${subTotal + deliveryCharge}৳</td>
-            `;
-            orderOverviewBody.appendChild(totalRow);
+            rows.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'summary-row';
+                if(row.label === 'Total:') tr.classList.add('total-row');
+                tr.innerHTML = `
+                    <td></td>
+                    <td class="summary-label-cell">${row.label}</td>
+                    <td class="text-right total-price-cell">${row.value}৳</td>
+                `;
+                orderOverviewBody.appendChild(tr);
+            });
         }
 
         if (tfootSubtotal) tfootSubtotal.textContent = subTotal + '৳';
@@ -891,48 +910,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 saveCart(); updateCartCounter(); renderCart();
             };
         });
-    }
-
-    // ----------------------------
-    // Confirm Button Validation
-    // ----------------------------
-    function validateConfirmButton() {
-        let allFilled = true;
-
-        customerFields.forEach(selector => {
-            const field = document.querySelector(selector);
-            if(field && !field.value.trim()) allFilled = false;
-        });
-
-        const isCartNotEmpty = cart.length > 0;
-        const isTermsChecked = termsCheckbox ? termsCheckbox.checked : true;
-
-        const enable = allFilled && isCartNotEmpty && isTermsChecked;
-
-        if(confirmBtn){
-            confirmBtn.disabled = !enable;
-            confirmBtn.style.opacity = enable ? '1' : '0.5';
-            confirmBtn.style.pointerEvents = enable ? 'auto' : 'none';
-        }
-    }
-
-    function showValidationMessages() {
-        if(cart.length === 0){
-            alert("Your cart is empty! Please add products first.");
-            return false;
-        }
-        for(let selector of customerFields){
-            const field = document.querySelector(selector);
-            if(field && !field.value.trim()){
-                alert("Please fill in all required customer information fields.");
-                return false;
-            }
-        }
-        if(termsCheckbox && !termsCheckbox.checked){
-            alert("You must agree to the Terms & Conditions before confirming the order.");
-            return false;
-        }
-        return true;
     }
 
     // ----------------------------
@@ -1005,8 +982,10 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
+
 </body>
 </html>
+
 
 
 
