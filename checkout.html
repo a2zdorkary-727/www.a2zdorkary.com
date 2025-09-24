@@ -703,23 +703,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const subTotalEl = document.getElementById('sub-total');
     const totalEl = document.getElementById('total');
     const checkoutBtn = document.getElementById('checkout');
-    const orderOverviewBody = document.getElementById('order-overview-body');
-
-    const tfootSubtotal = document.getElementById('tfoot-subtotal');
-    const tfootDeliveryLabel = document.getElementById('tfoot-delivery-label');
-    const tfootDelivery = document.getElementById('tfoot-delivery');
-    const tfootTotal = document.getElementById('tfoot-total');
-    const confirmBtn = document.getElementById('button-confirm');
-
-    // Checkout form fields
-    const requiredFields = document.querySelectorAll('.checkout-form input[required], .checkout-form select[required]');
-    const termsCheckbox = document.getElementById('terms');
 
     // ----------------------------
     // Variables
     // ----------------------------
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let deliveryCharge = 0; // drawer এ শুরুতে 0৳ দেখাবে
+    let deliveryCharge = 0; // drawer এ শুরুতে 0৳
     let selectedDelivery = 'flat.flat'; // default method
 
     // ----------------------------
@@ -748,18 +737,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     }
 
-    function calculateDeliveryCharge() {
-        // drawer এর জন্য শুরুতে deliveryCharge 0৳
-        if(selectedDelivery === 'flat.flat') deliveryCharge = 80;
-        else if(selectedDelivery === 'pickup.pickup') deliveryCharge = 0;
-        else if(selectedDelivery === 'express.express') deliveryCharge = 300;
-    }
-
     function getDeliveryText() {
         if(selectedDelivery === 'flat.flat') return 'Home Delivery';
         if(selectedDelivery === 'pickup.pickup') return 'Store Pickup';
         if(selectedDelivery === 'express.express') return 'Request Express';
         return 'Delivery';
+    }
+
+    function calculateDeliveryCharge() {
+        // Checkout page থেকে update করলে drawer এর deliveryCharge update হবে
+        if(selectedDelivery === 'flat.flat') deliveryCharge = 80;
+        else if(selectedDelivery === 'pickup.pickup') deliveryCharge = 0;
+        else if(selectedDelivery === 'express.express') deliveryCharge = 300;
     }
 
     function renderCart() {
@@ -797,36 +786,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Drawer delivery charge সবসময় দেখাবে
-        let drawerDeliveryAmount = 0; // drawer এ শুরুতে 0৳
-        let drawerDeliveryText = getDeliveryText();
-
-        if(hasProducts) {
-            // Checkout page থেকে selectedDelivery update করলে drawer deliveryCharge update হবে
-            calculateDeliveryCharge();
-            drawerDeliveryAmount = deliveryCharge;
-        }
-
-        // Subtotal + Total
-        if (subTotalEl) subTotalEl.textContent = subTotal + '৳';
-        if (totalEl) totalEl.textContent = (subTotal + drawerDeliveryAmount) + '৳';
-
         // Drawer delivery row
         let drawerDeliveryRow = document.querySelector('.drawer-delivery-row');
-        if (!drawerDeliveryRow) {
+        if(!drawerDeliveryRow){
             drawerDeliveryRow = document.createElement('div');
             drawerDeliveryRow.className = 'drawer-delivery-row';
-            drawerDeliveryRow.style.display = "flex";
-            drawerDeliveryRow.style.justifyContent = "space-between";
-            drawerDeliveryRow.style.marginTop = "5px";
-            drawerDeliveryRow.innerHTML = `<span>${drawerDeliveryText}:</span><span>${drawerDeliveryAmount}৳</span>`;
-            if (cartItemsContainer) cartItemsContainer.parentNode.appendChild(drawerDeliveryRow);
-        } else {
-            drawerDeliveryRow.innerHTML = `<span>${drawerDeliveryText}:</span><span>${drawerDeliveryAmount}৳</span>`;
+            drawerDeliveryRow.style.display = 'flex';
+            drawerDeliveryRow.style.justifyContent = 'space-between';
+            drawerDeliveryRow.style.margin = '5px 0';
+            drawerDeliveryRow.style.fontWeight = 'bold';
+            // subtotal এর নিচে, total এর উপরে append করা হবে
+            if (cartItemsContainer) cartItemsContainer.parentNode.insertBefore(drawerDeliveryRow, totalEl);
         }
 
+        // deliveryCharge drawer এ update
+        if(hasProducts){
+            calculateDeliveryCharge();
+            drawerDeliveryRow.innerHTML = `<span>${getDeliveryText()}:</span><span>${deliveryCharge}৳</span>`;
+        } else {
+            drawerDeliveryRow.innerHTML = `<span>Home Delivery:</span><span>0৳</span>`;
+        }
+
+        // Subtotal + Total drawer
+        if(subTotalEl) subTotalEl.textContent = subTotal + '৳';
+        if(totalEl) totalEl.textContent = (subTotal + (hasProducts ? deliveryCharge : 0)) + '৳';
+
         attachCartEvents();
-        validateConfirmButton();
     }
 
     function attachCartEvents() {
@@ -857,33 +842,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ----------------------------
-    // Validation Logic
-    // ----------------------------
-    function validateConfirmButton() {
-        let allFieldsFilled = true;
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) allFieldsFilled = false;
-        });
-        const isCartNotEmpty = cart.length > 0;
-        const isTermsChecked = termsCheckbox ? termsCheckbox.checked : true;
-        const enableConfirm = allFieldsFilled && isCartNotEmpty && isTermsChecked;
-        if(confirmBtn){
-            confirmBtn.disabled = !enableConfirm;
-            confirmBtn.style.opacity = enableConfirm ? '1' : '0.5';
-            confirmBtn.style.pointerEvents = enableConfirm ? 'auto' : 'none';
-        }
-    }
-
-    function showValidationMessages() {
-        if(cart.length === 0){ alert("Your cart is empty!"); return false; }
-        for(let field of requiredFields){
-            if(!field.value.trim()){ alert("Please fill all required fields."); return false; }
-        }
-        if(termsCheckbox && !termsCheckbox.checked){ alert("You must accept terms."); return false; }
-        return true;
-    }
-
-    // ----------------------------
     // Event Listeners
     // ----------------------------
     buyButtons.forEach(button => {
@@ -901,10 +859,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.mc-toggler').forEach(btn => {
         btn.addEventListener('click', function() {
-            if (cartDrawer) {
+            if(cartDrawer){
                 cartDrawer.classList.toggle('open');
                 renderCart();
-                if (cartIcon && compareIcon) {
+                if(cartIcon && compareIcon){
                     cartIcon.style.visibility = cartDrawer.classList.contains('open') ? 'hidden' : 'visible';
                     compareIcon.style.visibility = cartDrawer.classList.contains('open') ? 'hidden' : 'visible';
                 }
@@ -914,37 +872,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if(checkoutBtn) checkoutBtn.onclick = () => window.location.href = "checkout.html";
 
-    const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
-    if (shippingRadios.length > 0) {
-        shippingRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                selectedDelivery = this.value;
-                renderCart();
-            });
-        });
-    }
-
-    if(termsCheckbox) termsCheckbox.addEventListener('change', validateConfirmButton);
-    requiredFields.forEach(field => field.addEventListener('input', validateConfirmButton));
-
-    if(confirmBtn) confirmBtn.addEventListener('click', function(e) {
-        if(!showValidationMessages()) e.preventDefault();
-    });
-
     // ----------------------------
     // Init
     // ----------------------------
     updateCartCounter();
     renderCart();
-    validateConfirmButton();
 });
 </script>
 
 
-
-
-
 </body>
 </html>
+
 
 
