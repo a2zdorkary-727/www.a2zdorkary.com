@@ -997,7 +997,7 @@
                     saveCart();
                     updateCartCounter();
                     renderCart();
-                    checkFormValidity();
+                    checkFormAndCartValidity(); // Add this line
                 };
             });
 
@@ -1008,7 +1008,7 @@
                     saveCart();
                     updateCartCounter();
                     renderCart();
-                    checkFormValidity();
+                    checkFormAndCartValidity(); // Add this line
                 };
             });
 
@@ -1019,37 +1019,28 @@
                     saveCart();
                     updateCartCounter();
                     renderCart();
-                    checkFormValidity();
+                    checkFormAndCartValidity(); // Add this line
                 };
             });
         }
+        
+        // This function now checks all three conditions
+        function checkFormAndCartValidity() {
+            const isCartEmpty = cart.length === 0;
+            const isTermsChecked = termsCheckbox.checked;
 
-        function checkFormValidity() {
             let allFieldsFilled = true;
             requiredFields.forEach(field => {
                 if (field.value.trim() === '') {
                     allFieldsFilled = false;
-                    field.style.borderColor = 'red';
-                } else {
-                    field.style.borderColor = ''; // Reset border color
+                    // No need to change border color here, as it's handled on click
                 }
             });
 
-            const termsAgreed = termsCheckbox.checked;
-
-            if (confirmBtn) {
-                confirmBtn.disabled = !(allFieldsFilled && termsAgreed);
-                confirmBtn.style.backgroundColor = confirmBtn.disabled ? '#cccccc' : '#007bff';
-                confirmBtn.style.cursor = confirmBtn.disabled ? 'not-allowed' : 'pointer';
-            }
+            const isValid = !isCartEmpty && isTermsChecked && allFieldsFilled;
+            confirmBtn.disabled = !isValid;
+            confirmBtn.style.opacity = isValid ? '1' : '0.7';
         }
-
-        // Add event listeners to input fields and checkbox to check validity on change
-        requiredFields.forEach(field => {
-            field.addEventListener('input', checkFormValidity);
-        });
-
-        termsCheckbox.addEventListener('change', checkFormValidity);
 
         buyButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -1070,7 +1061,7 @@
                 updateCartCounter();
                 showCartNotification(name);
                 renderCart();
-                checkFormValidity();
+                checkFormAndCartValidity();
             });
         });
 
@@ -1084,6 +1075,7 @@
                         compareIcon.style.visibility = cartDrawer.classList.contains('open') ? 'hidden' : 'visible';
                     }
                 }
+                checkFormAndCartValidity();
             });
         });
 
@@ -1100,17 +1092,56 @@
                 radio.addEventListener('change', function() {
                     selectedDelivery = this.value;
                     renderCart();
-                    checkFormValidity();
+                    checkFormAndCartValidity();
                 });
             });
         }
         
+        // Event listeners to dynamically check validity
+        requiredFields.forEach(field => {
+            field.addEventListener('input', checkFormAndCartValidity);
+        });
+
+        termsCheckbox.addEventListener('change', checkFormAndCartValidity);
+
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function(e) {
+                // This `e.preventDefault()` is crucial for the disabled state to work
+                // It prevents the default form submission logic if the button is not fully enabled
+                e.preventDefault();
+
+                // Re-validate everything just before confirming
+                let allFieldsFilled = true;
+                requiredFields.forEach(field => {
+                    if (field.value.trim() === '') {
+                        field.style.borderColor = 'red';
+                        allFieldsFilled = false;
+                    } else {
+                        field.style.borderColor = '';
+                    }
+                });
+
+                if (cart.length === 0) {
+                    alert('Your cart is empty! Please add products first.');
+                } else if (!allFieldsFilled) {
+                    alert('Please fill in all the required fields (marked with an asterisk *).');
+                } else if (!termsCheckbox.checked) {
+                    alert('Please agree to the Terms and Conditions before confirming your order.');
+                } else {
+                    // All conditions met, proceed to next page
+                    window.location.href = "https://a2zdorkary.com/order-confirmation.html";
+                }
+            });
+        }
+
         // Initial check on page load
-        checkFormValidity();
         updateCartCounter();
         renderCart();
+        checkFormAndCartValidity();
     });
 </script>
+
        </body>
 </html>
+
 
