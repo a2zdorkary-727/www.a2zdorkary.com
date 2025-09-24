@@ -711,9 +711,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const tfootTotal = document.getElementById('tfoot-total');
     const confirmBtn = document.getElementById('button-confirm');
 
-    // Checkout form fields
-    const requiredFields = document.querySelectorAll('.checkout-form input[required], .checkout-form select[required]');
     const termsCheckbox = document.getElementById('terms');
+
+    // Required customer information fields selectors
+    const customerFields = [
+        '#input-firstname',
+        '#input-lastname',
+        '#input-address',
+        '#input-telephone',
+        '#input-email',
+        '#input-city',
+        '#input-zone'
+    ];
 
     // ----------------------------
     // Variables
@@ -781,7 +790,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             <input type="text" value="${item.qty}" readonly>
                             <button class="qty-btn qty-plus" data-index="${index}">+</button>
                         </div>
-                        <!-- ❌ Drawer থেকে quantity × price = total লাইন রিমুভ করা হয়েছে -->
                         <span class="cart-item-price">${item.price}৳</span>
                         <span class="cart-item-remove" data-index="${index}">
                             <i class="material-icons">delete</i>
@@ -797,21 +805,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // ✅ Cart empty হলে সব value 0 হবে
         if (hasProducts) {
             calculateDeliveryCharge();
         } else {
             deliveryCharge = 0;
         }
 
-        // Subtotal + Total
         if (subTotalEl) subTotalEl.textContent = subTotal + '৳';
         if (totalEl) totalEl.textContent = (subTotal + deliveryCharge) + '৳';
 
-        // Order Overview Table (checkout page)
         if (orderOverviewBody) {
             orderOverviewBody.innerHTML = '';
-
             if (hasProducts) {
                 cart.forEach(item => {
                     const totalPrice = item.price * item.qty;
@@ -825,7 +829,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            // SubTotal row
             const subTotalRow = document.createElement('tr');
             subTotalRow.className = 'summary-row';
             subTotalRow.innerHTML = `
@@ -835,7 +838,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             orderOverviewBody.appendChild(subTotalRow);
 
-            // Delivery row
             const deliveryRow = document.createElement('tr');
             deliveryRow.className = 'summary-row';
             deliveryRow.innerHTML = `
@@ -845,7 +847,6 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             orderOverviewBody.appendChild(deliveryRow);
 
-            // Total row
             const totalRow = document.createElement('tr');
             totalRow.className = 'summary-row total-row';
             totalRow.innerHTML = `
@@ -856,7 +857,6 @@ document.addEventListener('DOMContentLoaded', function() {
             orderOverviewBody.appendChild(totalRow);
         }
 
-        // Hidden tfoot values
         if (tfootSubtotal) tfootSubtotal.textContent = subTotal + '৳';
         if (tfootDelivery) tfootDelivery.textContent = deliveryCharge + '৳';
         if (tfootDeliveryLabel) tfootDeliveryLabel.textContent = hasProducts ? `Delivery (${getDeliveryText()})` : 'Delivery';
@@ -894,36 +894,36 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ----------------------------
-    // Validation Logic
+    // Confirm Button Validation
     // ----------------------------
     function validateConfirmButton() {
-        let allFieldsFilled = true;
+        let allFilled = true;
 
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                allFieldsFilled = false;
-            }
+        customerFields.forEach(selector => {
+            const field = document.querySelector(selector);
+            if(field && !field.value.trim()) allFilled = false;
         });
 
         const isCartNotEmpty = cart.length > 0;
         const isTermsChecked = termsCheckbox ? termsCheckbox.checked : true;
 
-        const enableConfirm = allFieldsFilled && isCartNotEmpty && isTermsChecked;
+        const enable = allFilled && isCartNotEmpty && isTermsChecked;
 
         if(confirmBtn){
-            confirmBtn.disabled = !enableConfirm;
-            confirmBtn.style.opacity = enableConfirm ? '1' : '0.5';
-            confirmBtn.style.pointerEvents = enableConfirm ? 'auto' : 'none';
+            confirmBtn.disabled = !enable;
+            confirmBtn.style.opacity = enable ? '1' : '0.5';
+            confirmBtn.style.pointerEvents = enable ? 'auto' : 'none';
         }
     }
 
     function showValidationMessages() {
-        if(cart.length === 0) {
+        if(cart.length === 0){
             alert("Your cart is empty! Please add products first.");
             return false;
         }
-        for(let field of requiredFields){
-            if(!field.value.trim()){
+        for(let selector of customerFields){
+            const field = document.querySelector(selector);
+            if(field && !field.value.trim()){
                 alert("Please fill in all required customer information fields.");
                 return false;
             }
@@ -969,9 +969,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
     if (shippingRadios.length > 0) {
         const initialChecked = document.querySelector('input[name="shipping_method"]:checked');
-        if (initialChecked) {
-            selectedDelivery = initialChecked.value;
-        }
+        if (initialChecked) selectedDelivery = initialChecked.value;
 
         shippingRadios.forEach(radio => {
             radio.addEventListener('change', function() {
@@ -981,18 +979,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    if(termsCheckbox){
-        termsCheckbox.addEventListener('change', validateConfirmButton);
-    }
-
-    requiredFields.forEach(field => {
-        field.addEventListener('input', validateConfirmButton);
+    if(termsCheckbox) termsCheckbox.addEventListener('change', validateConfirmButton);
+    customerFields.forEach(selector => {
+        const field = document.querySelector(selector);
+        if(field) field.addEventListener('input', validateConfirmButton);
     });
 
-    if(confirmBtn) {
-        confirmBtn.addEventListener('click', function(e) {
+    if(confirmBtn){
+        confirmBtn.addEventListener('click', function(e){
             if(!showValidationMessages()){
                 e.preventDefault();
+            } else {
+                window.location.href = "https://a2zdorkary.com/checkout.html";
             }
         });
     }
@@ -1004,49 +1002,12 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCart();
     validateConfirmButton();
 });
-
-
- // Required fields
-    const requiredFields = [
-        '#input-firstname',
-        '#input-lastname',
-        '#input-address',
-        '#input-telephone',
-        '#input-email',
-        '#input-city',
-        '#input-zone'
-    ];
-
-    confirmBtn.addEventListener('click', function(e) {
-        let allFilled = true;
-
-        // Check each field
-        requiredFields.forEach(selector => {
-            const field = document.querySelector(selector);
-            if (field && !field.value.trim()) {
-                allFilled = false;
-            }
-        });
-
-        if (!allFilled) {
-            e.preventDefault();
-            alert("Please fill in all required customer information fields.");
-            return false;
-        }
-
-        // If all fields filled, redirect to checkout page
-        window.location.href = "https://a2zdorkary.com/checkout.html";
-    });
-
-
-
-
-
-    
 </script>
+
 
 </body>
 </html>
+
 
 
 
