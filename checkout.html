@@ -3,6 +3,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -439,19 +440,15 @@
     
 
                             
-            <div class="checkout-final-action">
-
-                                <div class="agree-text" style="margin-bottom: 10px">I have read and agree to the <a href="https://www.a2zdorkary.com/warranty-policy" target="_blank"><b>Terms and Conditions</b></a>, <a href="https://www.a2zdorkary.com/privacy" target="_blank"><b>Privacy Policy</b></a> and <a href="https://www.a2zdorkary.com/refund-policy" target="_blank"><b>Refund and Return Policy</b></a>                                        <input type="checkbox" name="agree" value="1" checked="checked" />
-                                    </div>
-                                <button id="button-confirm" class="btn submit-btn pull-right" type="submit">Confirm Order</button>
-            </div>
-        </form>
-
+            <div class="terms-and-conditions-container">
+             <div class="terms-checkbox-container">
+        <input type="checkbox" id="terms-checkbox">
+        <label for="terms-checkbox">I have read and agree to the <a href="#">Terms and Conditions</a>, <a href="#">Privacy Policy</a> and <a href="#">Refund and Return Policy</a></label>
     </div>
-</section>
-<section class="content-bottom">
-    <div class="container">
-            </div>
+    
+    <button id="button-confirm">Confirm Order</button>
+</div>
+        
 </section>
 
 <footer>
@@ -552,7 +549,7 @@
 
 
 
-     <style>
+        <style>
         /* Your existing CSS for cart drawer, notification, etc. remains here. */
         .drawer.m-cart {
             position: fixed;
@@ -772,264 +769,352 @@
             padding-right: 0;
             font-weight: normal;
         }
+        
+        /* --- NEW CSS for button alignment and style --- */
+        .terms-and-conditions-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .terms-checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+        .terms-checkbox-container label {
+            margin-left: 5px;
+        }
+        #button-confirm {
+            padding: 12px 25px; /* Adjust padding to match your image */
+            background-color: #007bff; /* Blue color */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-transform: unset;
+            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+        }
+        #button-confirm:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* আপনার আগের CSS কোড এখানে থাকবে */
+
+    /* এখানে নতুন CSS কোড যোগ করা হয়েছে */
+    .terms-and-conditions-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 20px;
+    }
+    
+    #button-confirm {
+        padding: 15px 30px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 16px;
+        text-transform: unset;
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.3s ease;
+    }
+    
+    /* Mobile-specific styles for the button and container */
+    @media (max-width: 768px) {
+        .terms-and-conditions-container {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .terms-checkbox-container {
+            margin-bottom: 15px; /* Adds space between checkbox and button */
+        }
+        
+        #button-confirm {
+            width: 100%; /* Makes the button full-width */
+            padding: 15px; /* Adjusts padding for mobile */
+            margin-top: 10px; /* Adds space above the button */
+        }
+    }
     </style>
 
 
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const buyButtons = document.querySelectorAll('.btn-add-cart');
-    const cartIcon = document.querySelector('#cart');
-    const compareIcon = document.querySelector('#cmpr-btn');
-    const desktopCartCounter = cartIcon ? cartIcon.querySelector('.counter') : null;
-    const mobileCartCounter  = document.querySelector('.mbl-right .counter');
-    const cartDrawer = document.getElementById('m-cart');
-    const cartItemsContainer = document.getElementById('cart-items');
-    const subTotalEl = document.getElementById('sub-total');
-    const totalEl = document.getElementById('total');
-    const checkoutBtn = document.getElementById('checkout');
-    const orderOverviewBody = document.getElementById('order-overview-body');
+    document.addEventListener('DOMContentLoaded', function() {
+        const buyButtons = document.querySelectorAll('.btn-add-cart');
+        const cartIcon = document.querySelector('#cart');
+        const compareIcon = document.querySelector('#cmpr-btn');
+        const desktopCartCounter = cartIcon ? cartIcon.querySelector('.counter') : null;
+        const mobileCartCounter = document.querySelector('.mbl-right .counter');
+        const cartDrawer = document.getElementById('m-cart');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const subTotalEl = document.getElementById('sub-total');
+        const totalEl = document.getElementById('total');
+        const checkoutBtn = document.getElementById('checkout');
+        const orderOverviewBody = document.getElementById('order-overview-body');
 
-    // These elements are still referenced by your other code, but their actual display is handled by the main table's tbody.
-    const tfootSubtotal = document.getElementById('tfoot-subtotal');
-    const tfootDeliveryLabel = document.getElementById('tfoot-delivery-label');
-    const tfootDelivery = document.getElementById('tfoot-delivery');
-    const tfootTotal = document.getElementById('tfoot-total');
-    const confirmBtn = document.getElementById('button-confirm');
+        const tfootSubtotal = document.getElementById('tfoot-subtotal');
+        const tfootDeliveryLabel = document.getElementById('tfoot-delivery-label');
+        const tfootDelivery = document.getElementById('tfoot-delivery');
+        const tfootTotal = document.getElementById('tfoot-total');
+        const confirmBtn = document.getElementById('button-confirm');
+        const termsCheckbox = document.getElementById('terms-checkbox');
 
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let deliveryCharge = 0;
-    // Default delivery method, ensure this matches your radio button values
-    let selectedDelivery = 'flat.flat'; // Assuming 'flat.flat' is 'Home Delivery'
+        const customerInfoFields = document.getElementById('customer-info-fields'); // Changed from class to ID for clarity
+        const requiredFields = document.querySelectorAll('#customer-info-fields .form-control[required]');
 
-    function saveCart() {
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let deliveryCharge = 0;
+        let selectedDelivery = 'flat.flat';
 
-    function updateCartCounter() {
-        let count = cart.reduce((sum, item) => sum + item.qty, 0);
-        if (desktopCartCounter) desktopCartCounter.textContent = count;
-        if (mobileCartCounter) mobileCartCounter.textContent = count;
-    }
-
-    function showCartNotification(name) {
-        const notification = document.createElement('div');
-        notification.className = 'cart-notification';
-        notification.innerHTML = `<i class="material-icons">check_circle</i> New Item Added: <b>${name}</b>`;
-        document.body.appendChild(notification);
-        void notification.offsetWidth;
-        notification.classList.add('show');
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 500);
-        }, 2000);
-    }
-
-    function calculateDeliveryCharge() {
-        if(selectedDelivery === 'flat.flat') deliveryCharge = 80;
-        else if(selectedDelivery === 'pickup.pickup') deliveryCharge = 0;
-        else if(selectedDelivery === 'express.express') deliveryCharge = 300;
-    }
-
-    function getDeliveryText() {
-        if(selectedDelivery === 'flat.flat') return 'Home Delivery';
-        if(selectedDelivery === 'pickup.pickup') return 'Store Pickup';
-        if(selectedDelivery === 'express.express') return 'Request Express';
-        return 'Delivery';
-    }
-
-    function renderCart() {
-        const hasProducts = cart.length > 0;
-        let subTotal = 0;
-        
-        if (cartItemsContainer) {
-            cartItemsContainer.innerHTML = '';
-            cart.forEach((item, index) => {
-                const totalPrice = item.price * item.qty;
-                subTotal += totalPrice;
-                const div = document.createElement('div');
-                div.className = 'cart-item';
-                div.innerHTML = `
-                    <img src="${item.img}" alt="${item.name}">
-                    <p class="cart-item-name">${item.name}</p>
-                    <div class="cart-item-qty">
-                        <button class="qty-btn qty-minus" data-index="${index}">−</button>
-                        <input type="text" value="${item.qty}" readonly>
-                        <button class="qty-btn qty-plus" data-index="${index}">+</button>
-                    </div>
-                    <span class="cart-item-price">${totalPrice}৳</span>
-                    <span class="cart-item-remove" data-index="${index}">
-                        <i class="material-icons">delete</i>
-                    </span>
-                `;
-                cartItemsContainer.appendChild(div);
-            });
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
         }
-        
-        calculateDeliveryCharge();
-        if (subTotalEl) subTotalEl.textContent = subTotal + '৳';
-        if (totalEl) totalEl.textContent = (subTotal + deliveryCharge) + '৳';
 
-        if (orderOverviewBody) {
-            orderOverviewBody.innerHTML = '';
-            let total = subTotal;
-
-            // Loop through cart items and create rows for the order overview table
-            cart.forEach(item => {
-                const totalPrice = item.price * item.qty;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>${item.price}৳ × ${item.qty}</td>
-                    <td class="text-right total-price-cell">${totalPrice}৳</td>
-                `;
-                orderOverviewBody.appendChild(tr);
-            });
-
-            // Add Sub-Total row
-            const subTotalRow = document.createElement('tr');
-            subTotalRow.className = 'summary-row';
-            subTotalRow.innerHTML = `
-                <td></td>
-                <td class="summary-label-cell">Sub-Total:</td>
-                <td class="text-right total-price-cell">${subTotal}৳</td>
-            `;
-            orderOverviewBody.appendChild(subTotalRow);
-
-            // Add Delivery row
-            const deliveryRow = document.createElement('tr');
-            deliveryRow.className = 'summary-row';
-            deliveryRow.innerHTML = `
-                <td></td>
-                <td class="summary-label-cell">${getDeliveryText()}:</td>
-                <td class="text-right total-price-cell">${deliveryCharge}৳</td>
-            `;
-            orderOverviewBody.appendChild(deliveryRow);
-
-            // Add Total row
-            const totalRow = document.createElement('tr');
-            totalRow.className = 'summary-row total-row';
-            totalRow.innerHTML = `
-                <td></td>
-                <td class="summary-label-cell">Total:</td>
-                <td class="text-right total-price-cell">${total + deliveryCharge}৳</td>
-            `;
-            orderOverviewBody.appendChild(totalRow);
+        function updateCartCounter() {
+            let count = cart.reduce((sum, item) => sum + item.qty, 0);
+            if (desktopCartCounter) desktopCartCounter.textContent = count;
+            if (mobileCartCounter) mobileCartCounter.textContent = count;
         }
-        
-        // Ensure these tfoot elements are present if your other code still references them,
-        // but they are hidden by style="display:none;" in the HTML.
-        if(tfootSubtotal) tfootSubtotal.textContent = subTotal + '৳';
-        if(tfootDelivery) tfootDelivery.textContent = deliveryCharge + '৳';
-        if(tfootDeliveryLabel) tfootDeliveryLabel.textContent = `Delivery (${getDeliveryText()})`;
-        if(tfootTotal) tfootTotal.textContent = (subTotal + deliveryCharge) + '৳';
 
-        if(confirmBtn) {
-            if(hasProducts) {
-                confirmBtn.style.opacity = '1';
-                confirmBtn.style.pointerEvents = 'auto';
-            } else {
-                confirmBtn.style.opacity = '0.5';
-                confirmBtn.style.pointerEvents = 'none';
+        function showCartNotification(name) {
+            const notification = document.createElement('div');
+            notification.className = 'cart-notification';
+            notification.innerHTML = `<i class="material-icons">check_circle</i> New Item Added: <b>${name}</b>`;
+            document.body.appendChild(notification);
+            void notification.offsetWidth;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 500);
+            }, 2000);
+        }
+
+        function calculateDeliveryCharge() {
+            if (selectedDelivery === 'flat.flat') deliveryCharge = 80;
+            else if (selectedDelivery === 'pickup.pickup') deliveryCharge = 0;
+            else if (selectedDelivery === 'express.express') deliveryCharge = 300;
+        }
+
+        function getDeliveryText() {
+            if (selectedDelivery === 'flat.flat') return 'Home Delivery';
+            if (selectedDelivery === 'pickup.pickup') return 'Store Pickup';
+            if (selectedDelivery === 'express.express') return 'Request Express';
+            return 'Delivery';
+        }
+
+        function renderCart() {
+            const hasProducts = cart.length > 0;
+            let subTotal = 0;
+
+            if (cartItemsContainer) {
+                cartItemsContainer.innerHTML = '';
+                cart.forEach((item, index) => {
+                    const totalPrice = item.price * item.qty;
+                    subTotal += totalPrice;
+                    const div = document.createElement('div');
+                    div.className = 'cart-item';
+                    div.innerHTML = `
+                        <img src="${item.img}" alt="${item.name}">
+                        <p class="cart-item-name">${item.name}</p>
+                        <div class="cart-item-qty">
+                            <button class="qty-btn qty-minus" data-index="${index}">−</button>
+                            <input type="text" value="${item.qty}" readonly>
+                            <button class="qty-btn qty-plus" data-index="${index}">+</button>
+                        </div>
+                        <span class="cart-item-price">${totalPrice}৳</span>
+                        <span class="cart-item-remove" data-index="${index}">
+                            <i class="material-icons">delete</i>
+                        </span>
+                    `;
+                    cartItemsContainer.appendChild(div);
+                });
             }
+
+            calculateDeliveryCharge();
+            if (subTotalEl) subTotalEl.textContent = subTotal + '৳';
+            if (totalEl) totalEl.textContent = (subTotal + deliveryCharge) + '৳';
+
+            if (orderOverviewBody) {
+                orderOverviewBody.innerHTML = '';
+                let total = subTotal;
+
+                cart.forEach(item => {
+                    const totalPrice = item.price * item.qty;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.name}</td>
+                        <td>${item.price}৳ × ${item.qty}</td>
+                        <td class="text-right total-price-cell">${totalPrice}৳</td>
+                    `;
+                    orderOverviewBody.appendChild(tr);
+                });
+
+                const subTotalRow = document.createElement('tr');
+                subTotalRow.className = 'summary-row';
+                subTotalRow.innerHTML = `
+                    <td></td>
+                    <td class="summary-label-cell">Sub-Total:</td>
+                    <td class="text-right total-price-cell">${subTotal}৳</td>
+                `;
+                orderOverviewBody.appendChild(subTotalRow);
+
+                const deliveryRow = document.createElement('tr');
+                deliveryRow.className = 'summary-row';
+                deliveryRow.innerHTML = `
+                    <td></td>
+                    <td class="summary-label-cell">${getDeliveryText()}:</td>
+                    <td class="text-right total-price-cell">${deliveryCharge}৳</td>
+                `;
+                orderOverviewBody.appendChild(deliveryRow);
+
+                const totalRow = document.createElement('tr');
+                totalRow.className = 'summary-row total-row';
+                totalRow.innerHTML = `
+                    <td></td>
+                    <td class="summary-label-cell">Total:</td>
+                    <td class="text-right total-price-cell">${total + deliveryCharge}৳</td>
+                `;
+                orderOverviewBody.appendChild(totalRow);
+            }
+
+            if (tfootSubtotal) tfootSubtotal.textContent = subTotal + '৳';
+            if (tfootDelivery) tfootDelivery.textContent = deliveryCharge + '৳';
+            if (tfootDeliveryLabel) tfootDeliveryLabel.textContent = `Delivery (${getDeliveryText()})`;
+            if (tfootTotal) tfootTotal.textContent = (subTotal + deliveryCharge) + '৳';
+
+            document.querySelectorAll('.qty-minus').forEach(btn => {
+                btn.onclick = function() {
+                    const idx = parseInt(this.dataset.index);
+                    cart[idx].qty -= 1;
+                    if (cart[idx].qty <= 0) cart.splice(idx, 1);
+                    saveCart();
+                    updateCartCounter();
+                    renderCart();
+                };
+            });
+
+            document.querySelectorAll('.qty-plus').forEach(btn => {
+                btn.onclick = function() {
+                    const idx = parseInt(this.dataset.index);
+                    cart[idx].qty += 1;
+                    saveCart();
+                    updateCartCounter();
+                    renderCart();
+                };
+            });
+
+            document.querySelectorAll('.cart-item-remove').forEach(btn => {
+                btn.onclick = function() {
+                    const idx = parseInt(this.dataset.index);
+                    cart.splice(idx, 1);
+                    saveCart();
+                    updateCartCounter();
+                    renderCart();
+                };
+            });
         }
 
-        // Event listeners for cart drawer buttons
-        const qtyMinusBtns = document.querySelectorAll('.cart-item-qty .qty-minus');
-        const qtyPlusBtns = document.querySelectorAll('.cart-item-qty .qty-plus');
-        const removeItemBtns = document.querySelectorAll('.cart-item-remove');
-
-        qtyMinusBtns.forEach(btn => {
-            btn.onclick = function() {
-                const idx = parseInt(this.dataset.index);
-                cart[idx].qty -= 1;
-                if(cart[idx].qty <= 0) cart.splice(idx, 1);
-                saveCart(); updateCartCounter(); renderCart();
-            };
-        });
-
-        qtyPlusBtns.forEach(btn => {
-            btn.onclick = function() {
-                const idx = parseInt(this.dataset.index);
-                cart[idx].qty += 1;
-                saveCart(); updateCartCounter(); renderCart();
-            };
-        });
-
-        removeItemBtns.forEach(btn => {
-            btn.onclick = function() {
-                const idx = parseInt(this.dataset.index);
-                cart.splice(idx, 1);
-                saveCart(); updateCartCounter(); renderCart();
-            };
-        });
-    }
-
-    buyButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const pItem = this.closest('.p-item');
-            const name = pItem.querySelector('.p-item-name a').textContent.trim();
-            const price = parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g,''));
-            const id = pItem.dataset.id || name + '-' + price;
-            let existing = cart.find(p => p.id === id);
-            if(existing) existing.qty += 1;
-            else cart.push({id, name, price, img: pItem.querySelector('img').src, qty:1});
-            saveCart();
-            updateCartCounter();
-            showCartNotification(name);
-            renderCart();
-        });
-    });
-
-    document.querySelectorAll('.mc-toggler').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (cartDrawer) {
-                cartDrawer.classList.toggle('open');
+        buyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const pItem = this.closest('.p-item');
+                const name = pItem.querySelector('.p-item-name a').textContent.trim();
+                const price = parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g, ''));
+                const id = pItem.dataset.id || name + '-' + price;
+                let existing = cart.find(p => p.id === id);
+                if (existing) existing.qty += 1;
+                else cart.push({
+                    id,
+                    name,
+                    price,
+                    img: pItem.querySelector('img').src,
+                    qty: 1
+                });
+                saveCart();
+                updateCartCounter();
+                showCartNotification(name);
                 renderCart();
-                if (cartIcon && compareIcon) {
-                    cartIcon.style.visibility = cartDrawer.classList.contains('open') ? 'hidden' : 'visible';
-                    compareIcon.style.visibility = cartDrawer.classList.contains('open') ? 'hidden' : 'visible';
+            });
+        });
+
+        document.querySelectorAll('.mc-toggler').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (cartDrawer) {
+                    cartDrawer.classList.toggle('open');
+                    renderCart();
+                    if (cartIcon && compareIcon) {
+                        cartIcon.style.visibility = cartDrawer.classList.contains('open') ? 'hidden' : 'visible';
+                        compareIcon.style.visibility = cartDrawer.classList.contains('open') ? 'hidden' : 'visible';
+                    }
                 }
-            }
-        });
-    });
-
-    if(checkoutBtn) checkoutBtn.onclick = () => window.location.href = "https://a2zdorkary.com/checkout.html";
-    
-    // Delivery Method Update (Ensure this targets your actual radio buttons in HTML)
-    const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
-    if (shippingRadios.length > 0) {
-        const initialChecked = document.querySelector('input[name="shipping_method"]:checked');
-        if (initialChecked) {
-            selectedDelivery = initialChecked.value;
-        }
-
-        shippingRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                selectedDelivery = this.value;
-                renderCart();
             });
         });
-    }
 
+        if (checkoutBtn) checkoutBtn.onclick = () => window.location.href = "https://a2zdorkary.com/checkout.html";
 
-    if(confirmBtn) {
-        confirmBtn.addEventListener('click', function(e) {
-            if(cart.length === 0) {
-                e.preventDefault();
-                alert('Your cart is empty! Please add products first.');
+        const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
+        if (shippingRadios.length > 0) {
+            const initialChecked = document.querySelector('input[name="shipping_method"]:checked');
+            if (initialChecked) {
+                selectedDelivery = initialChecked.value;
             }
-        });
-    }
 
-    updateCartCounter();
-    renderCart(); // Initial render on page load
-});
+            shippingRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    selectedDelivery = this.value;
+                    renderCart();
+                });
+            });
+        }
+
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // 1. Validate required fields
+                let allFieldsFilled = true;
+                requiredFields.forEach(field => {
+                    if (field.value.trim() === '') {
+                        field.style.borderColor = 'red'; // Set border to red
+                        allFieldsFilled = false;
+                    } else {
+                        field.style.borderColor = ''; // Reset border color
+                    }
+                });
+
+                // 2. Check terms and conditions checkbox
+                if (!termsCheckbox.checked) {
+                    alert('Please agree to the Terms and Conditions before confirming your order.');
+                    return; // Stop the function here
+                }
+
+                // 3. Check if any fields are empty
+                if (!allFieldsFilled) {
+                    alert('Please fill in all the required fields (marked with an asterisk *).');
+                    return; // Stop the function here
+                }
+                
+                // 4. Check if the cart is empty
+                if (cart.length === 0) {
+                    alert('Your cart is empty! Please add products first.');
+                    return; // Stop the function here
+                }
+                
+                // 5. If all checks pass, proceed
+                window.location.href = "https://a2zdorkary.com/order-confirmation.html";
+            });
+        }
+
+        updateCartCounter();
+        renderCart();
+    });
 </script>
 
 </body>
 </html>
-
-</body>
-</html>
-
