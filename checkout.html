@@ -1004,10 +1004,82 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCart();
     validateConfirmButton();
 });
+
+
+
+
+
+    function showValidationMessages() {
+    let errors = [];
+
+    // Cart empty check
+    if(cart.length === 0) {
+        errors.push("Your cart is empty! Please add products first.");
+    }
+
+    // Required fields check
+    requiredFields.forEach(field => {
+        if(!field.value.trim()) {
+            const label = field.closest('.form-group')?.querySelector('label')?.textContent || field.placeholder || field.name;
+            errors.push(`Please fill in the required field: ${label}`);
+        }
+    });
+
+    // Terms & Conditions check
+    if(termsCheckbox && !termsCheckbox.checked){
+        errors.push("You must agree to the Terms & Conditions before confirming the order.");
+    }
+
+    if(errors.length > 0){
+        alert(errors.join("\n"));
+        return false;
+    }
+
+    return true;
+}
+
+// Confirm button event
+if(confirmBtn){
+    confirmBtn.addEventListener('click', function(e){
+        if(!showValidationMessages()){
+            e.preventDefault(); // prevent submission if validation fails
+        }
+    });
+}
+
+// Also validate button enable/disable
+function validateConfirmButton() {
+    let allFieldsFilled = true;
+
+    requiredFields.forEach(field => {
+        if(!field.value.trim()){
+            allFieldsFilled = false;
+        }
+    });
+
+    const isCartNotEmpty = cart.length > 0;
+    const isTermsChecked = termsCheckbox ? termsCheckbox.checked : true;
+
+    const enableConfirm = allFieldsFilled && isCartNotEmpty && isTermsChecked;
+
+    if(confirmBtn){
+        confirmBtn.disabled = !enableConfirm;
+        confirmBtn.style.opacity = enableConfirm ? '1' : '0.5';
+        confirmBtn.style.pointerEvents = enableConfirm ? 'auto' : 'none';
+    }
+}
+
+// Input & checkbox listeners to update confirm button
+requiredFields.forEach(field => {
+    field.addEventListener('input', validateConfirmButton);
+});
+if(termsCheckbox) termsCheckbox.addEventListener('change', validateConfirmButton);
+
 </script>
 
 </body>
 </html>
+
 
 
 
