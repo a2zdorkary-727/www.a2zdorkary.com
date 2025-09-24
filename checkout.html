@@ -866,7 +866,7 @@
         const confirmBtn = document.getElementById('button-confirm');
         const termsCheckbox = document.getElementById('terms-checkbox');
 
-        const customerInfoFields = document.getElementById('customer-info-fields'); // Changed from class to ID for clarity
+        const customerInfoFields = document.getElementById('customer-info-fields');
         const requiredFields = document.querySelectorAll('#customer-info-fields .form-control[required]');
 
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -997,6 +997,7 @@
                     saveCart();
                     updateCartCounter();
                     renderCart();
+                    checkFormValidity();
                 };
             });
 
@@ -1007,6 +1008,7 @@
                     saveCart();
                     updateCartCounter();
                     renderCart();
+                    checkFormValidity();
                 };
             });
 
@@ -1017,9 +1019,37 @@
                     saveCart();
                     updateCartCounter();
                     renderCart();
+                    checkFormValidity();
                 };
             });
         }
+
+        function checkFormValidity() {
+            let allFieldsFilled = true;
+            requiredFields.forEach(field => {
+                if (field.value.trim() === '') {
+                    allFieldsFilled = false;
+                    field.style.borderColor = 'red';
+                } else {
+                    field.style.borderColor = ''; // Reset border color
+                }
+            });
+
+            const termsAgreed = termsCheckbox.checked;
+
+            if (confirmBtn) {
+                confirmBtn.disabled = !(allFieldsFilled && termsAgreed);
+                confirmBtn.style.backgroundColor = confirmBtn.disabled ? '#cccccc' : '#007bff';
+                confirmBtn.style.cursor = confirmBtn.disabled ? 'not-allowed' : 'pointer';
+            }
+        }
+
+        // Add event listeners to input fields and checkbox to check validity on change
+        requiredFields.forEach(field => {
+            field.addEventListener('input', checkFormValidity);
+        });
+
+        termsCheckbox.addEventListener('change', checkFormValidity);
 
         buyButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -1040,6 +1070,7 @@
                 updateCartCounter();
                 showCartNotification(name);
                 renderCart();
+                checkFormValidity();
             });
         });
 
@@ -1069,52 +1100,17 @@
                 radio.addEventListener('change', function() {
                     selectedDelivery = this.value;
                     renderCart();
+                    checkFormValidity();
                 });
             });
         }
-
-        if (confirmBtn) {
-            confirmBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                // 1. Validate required fields
-                let allFieldsFilled = true;
-                requiredFields.forEach(field => {
-                    if (field.value.trim() === '') {
-                        field.style.borderColor = 'red'; // Set border to red
-                        allFieldsFilled = false;
-                    } else {
-                        field.style.borderColor = ''; // Reset border color
-                    }
-                });
-
-                // 2. Check terms and conditions checkbox
-                if (!termsCheckbox.checked) {
-                    alert('Please agree to the Terms and Conditions before confirming your order.');
-                    return; // Stop the function here
-                }
-
-                // 3. Check if any fields are empty
-                if (!allFieldsFilled) {
-                    alert('Please fill in all the required fields (marked with an asterisk *).');
-                    return; // Stop the function here
-                }
-                
-                // 4. Check if the cart is empty
-                if (cart.length === 0) {
-                    alert('Your cart is empty! Please add products first.');
-                    return; // Stop the function here
-                }
-                
-                // 5. If all checks pass, proceed
-                window.location.href = "https://a2zdorkary.com/order-confirmation.html";
-            });
-        }
-
+        
+        // Initial check on page load
+        checkFormValidity();
         updateCartCounter();
         renderCart();
     });
 </script>
-
-</body>
+       </body>
 </html>
+
