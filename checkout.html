@@ -1004,6 +1004,45 @@ document.addEventListener('DOMContentLoaded', function() {
     renderCart();
     validateConfirmButton();
 });
+
+
+ // Required fields
+    const requiredFields = [
+        '#input-firstname',
+        '#input-lastname',
+        '#input-address',
+        '#input-telephone',
+        '#input-email',
+        '#input-city',
+        '#input-zone'
+    ];
+
+    confirmBtn.addEventListener('click', function(e) {
+        let allFilled = true;
+
+        // Check each field
+        requiredFields.forEach(selector => {
+            const field = document.querySelector(selector);
+            if (field && !field.value.trim()) {
+                allFilled = false;
+            }
+        });
+
+        if (!allFilled) {
+            e.preventDefault();
+            alert("Please fill in all required customer information fields.");
+            return false;
+        }
+
+        // If all fields filled, redirect to checkout page
+        window.location.href = "https://a2zdorkary.com/checkout.html";
+    });
+
+
+
+
+
+    
 </script>
 
 </body>
