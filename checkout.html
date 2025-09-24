@@ -2,6 +2,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
@@ -406,48 +407,38 @@
                         </div>
                                                 <div class="col-md-12 col-sm-12 details-section-wrap">
     <div class="page-section ws-box">
-        <div class="section-head">
-            <h2><span>4</span>Order Overview</h2>
-        </div>
-        <table class="table-bordered bg-white checkout-data">
-  <thead>
-    <tr>
-      <td>Product Name</td>
-      <td>Price</td>
-      <td class="text-right">Total</td>
-    </tr>
-  </thead>
-
-  <!-- Cart এর product গুলো এখানে দেখাবে JS -->
-  <tbody id="order-overview-body">
-  </tbody>
-
-  <!-- Total, Delivery, Subtotal এখানে -->
- <tfoot>
-    <tr>
-        <td colspan="2">Subtotal</td>
-        <td id="tfoot-subtotal">0৳</td>
-    </tr>
-    <tr>
-        <td colspan="2" id="tfoot-delivery-label">Delivery (Home Delivery)</td>
-        <td id="tfoot-delivery">0৳</td>
-    </tr>
-    <tr>
-        <td colspan="2"><b>Total</b></td>
-        <td id="tfoot-total"><b>0৳</b></td>
-    </tr>
-</tfoot>
-
-
-</table>
-
+        <div class="order-overview">
+    <h4>4 Order Overview</h4>
+    <table class="order-overview-table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody id="order-overview-body">
+            </tbody>
+        <tfoot style="display:none;">
+            <tr id="tfoot-subtotal-row">
+                <td colspan="2" id="tfoot-subtotal-label">Sub-Total:</td>
+                <td class="text-right" id="tfoot-subtotal"></td>
+            </tr>
+            <tr id="tfoot-delivery-row">
+                <td colspan="2" id="tfoot-delivery-label">Delivery:</td>
+                <td class="text-right" id="tfoot-delivery"></td>
+            </tr>
+            <tr id="tfoot-total-row">
+                <td colspan="2" id="tfoot-total-label">Total:</td>
+                <td class="text-right" id="tfoot-total"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+    </div></div></div></div></div>
     
 
-                            </div>
-                        </div>
-                                            </div>
-                </div>
-            </div>
+                            
             <div class="checkout-final-action">
 
                                 <div class="agree-text" style="margin-bottom: 10px">I have read and agree to the <a href="https://www.a2zdorkary.com/warranty-policy" target="_blank"><b>Terms and Conditions</b></a>, <a href="https://www.a2zdorkary.com/privacy" target="_blank"><b>Privacy Policy</b></a> and <a href="https://www.a2zdorkary.com/refund-policy" target="_blank"><b>Refund and Return Policy</b></a>                                        <input type="checkbox" name="agree" value="1" checked="checked" />
@@ -463,8 +454,7 @@
             </div>
 </section>
 
-
-        <footer>
+<footer>
     <div class="container">
         <div class="main-footer">
 
@@ -561,12 +551,237 @@
 
 
 
+
+     <style>
+        /* Your existing CSS for cart drawer, notification, etc. remains here. */
+        .drawer.m-cart {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background: #fff;
+            box-shadow: -4px 0 12px rgba(0,0,0,0.2);
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            z-index: 9999;
+        }
+        .drawer.m-cart.open { right: 0; }
+        .drawer.m-cart .title {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .drawer.m-cart .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-right: 10px;
+        }
+        .cart-item-name {
+            flex: 1;
+            margin: 0 10px;
+            font-size: 13px;
+            font-family: 'Roboto', sans-serif;
+        }
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            margin-right: 8px;
+            min-width: 80px;
+            justify-content: center;
+        }
+        .cart-item-qty input {
+            width: 50px;
+            height: 24px;
+            text-align: center;
+            border: 1px solid #ccc;
+            margin: 0 3px;
+            border-radius: 3px;
+            background: #fff;
+            font-size: 13px;
+            font-family: 'Roboto', sans-serif;
+            pointer-events: none;
+        }
+        .qty-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 0 6px;
+            color: #333;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+        .qty-btn:hover { color: #007bff; }
+        .cart-item-price { font-weight: bold; font-family: 'Roboto', sans-serif; }
+        .cart-item-remove { cursor: pointer; color: #dc3545; }
+        .drawer.m-cart .footer {
+            padding: 15px;
+            border-top: 1px solid #ddd;
+        }
+        .promo-code {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .promo-code input {
+            flex: 1;
+            padding: 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+        }
+        .promo-code button {
+            padding: 6px 12px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        .totals p {
+            margin: 5px 0;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Roboto', sans-serif;
+        }
+        #checkout {
+            width: 100%;
+            padding: 10px;
+            background: #ff5722;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .cart-notification {
+            position: fixed;
+            bottom: 94px;
+            right: 80px;
+            background-color: #28a745;
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.5s ease-in-out;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .cart-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .cart-notification i.material-icons {
+            font-size: 20px;
+        }
+        @media screen and (max-width: 768px) {
+            .cart-notification {
+                transform: none !important;
+                transition: opacity 0.5s ease-in-out !important;
+                display: flex !important;
+                opacity: 1 !important;
+                bottom: 94px !important;
+                right: 80px !important;
+            }
+            .cart-notification.show {
+                transform: none !important;
+                opacity: 1 !important;
+            }
+        }
+        /* --- Updated CSS for Order Overview Table --- */
+        .order-overview-table {
+            border-collapse: collapse;
+            width: 100%;
+            font-size: 14px;
+            color: #555;
+            line-height: 1.5;
+        }
+        .order-overview-table th, .order-overview-table td {
+            padding: 12px 10px;
+            text-align: left;
+        }
+        .order-overview-table thead th {
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #ddd;
+        }
+        /* New CSS for column widths */
+        .order-overview-table th:first-child,
+        .order-overview-table td:first-child {
+            width: 50%; /* Product Name takes more space */
+        }
+        .order-overview-table th:nth-child(2),
+        .order-overview-table td:nth-child(2) {
+            width: 25%; /* Price column */
+            text-align: left; /* Align Price heading to left initially */
+            padding-left: 20px; /* Add more space from Product Name */
+        }
+        .order-overview-table th:last-child,
+        .order-overview-table td:last-child {
+            width: 25%; /* Total column */
+            text-align: right;
+            padding-left: 10px; /* Reduce space from Price */
+        }
+
+        .order-overview-table tbody tr:not(.summary-row) {
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .order-overview-table .text-right {
+            text-align: right;
+        }
+        .order-overview-table .total-price-cell {
+            color: #e62e04;
+            font-weight: bold;
+        }
+        /* New CSS to control alignment of summary rows */
+        .order-overview-table .summary-row {
+            border-top: 1px solid #ddd;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        .order-overview-table .summary-row td {
+            padding-top: 15px;
+        }
+        .order-overview-table .summary-label-cell {
+            text-align: left; /* Make sure labels are left-aligned */
+            padding-left: 20px; /* Align with Price column text */
+            padding-right: 0;
+            font-weight: normal;
+        }
+    </style>
+
+
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const buyButtons = document.querySelectorAll('.btn-add-cart');
     const cartIcon = document.querySelector('#cart');
     const compareIcon = document.querySelector('#cmpr-btn');
-    const desktopCartCounter = cartIcon.querySelector('.counter');
+    const desktopCartCounter = cartIcon ? cartIcon.querySelector('.counter') : null;
     const mobileCartCounter  = document.querySelector('.mbl-right .counter');
     const cartDrawer = document.getElementById('m-cart');
     const cartItemsContainer = document.getElementById('cart-items');
@@ -575,15 +790,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkoutBtn = document.getElementById('checkout');
     const orderOverviewBody = document.getElementById('order-overview-body');
 
+    // These elements are still referenced by your other code, but their actual display is handled by the main table's tbody.
     const tfootSubtotal = document.getElementById('tfoot-subtotal');
     const tfootDeliveryLabel = document.getElementById('tfoot-delivery-label');
     const tfootDelivery = document.getElementById('tfoot-delivery');
     const tfootTotal = document.getElementById('tfoot-total');
-    const confirmBtn = document.getElementById('button-confirm'); // Checkout page confirm button
+    const confirmBtn = document.getElementById('button-confirm');
 
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let deliveryCharge = 0;
-    let selectedDelivery = 'flat.flat'; // default Home Delivery
+    // Default delivery method, ensure this matches your radio button values
+    let selectedDelivery = 'flat.flat'; // Assuming 'flat.flat' is 'Home Delivery'
 
     function saveCart() {
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -591,8 +808,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateCartCounter() {
         let count = cart.reduce((sum, item) => sum + item.qty, 0);
-        desktopCartCounter.textContent = count;
-        if(mobileCartCounter) mobileCartCounter.textContent = count;
+        if (desktopCartCounter) desktopCartCounter.textContent = count;
+        if (mobileCartCounter) mobileCartCounter.textContent = count;
     }
 
     function showCartNotification(name) {
@@ -623,64 +840,100 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function renderCart() {
         const hasProducts = cart.length > 0;
-
-        // Drawer items
-        cartItemsContainer.innerHTML = '';
         let subTotal = 0;
-        cart.forEach((item, index) => {
-            subTotal += item.price * item.qty;
-            const div = document.createElement('div');
-            div.className = 'cart-item';
-            div.innerHTML = `
-                <img src="${item.img}" alt="${item.name}">
-                <p class="cart-item-name">${item.name}</p>
-                <div class="cart-item-qty">
-                    <button class="qty-btn qty-minus" data-index="${index}">−</button>
-                    <input type="text" value="${item.qty}" readonly>
-                    <button class="qty-btn qty-plus" data-index="${index}">+</button>
-                </div>
-                <span class="cart-item-price">${item.price * item.qty}৳</span>
-                <span class="cart-item-remove" data-index="${index}">
-                    <i class="material-icons">delete</i>
-                </span>
-            `;
-            cartItemsContainer.appendChild(div);
-        });
-
-        // Subtotal & total update
+        
+        if (cartItemsContainer) {
+            cartItemsContainer.innerHTML = '';
+            cart.forEach((item, index) => {
+                const totalPrice = item.price * item.qty;
+                subTotal += totalPrice;
+                const div = document.createElement('div');
+                div.className = 'cart-item';
+                div.innerHTML = `
+                    <img src="${item.img}" alt="${item.name}">
+                    <p class="cart-item-name">${item.name}</p>
+                    <div class="cart-item-qty">
+                        <button class="qty-btn qty-minus" data-index="${index}">−</button>
+                        <input type="text" value="${item.qty}" readonly>
+                        <button class="qty-btn qty-plus" data-index="${index}">+</button>
+                    </div>
+                    <span class="cart-item-price">${item.price}৳ x ${item.qty} = ${totalPrice}৳</span>
+                    <span class="cart-item-remove" data-index="${index}">
+                        <i class="material-icons">delete</i>
+                    </span>
+                `;
+                cartItemsContainer.appendChild(div);
+            });
+        }
+        
         calculateDeliveryCharge();
+        if (subTotalEl) subTotalEl.textContent = subTotal + '৳';
+        if (totalEl) totalEl.textContent = (subTotal + deliveryCharge) + '৳';
 
-        subTotalEl.textContent = subTotal + '৳';
-        totalEl.textContent = (subTotal + deliveryCharge) + '৳';
+        if (orderOverviewBody) {
+            orderOverviewBody.innerHTML = '';
+            let total = subTotal;
 
-        tfootSubtotal.textContent = subTotal + '৳';
-        tfootDelivery.textContent = deliveryCharge + '৳';
-        if(tfootDeliveryLabel) {
-            tfootDeliveryLabel.textContent = `Delivery (${getDeliveryText()})`;
-        }
-        tfootTotal.textContent = (subTotal + deliveryCharge) + '৳';
+            // Loop through cart items and create rows for the order overview table
+            cart.forEach(item => {
+                const totalPrice = item.price * item.qty;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>${item.price}৳ × ${item.qty}</td>
+                    <td class="text-right total-price-cell">${totalPrice}৳</td>
+                `;
+                orderOverviewBody.appendChild(tr);
+            });
 
-        if(hasProducts) {
-            confirmBtn.style.opacity = '1';
-            confirmBtn.style.pointerEvents = 'auto';
-        } else {
-            confirmBtn.style.opacity = '0.5';
-            confirmBtn.style.pointerEvents = 'none';
-        }
-
-        // Order Overview
-        orderOverviewBody.innerHTML = '';
-        cart.forEach(item => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${item.name}</td>
-                <td>${item.price}৳</td>
-                <td class="text-right">${item.price * item.qty}৳</td>
+            // Add Sub-Total row
+            const subTotalRow = document.createElement('tr');
+            subTotalRow.className = 'summary-row';
+            subTotalRow.innerHTML = `
+                <td></td>
+                <td class="summary-label-cell">Sub-Total:</td>
+                <td class="text-right total-price-cell">${subTotal}৳</td>
             `;
-            orderOverviewBody.appendChild(tr);
-        });
+            orderOverviewBody.appendChild(subTotalRow);
 
-        // Qty & Remove buttons
+            // Add Delivery row
+            const deliveryRow = document.createElement('tr');
+            deliveryRow.className = 'summary-row';
+            deliveryRow.innerHTML = `
+                <td></td>
+                <td class="summary-label-cell">${getDeliveryText()}:</td>
+                <td class="text-right total-price-cell">${deliveryCharge}৳</td>
+            `;
+            orderOverviewBody.appendChild(deliveryRow);
+
+            // Add Total row
+            const totalRow = document.createElement('tr');
+            totalRow.className = 'summary-row total-row';
+            totalRow.innerHTML = `
+                <td></td>
+                <td class="summary-label-cell">Total:</td>
+                <td class="text-right total-price-cell">${total + deliveryCharge}৳</td>
+            `;
+            orderOverviewBody.appendChild(totalRow);
+        }
+        
+        // Ensure these tfoot elements are present if your other code still references them,
+        // but they are hidden by style="display:none;" in the HTML.
+        if(tfootSubtotal) tfootSubtotal.textContent = subTotal + '৳';
+        if(tfootDelivery) tfootDelivery.textContent = deliveryCharge + '৳';
+        if(tfootDeliveryLabel) tfootDeliveryLabel.textContent = `Delivery (${getDeliveryText()})`;
+        if(tfootTotal) tfootTotal.textContent = (subTotal + deliveryCharge) + '৳';
+
+        if(confirmBtn) {
+            if(hasProducts) {
+                confirmBtn.style.opacity = '1';
+                confirmBtn.style.pointerEvents = 'auto';
+            } else {
+                confirmBtn.style.opacity = '0.5';
+                confirmBtn.style.pointerEvents = 'none';
+            }
+        }
+
         document.querySelectorAll('.qty-minus').forEach(btn => {
             btn.onclick = function() {
                 const idx = parseInt(this.dataset.index);
@@ -707,18 +960,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Buy Now buttons
     buyButtons.forEach(button => {
         button.addEventListener('click', function() {
             const pItem = this.closest('.p-item');
             const name = pItem.querySelector('.p-item-name a').textContent.trim();
             const price = parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g,''));
             const id = pItem.dataset.id || name + '-' + price;
-
             let existing = cart.find(p => p.id === id);
             if(existing) existing.qty += 1;
             else cart.push({id, name, price, img: pItem.querySelector('img').src, qty:1});
-
             saveCart();
             updateCartCounter();
             showCartNotification(name);
@@ -726,29 +976,39 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Drawer toggle
     document.querySelectorAll('.mc-toggler').forEach(btn => {
         btn.addEventListener('click', function() {
-            cartDrawer.classList.toggle('open');
-            renderCart();
-            cartDrawer.classList.contains('open') ?
-                (cartIcon.style.visibility = compareIcon.style.visibility = 'hidden') :
-                (cartIcon.style.visibility = compareIcon.style.visibility = 'visible');
+            if (cartDrawer) {
+                cartDrawer.classList.toggle('open');
+                renderCart();
+                if (cartIcon && compareIcon) {
+                    cartIcon.style.visibility = cartDrawer.classList.contains('open') ? 'hidden' : 'visible';
+                    compareIcon.style.visibility = cartDrawer.classList.contains('open') ? 'hidden' : 'visible';
+                }
+            }
         });
     });
 
     if(checkoutBtn) checkoutBtn.onclick = () => window.location.href = "https://a2zdorkary.com/checkout.html";
-
-    // Delivery Method Update
+    
+    // Delivery Method Update (Ensure this targets your actual radio buttons in HTML)
     const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
-    shippingRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            selectedDelivery = this.value;
-            renderCart(); // Update totals and order overview
-        });
-    });
+    if (shippingRadios.length > 0) {
+        // Set initial selectedDelivery based on checked radio, if any
+        const initialChecked = document.querySelector('input[name="shipping_method"]:checked');
+        if (initialChecked) {
+            selectedDelivery = initialChecked.value;
+        }
 
-    // Confirm Order
+        shippingRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                selectedDelivery = this.value;
+                renderCart(); // Re-render the cart overview to update delivery text/price
+            });
+        });
+    }
+
+
     if(confirmBtn) {
         confirmBtn.addEventListener('click', function(e) {
             if(cart.length === 0) {
@@ -759,290 +1019,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     updateCartCounter();
-    renderCart();
+    renderCart(); // Initial render on page load
 });
-
-function renderCart() {
-    const hasProducts = cart.length > 0;
-    let subTotal = 0;
-
-    // Drawer items
-    cartItemsContainer.innerHTML = '';
-    cart.forEach((item, index) => {
-        const totalPrice = item.price * item.qty; // লাইভ total
-        subTotal += totalPrice;
-
-        const div = document.createElement('div');
-        div.className = 'cart-item';
-        div.innerHTML = `
-            <img src="${item.img}" alt="${item.name}">
-            <p class="cart-item-name">${item.name}</p>
-            <div class="cart-item-qty">
-                <button class="qty-btn qty-minus" data-index="${index}">−</button>
-                <input type="text" value="${item.qty}" readonly>
-                <button class="qty-btn qty-plus" data-index="${index}">+</button>
-            </div>
-            <span class="cart-item-price">${item.price}৳ x ${item.qty} = ${totalPrice}৳</span>
-            <span class="cart-item-remove" data-index="${index}">
-                <i class="material-icons">delete</i>
-            </span>
-        `;
-        cartItemsContainer.appendChild(div);
-    });
-
-    // Subtotal & total update
-    calculateDeliveryCharge();
-    subTotalEl.textContent = subTotal + '৳';
-    totalEl.textContent = (subTotal + deliveryCharge) + '৳';
-
-    tfootSubtotal.textContent = subTotal + '৳';
-    tfootDelivery.textContent = deliveryCharge + '৳';
-    if(tfootDeliveryLabel) tfootDeliveryLabel.textContent = `Delivery (${getDeliveryText()})`;
-    tfootTotal.textContent = (subTotal + deliveryCharge) + '৳';
-
-    // Order Overview
-    orderOverviewBody.innerHTML = '';
-    cart.forEach(item => {
-        const totalPrice = item.price * item.qty;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${item.name}</td>
-            <td>${item.price}৳ x ${item.qty}</td>
-            <td class="text-right">${totalPrice}৳</td>
-        `;
-        orderOverviewBody.appendChild(tr);
-    });
-
-    // Delivery row
-    const deliveryRow = document.createElement('tr');
-    deliveryRow.innerHTML = `
-        <td colspan="2">Delivery (${getDeliveryText()})</td>
-        <td class="text-right">${deliveryCharge}৳</td>
-    `;
-    orderOverviewBody.appendChild(deliveryRow);
-
-    // Qty & Remove bindings
-    document.querySelectorAll('.qty-minus').forEach(btn => {
-        btn.onclick = function() {
-            const idx = parseInt(this.dataset.index);
-            cart[idx].qty -= 1;
-            if(cart[idx].qty <= 0) cart.splice(idx, 1);
-            saveCart(); updateCartCounter(); renderCart();
-        };
-    });
-
-    document.querySelectorAll('.qty-plus').forEach(btn => {
-        btn.onclick = function() {
-            const idx = parseInt(this.dataset.index);
-            cart[idx].qty += 1;
-            saveCart(); updateCartCounter(); renderCart();
-        };
-    });
-
-    document.querySelectorAll('.cart-item-remove').forEach(btn => {
-        btn.onclick = function() {
-            const idx = parseInt(this.dataset.index);
-            cart.splice(idx, 1);
-            saveCart(); updateCartCounter(); renderCart();
-        };
-    });
-}
-
 </script>
 
-
-
-
-
-
-
-
-<style>
-/* Cart Drawer Styles */
-.drawer.m-cart {
-    position: fixed;
-    top: 0;
-    right: -400px;
-    width: 400px;
-    height: 100%;
-    background: #fff;
-    box-shadow: -4px 0 12px rgba(0,0,0,0.2);
-    transition: right 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    z-index: 9999;
-}
-.drawer.m-cart.open { right: 0; }
-
-.drawer.m-cart .title {
-    padding: 15px;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.drawer.m-cart .content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-}
-
-.cart-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
-
-.cart-item img {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    margin-right: 10px;
-}
-
-.cart-item-name {
-    flex: 1;
-    margin: 0 10px;
-    font-size: 13px;
-    font-family: 'Roboto', sans-serif;
-}
-
-.cart-item-qty {
-    display: flex;
-    align-items: center;
-    margin-right: 8px;
-    min-width: 80px;
-    justify-content: center;
-}
-
-.cart-item-qty input {
-    width: 50px;
-    height: 24px;
-    text-align: center;
-    border: 1px solid #ccc;
-    margin: 0 3px;
-    border-radius: 3px;
-    background: #fff;
-    font-size: 13px;
-    font-family: 'Roboto', sans-serif;
-    pointer-events: none;
-}
-
-.qty-btn {
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 0 6px;
-    color: #333;
-    transition: color 0.2s;
-    line-height: 1;
-}
-
-.qty-btn:hover { color: #007bff; }
-
-.cart-item-price { font-weight: bold; font-family: 'Roboto', sans-serif; }
-
-.cart-item-remove { cursor: pointer; color: #dc3545; }
-
-.drawer.m-cart .footer {
-    padding: 15px;
-    border-top: 1px solid #ddd;
-}
-
-.promo-code {
-    display: flex;
-    margin-bottom: 10px;
-}
-
-.promo-code input {
-    flex: 1;
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px;
-}
-
-.promo-code button {
-    padding: 6px 12px;
-    background: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 0 4px 4px 0;
-    cursor: pointer;
-}
-
-.totals p {
-    margin: 5px 0;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    font-family: 'Roboto', sans-serif;
-}
-
-#checkout {
-    width: 100%;
-    padding: 10px;
-    background: #ff5722;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-/* Cart Notification Styles */
-.cart-notification {
-    position: fixed;
-    bottom: 94px;
-    right: 80px;
-    background-color: #28a745;
-    color: #fff;
-    padding: 15px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    opacity: 0;
-    transform: translateY(50px); /* desktop slide */
-    transition: all 0.5s ease-in-out;
-    z-index: 9999;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-.cart-notification.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.cart-notification i.material-icons {
-    font-size: 20px;
-}
-
-/* Mobile view: slide effect off, notification visible */
-@media screen and (max-width: 768px) {
-    .cart-notification {
-        transform: none !important; /* slide effect off */
-        transition: opacity 0.5s ease-in-out !important; /* only fade */
-        display: flex !important; /* ensure visible */
-        opacity: 1 !important; /* keep visible */
-        bottom: 94px !important; /* desktop same position */
-        right: 80px !important; /* desktop same position */
-    }
-
-    .cart-notification.show {
-        transform: none !important;
-        opacity: 1 !important; /* always visible */
-    }
-}
-</style>
 </body>
 </html>
-
-
