@@ -700,16 +700,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileCartCounter  = document.querySelector('.mbl-right .counter');
     const cartDrawer = document.getElementById('m-cart');
     const cartItemsContainer = document.getElementById('cart-items');
-    const subTotalEl = document.getElementById('sub-total') || document.getElementById('subtotal');
+    const subTotalEl = document.getElementById('sub-total');
     const totalEl = document.getElementById('total');
     const checkoutBtn = document.getElementById('checkout');
-    const orderOverviewBody = document.getElementById('order-overview-body') || document.querySelector('.order-overview-body');
+    const orderOverviewBody = document.getElementById('order-overview-body');
 
     const tfootSubtotal = document.getElementById('tfoot-subtotal');
     const tfootDeliveryLabel = document.getElementById('tfoot-delivery-label');
     const tfootDelivery = document.getElementById('tfoot-delivery');
     const tfootTotal = document.getElementById('tfoot-total');
-    const confirmBtn = document.getElementById('button-confirm') || document.getElementById('confirm-order-btn');
+    const confirmBtn = document.getElementById('button-confirm');
 
     // Checkout form fields
     const requiredFields = document.querySelectorAll('.checkout-form input[required], .checkout-form select[required]');
@@ -723,7 +723,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let selectedDelivery = 'flat.flat'; // default method
 
     // ----------------------------
-    // Helpers
+    // Functions
     // ----------------------------
     function saveCart() {
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -749,27 +749,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function calculateDeliveryCharge() {
-        if (selectedDelivery === 'flat.flat') deliveryCharge = 80;
-        else if (selectedDelivery === 'pickup.pickup') deliveryCharge = 0;
-        else if (selectedDelivery === 'express.express') deliveryCharge = 300;
-        else deliveryCharge = 0;
+        if(selectedDelivery === 'flat.flat') deliveryCharge = 80;
+        else if(selectedDelivery === 'pickup.pickup') deliveryCharge = 0;
+        else if(selectedDelivery === 'express.express') deliveryCharge = 300;
     }
 
     function getDeliveryText() {
-        if (selectedDelivery === 'flat.flat') return 'Home Delivery';
-        if (selectedDelivery === 'pickup.pickup') return 'Store Pickup';
-        if (selectedDelivery === 'express.express') return 'Request Express';
+        if(selectedDelivery === 'flat.flat') return 'Home Delivery';
+        if(selectedDelivery === 'pickup.pickup') return 'Store Pickup';
+        if(selectedDelivery === 'express.express') return 'Request Express';
         return 'Delivery';
     }
 
-    // ----------------------------
-    // Render Cart
-    // ----------------------------
     function renderCart() {
         const hasProducts = cart.length > 0;
         let subTotal = 0;
 
-        // Cart Drawer Items
         if (cartItemsContainer) {
             cartItemsContainer.innerHTML = '';
             if (hasProducts) {
@@ -786,7 +781,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             <input type="text" value="${item.qty}" readonly>
                             <button class="qty-btn qty-plus" data-index="${index}">+</button>
                         </div>
-                        <span class="cart-item-price">${item.price}৳ x ${item.qty} = ${totalPrice}৳</span>
+                        <!-- ❌ Drawer থেকে quantity × price = total লাইন রিমুভ করা হয়েছে -->
+                        <span class="cart-item-price">${item.price}৳</span>
                         <span class="cart-item-remove" data-index="${index}">
                             <i class="material-icons">delete</i>
                         </span>
@@ -801,15 +797,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Delivery charge
-        if (hasProducts) calculateDeliveryCharge();
-        else deliveryCharge = 0;
+        // ✅ Cart empty হলে সব value 0 হবে
+        if (hasProducts) {
+            calculateDeliveryCharge();
+        } else {
+            deliveryCharge = 0;
+        }
 
         // Subtotal + Total
         if (subTotalEl) subTotalEl.textContent = subTotal + '৳';
         if (totalEl) totalEl.textContent = (subTotal + deliveryCharge) + '৳';
 
-        // Order Overview Table
+        // Order Overview Table (checkout page)
         if (orderOverviewBody) {
             orderOverviewBody.innerHTML = '';
 
@@ -867,15 +866,12 @@ document.addEventListener('DOMContentLoaded', function() {
         validateConfirmButton();
     }
 
-    // ----------------------------
-    // Cart Events
-    // ----------------------------
     function attachCartEvents() {
         document.querySelectorAll('.qty-minus').forEach(btn => {
             btn.onclick = function() {
                 const idx = parseInt(this.dataset.index);
                 cart[idx].qty -= 1;
-                if (cart[idx].qty <= 0) cart.splice(idx, 1);
+                if(cart[idx].qty <= 0) cart.splice(idx, 1);
                 saveCart(); updateCartCounter(); renderCart();
             };
         });
@@ -910,11 +906,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         const isCartNotEmpty = cart.length > 0;
-        const isTermsChecked = termsCheckbox ? termsCheckbox.checked : false;
+        const isTermsChecked = termsCheckbox ? termsCheckbox.checked : true;
 
         const enableConfirm = allFieldsFilled && isCartNotEmpty && isTermsChecked;
 
-        if (confirmBtn) {
+        if(confirmBtn){
             confirmBtn.disabled = !enableConfirm;
             confirmBtn.style.opacity = enableConfirm ? '1' : '0.5';
             confirmBtn.style.pointerEvents = enableConfirm ? 'auto' : 'none';
@@ -922,17 +918,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showValidationMessages() {
-        if (cart.length === 0) {
+        if(cart.length === 0) {
             alert("Your cart is empty! Please add products first.");
             return false;
         }
-        for (let field of requiredFields) {
-            if (!field.value.trim()) {
-                alert(`Please fill in your ${field.placeholder || field.name}`);
+        for(let field of requiredFields){
+            if(!field.value.trim()){
+                alert("Please fill in all required customer information fields.");
                 return false;
             }
         }
-        if (termsCheckbox && !termsCheckbox.checked) {
+        if(termsCheckbox && !termsCheckbox.checked){
             alert("You must agree to the Terms & Conditions before confirming the order.");
             return false;
         }
@@ -949,7 +945,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const price = parseInt(pItem.querySelector('.price-new').textContent.replace(/[^\d]/g,''));            
             const id = pItem.dataset.id || name + '-' + price;
             let existing = cart.find(p => p.id === id);
-            if (existing) existing.qty += 1;
+            if(existing) existing.qty += 1;
             else cart.push({id, name, price, img: pItem.querySelector('img').src, qty:1});
             saveCart(); updateCartCounter(); showCartNotification(name); renderCart();
         });
@@ -968,12 +964,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    if (checkoutBtn) checkoutBtn.onclick = () => window.location.href = "checkout.html";
+    if(checkoutBtn) checkoutBtn.onclick = () => window.location.href = "https://a2zdorkary.com/checkout.html";
 
-    const shippingRadios = document.querySelectorAll('input[name="shipping_method"], input[name="delivery_method"]');
+    const shippingRadios = document.querySelectorAll('input[name="shipping_method"]');
     if (shippingRadios.length > 0) {
-        const initialChecked = document.querySelector('input[name="shipping_method"]:checked, input[name="delivery_method"]:checked');
-        if (initialChecked) selectedDelivery = initialChecked.value;
+        const initialChecked = document.querySelector('input[name="shipping_method"]:checked');
+        if (initialChecked) {
+            selectedDelivery = initialChecked.value;
+        }
 
         shippingRadios.forEach(radio => {
             radio.addEventListener('change', function() {
@@ -983,8 +981,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    if (termsCheckbox) {
-        termsCheckbox.checked = false; // always unchecked initially
+    if(termsCheckbox){
         termsCheckbox.addEventListener('change', validateConfirmButton);
     }
 
@@ -992,9 +989,9 @@ document.addEventListener('DOMContentLoaded', function() {
         field.addEventListener('input', validateConfirmButton);
     });
 
-    if (confirmBtn) {
+    if(confirmBtn) {
         confirmBtn.addEventListener('click', function(e) {
-            if (!showValidationMessages()) {
+            if(!showValidationMessages()){
                 e.preventDefault();
             }
         });
@@ -1011,5 +1008,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+
 </body>
 </html>
+
